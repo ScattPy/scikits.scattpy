@@ -1,0 +1,6 @@
+*.pyc
+*.so
+*.h5
+*.log
+*.shelvedb
+*.swp
