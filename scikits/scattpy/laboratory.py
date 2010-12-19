@@ -3,20 +3,71 @@ from numpy import *
 from scipy.special import sph_jn,sph_jnyn,lpmn
 from scipy.misc.common import factorial
 #from IPython.Debugger import Tracer; debug_here = Tracer()
+#from scipy.misc import derivative
+from numdifftools import Derivative
+from doc_inherit import doc_inherit
 
-class ShapeSpheroid:
-	def __init__(self,ab,xv):
-		self.ab = ab
+class Shape(object):
+	"""Shape class, base for all particle shapes"""
+	def _R(self,theta):
+		"""Surface equation in spherical coordinates: r=r(theta)"""
+		return ones_like(theta)
+	def _Rd(self,theta):
+		"""1st derivative of the surface equation in spherical coordinates: 
+			r=r\'(theta)"""
+		return Derivative(self._R)(theta)
+	def _Rdd(self,theta):
+		"""2nd derivative of the surface equation in spherical coordinates: 
+			r=r\'\'(theta)"""
+		return Derivative(self._R,derOrder=2)(theta)
+	def R(self,theta):
+		"""Surface equation and its 2 derivatives in spherical coordinates.
+			Returns r, r\', r\'\' """
+		return self._R(theta),Rd(theta),Rdd(theta)
+
+class ShapeSphere(Shape):
+	"""Shape class for spheres with radius R=xv"""
+	def __init__(self,xv):
 		self.xv = xv
 	def __str__(self):
-		return "spheroid with ab="+str(self.ab)+", xv="+str(self.xv)
+		return "sphere with R=%(xv)s" %self.__dict__
+	def _R(self,theta):
+		"""Shape equation in spherical coordinates: r=R"""
+		R = where(theta==theta, self.xv, 0)
+		return R
+	def _Rd(self,theta):
+		"""1st derivative of the surface equation: r\'=0"""
+		return zeros_like(theta)
+	def _Rdd(self,theta):
+		"""2nd derivative of the surface equation: r\'\'=0"""
+		return zeros_like(theta)
 	def copy(self):
-		return self.__class__(self.ab,self.xv)
+		return self.__class__(self.xv)
+
+
+class ShapeSpheroid(Shape):
+	"""Shape class for prolate/oblate spheroids"""
+	def __init__(self,ab,xv,prolate=True):
+		self.ab = ab
+		self.xv = xv
+		self.prolate = prolate
+		if prolate:
+			self.type="prolate"
+		else:
+			self.type="oblate"
+	def __str__(self):
+		return "%(type)s spheroid with ab=%(ab)s, xv=%(xv)s" %self.__dict__
+	def copy(self):
+		return self.__class__(self.ab,self.xv,self.prolate)
+	@doc_inherit
 	def R(self,theta):
 		sint = sin(theta)
 		cost = cos(theta)
 		xb=self.xv/self.ab**(1./3.)
-		ba=1./self.ab
+		if self.prolate:
+			ba=1./self.ab
+		else:
+			ba=self.ab
 		r=xb/sqrt(1.+(ba**2-1.)*cost**2)
 		rd=xb*(ba**2-1.)*sint*cost/(sqrt(1.+(ba**2-1.)*cost**2))**3
 
@@ -34,31 +85,33 @@ class ShapeSpheroid:
 	a = property(fget=_get_a)
 	b = property(fget=_get_b)
 
-class ShapeChebParticle:
+class ShapeChebyshev(Shape):
+	"""Shape class for Chebyshev particle shapes"""
 	def __init__(self,N,eps,xv):
 		self.N = N
 		self.eps = eps
 		self.xv = xv
 	def __str__(self):
-		return "Cheb"+str(self.N)+" with eps="+str(self.eps)+", xv="+str(self.xv)
+		return "Chebyshev particle with N=%(N)s eps=%(eps)s, xv=%(xv)s" %self.__dict__
 	def copy(self):
 		return self.__class__(self.N,self.eps,self.xv)
-	def R(self,theta):
-		xv = self.xv
-		eps = self.eps
-		N = self.N
-
-		r = xv*(1+eps*cos(N*theta))
-		rd = -xv*eps*N*sin(N*theta)
-		rdd = -xv*eps*N*N*cos(N*theta)
-		return r,rd,rdd
+	@doc_inherit
+	def _R(self,theta):
+		return self.xv*(1.+self.eps*cos(self.N*theta))
+	@doc_inherit
+	def _Rd(self,theta):
+		return -self.xv*self.N*self.eps*sin(self.N*theta)
+	@doc_inherit
+	def _Rdd(self,theta):
+		return -self.xv*self.N**2*self.eps*cos(self.N*theta)
 
 
 
 class Layer:
-	def __init__(self,shape,m):
+	"""Layer class"""
+	def __init__(self,shape,params,m):
 		self.m = m
-		self.shape = shape.copy()
+		self.shape = shape(**params)
 	def __str__(self):
 		return str(self.shape)+", m="+str(self.m)
 	def copy(self):
@@ -67,6 +120,7 @@ class Layer:
 	shape=None
 
 class Particle(object):
+	"""Particle class"""
 	def __str__(self):
 		Nlays = len(self.layers)
 		if Nlays==1:
@@ -81,30 +135,83 @@ class Particle(object):
 		del kwargs['self']
 		return self.__class__(**kwargs)
 	layers = []
-	def get_xv(self):
+	def _get_xv(self):
 		return self.layers[0].shape.xv
-	xv = property(fget=get_xv)
-	def get_g(self):
+	xv = property(fget=_get_xv)
+	def _get_g(self):
 		return pi*self.xv**2
-	g  = property(fget=get_g)
+	g  = property(fget=_get_g)
 
-	def get_Nlayers(self):
+	def _get_Nlayers(self):
 		return len(self.layers)
-	Nlayers = property(fget=get_Nlayers)
+	Nlayers = property(fget=_get_Nlayers)
 
 
-class SpheroidHom(Particle):
+class HomogeneousParticle(Particle):
+	"""Class for homogeneous particles"""
+	def __init__(self,shape,params,m):
+		self.copy_args = locals()
+		self.layers = [Layer(shape,params,m)]
+
+class Sphere(HomogeneousParticle):
+	"""Homogeneous spherical particle"""
+	def __init__(self,xv,m):
+		super(self.__class__,self).__init__(ShapeSphere,{'xv':xv},m)
+		self.copy_args = locals()
+
+class ProlateSpheroid(HomogeneousParticle):
+	"""Homogeneous prolate spheroidal particle"""
 	def __init__(self,ab,xv,m):
+		super(self.__class__,self).\
+			__init__(ShapeSpheroid,{'ab':ab,'xv':xv,'prolate':True},m)
 		self.copy_args = locals()
-		self.layers = [Layer(ShapeSpheroid(ab,xv),m)]
 
-class ChebParticleHom(Particle):
-	def __init__(self,N,eps,xv,m):
+class OblateSpheroid(HomogeneousParticle):
+	"""Homogeneous oblate spheroidal particle"""
+	def __init__(self,ab,xv,m):
+		super(self.__class__,self).\
+			__init__(ShapeSpheroid,{'ab':ab,'xv':xv,'prolate':False},m)
 		self.copy_args = locals()
-		self.layers = [Layer(ShapeChebParticle(N,eps,xv),m)]
+
+class ChebParticle(HomogeneousParticle):
+	"""Homogeneous Chebyshev particle"""
+	def __init__(self,N,eps,xv,m):
+		super(self.__class__,self).\
+			__init__(ShapeChebyshev,{'N':N,'eps':eps,'xv':xv},m)
+		self.copy_args = locals()
+
+class LayeredParticle(Particle):
+	"""Class for layered particles
+
+	EXAMPLE:
+	A layered particle consisting of a spherical core with xv = 1.2 and 
+	a Chebyshev shaped mantle with n = 50, eps = 0.035, xV = 1.4, m = 1.7 
+	can be initialised by the following code:
+
+	P = LayeredParticle([
+	      (ShapeChebyshev, {'N':50, 'eps':0.035, 'xv':1.4}, 1.33),\\
+	      (ShapeSphere,    {'xv':1.2},  1.7 ) ])
+"""
+	def __init__(self,layers):
+		self.copy_args = locals()
+		self.layers=[]
+		for lay in layers:
+			shape,params,m = lay
+			self.layers.append(L.Layer(shape,params,m))
 
 class Layered_EqShape_Particle(Particle):
-	def __init__(self,shape0,ms,volumes,Nlayers):
+	"""Layered particle whose layers have the same shapes,
+	i.e. differ only with parameter xv
+
+	EXAMPLE:
+	A multilayered spheroid with 8 cyclically repeating layers of matter(80%) 
+	and vacuum (20%) can be constructed with the following command:
+
+	P = Layered_EqShape_Particle( \\
+	     ShapeProlateSpheroid, {'ab':1.5,'xv':1.4},\\
+             ms=[1.33,1.0],volumes=[80,20],NLayers=8)
+"""
+	def __init__(self,shape0,params,ms,volumes,Nlayers):
 		self.copy_args = locals()
 		# Update Nlayers to match series
 		series_len = len(ms)
@@ -142,11 +249,10 @@ class Layered_EqShape_Particle(Particle):
 			for i in xrange(series_len):
 				m = ms[i]
 				l = l+1
-				shape = shape0.copy()
+				self.layers.append(Layer(shape0,params,m))
 				if l>1:
-				   shape.xv *= ((coefs[i]+Nseries-serie_no)\
-				   		 /Nseries)**(1/3.)
-				self.layers.append(Layer(shape,m))
+				   self.layers[i].shape.xv *= ((coefs[i]+Nseries-serie_no)\
+				   		              /Nseries)**(1/3.)
 				if l==Nlayers: break
 	def __str__(self):
 		ms_str = "[ "
@@ -165,20 +271,22 @@ class Layered_EqShape_Particle(Particle):
 				+" with volume fractions "+vols_str
 
 class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
-	def __init__(self,shape0,ms,Nlayers):
-		self.copy_args = locals()
+	def __init__(self,shape0,params,ms,Nlayers):
+		copy_args = locals()
 		volumes = zeros(len(ms))+1
-		super(Layered_EqShape_EqVolume_Particle,self)\
-				.__init__(shape0,ms,volumes,Nlayers)
+		super(self.__class__,self)\
+				.__init__(shape0,params,ms,volumes,Nlayers)
+		self.copy_args = copy_args
 
-class EffMedium_Particle(Particle):
+class EffMedium_Particle(HomogeneousParticle):
 	mixing_rule_str = "Average mixing rule"
-	def __init__(self,shape0,ms,volumes):
-		self.copy_args = locals()
+	def __init__(self,shape0,params,ms,volumes):
+		copy_args = locals()
 		self.ms = ms
 		self.volumes = volumes/(sum(volumes)+0.)*100
 		m_mixed = self.mixing_rule(ms,volumes)
-		self.layers = [Layer(shape0,m_mixed)]
+		super(self.__class__,self).__init__(shape,params,m_mixed)
+		self.copy_args = copy_args
 	def __str__(self):
 		ms_str = "[ "
 		for m in self.ms:
@@ -463,12 +571,6 @@ class Lab:
 
 
 
-
-def set_cheb_particle(n,eps,xv):
-	r = xv*(1+eps*cos(n*knots))
-	rd = -n*xv*eps*sin(n*knots)
-	set_r(xv,r,rd)
-	return r,rd
 
 def get_omegakappatau(n,m):
 	dim = n-m+1
