@@ -1,7 +1,8 @@
 from numpy import *
 import core
 import laboratory
-from scipy import linsolve,sparse
+from scipy import sparse
+#from scipy.sparse.linalg.dsolve import linsolve
 #import pdb
 #from IPython.Debugger import Tracer; debug_here = Tracer()
 #from IPython.Shell import IPShellEmbed; ishell = IPShellEmbed()
