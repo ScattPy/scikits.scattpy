@@ -1,33 +1,20 @@
 from numpy import *
-import core
+#import core
 import laboratory
 from scipy import sparse
 #from scipy.sparse.linalg.dsolve import linsolve
-#import pdb
+import pdb
 #from IPython.Debugger import Tracer; debug_here = Tracer()
 #from IPython.Shell import IPShellEmbed; ishell = IPShellEmbed()
 #import pylab
 #import plotting
+import spherical
 
-ab = 2.#sqrt(2.)
-#xv = 2.
-#m2 = 1.5+0.0j
-#alpha = pi/4
-#delta_c=1e-16
-#core.set_ngauss(200)
-#nrange = range(4,80,2)
-
-eps = 0.21
-xv = 1.
-m2 = 1.5+0.0j
-alpha = 10*pi/180.
 delta_c=1e-16
 ngauss_coef = 6
 Nrange = range(10,40,2)
 Ms = None
 
-a = ab*xv/ab**(1./3.)
-b = a*ab
 
 RESULTS = None
 
@@ -44,7 +31,7 @@ class Results:
 		self.N_tm = N_tm
 		self.convlog_tm = convlog_tm
 
-def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=True,iterative=True):
+def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
 	print "\n","*"*60
 	print lab
 	print "*"*60
@@ -140,25 +127,6 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Tru
 
 	print "TE mode: Qext=%(Qext_te)20.16e , Qsca=%(Qsca_te)20.16e, delta=%(delta_te)5.1e , n=%(n_te)s" % locals()
 
-#	Theta_d = arange(0,180,10)
-#	Theta = Theta_d*pi/180
-#	#TODO: fix with phi != 0
-#	phi = 0
-#	A = lab.get_amplitude_matrix(c_sca_tm,c_sca_te,Theta,phi)
-#	intensity,linpol_degree = lab.get_int_plr(A)
-#	pylab.semilogy(Theta_d,intensity)
-#	pylab.show()
-#	pylab.plot(Theta_d,linpol_degree)
-#	pylab.show()
-
-	#print "Theta\tF11\t\tF12"
-	#for k in xrange(len(Theta)):
-	#	print Theta_d[k],"\t",intensity[k],"\t",linpol_degree[k]
-	#print "\nF11\n"
-	#print mat([Theta_d,intensity]).T
-	#print "\nF21/F11\n"
-	#print mat([Theta_d,linpol_degree]).T
-	#debug_here()
 	global RESULTS
 	RESULTS = Results(c_sca_te,delta_te,N_te,convlog_te,\
 	                  c_sca_tm,delta_tm,N_tm,convlog_tm)
@@ -167,19 +135,10 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Tru
 def svm_n(lab,n,ngauss,ms=None,iterative=True):
 	global th
 	if ngauss=="auto":
-		core.set_ngauss(ngauss_coef*n)
+		ng=ngauss_coef*n
 	else:
-		core.set_ngauss(ngauss)
-	Pn = core.get_Pmn(n,n,core.cost)
-	#Pn = core.get_Pmn_normed(n,n,core.cost)
-
-	JnHn1l = [] # Bessel and Hankel functions for all layers
-	JnHn2l = []
-	for bnd in lab.boundaries():
-		Rs = bnd.shape.R(core.knots) #here Rs = [r,rd,rdd]
-		core.set_consts(Rs)
-		JnHn1l.append( core.get_JnHn(n,bnd.k1*core.r) )
-		JnHn2l.append( core.get_JnHn(n,bnd.k2*core.r) )
+		ng=ngauss
+	C=spherical.spherical_utilities(ng,n,lab)
 
 	Cext_tm = Cext_te = 0
 	c_sca_tm = []
@@ -211,15 +170,8 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 			BB   = zeros((Nlays*Nsize*2,1),dtype=complex)
 
 		for bnd in lab.boundaries_reversed():
-			Rs = bnd.shape.R(core.knots) #here Rs = [r,rd,rdd]
-			core.set_consts(Rs)
-			Jn1,Hn1 = JnHn1l[bnd.layer_no-1]
-			Jn2,Hn2 = JnHn2l[bnd.layer_no-1]
-			#Jn1,Hn1 = core.get_JnHn(n,bnd.k1*core.r)
-			#Jn2,Hn2 = core.get_JnHn(n,bnd.k2*core.r)
-
 			K11,K12,K21tm,K21te,K22tm,K22te =\
-			   svm_bnd_system(n,m,bnd,Pn,Jn1,Jn2,Hn1,Hn2,axisymm)
+			   svm_bnd_system(C,m,bnd,axisymm)
 			if not iterative:
 			   # Single matrix method
 			   Nlay = bnd.layer_no
@@ -278,17 +230,20 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 
 	return Cext_tm,c_sca_tm, Cext_te,c_sca_te
 
-def svm_bnd_system(n,m,bnd,Pn,Jn1,Jn2,Hn1,Hn2,axisymm=False):
-	Aj1 = core.matA(n,m,Jn1,Pn)
-	Aj2 = core.matA(n,m,Jn2,Pn)
-	Ah1 = core.matA(n,m,Hn1,Pn)
-	Bj1 = core.matB(n,m,Jn1,Pn,bnd.k1)
-	Bj2 = core.matB(n,m,Jn2,Pn,bnd.k2)
-	Bh1 = core.matB(n,m,Hn1,Pn,bnd.k1)
+def svm_bnd_system(C,m,bnd,axisymm=False):
+	#pdb.set_trace()
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	Aj1 = spherical.matA(C,m,'j',1)
+	Aj2 = spherical.matA(C,m,'j',2)
+	Ah1 = spherical.matA(C,m,'h',1)
+	Bj1 = spherical.matB(C,m,'j',1)
+	Bj2 = spherical.matB(C,m,'j',2)
+	Bh1 = spherical.matB(C,m,'h',1)
 
 	# Axisymmetric part
 	if axisymm:
-		Cj2 = core.matC(n,m,Jn2,Pn,bnd.k2,bnd.e12,B=Bj2)
+		Cj2 = spherical.matC(C,m,'j',2,bnd.e12,B=Bj2)
 
 		K11 = bmat([[ Aj1.T ],\
 			    [ Bj1.T ] ])
@@ -304,9 +259,9 @@ def svm_bnd_system(n,m,bnd,Pn,Jn1,Jn2,Hn1,Hn2,axisymm=False):
 
 		# For not-last boundaries we need Ah2,Bh2, etc.
 		if not bnd.is_last:
-			Ah2 = core.matA(n,m,Hn2,Pn)
-			Bh2 = core.matB(n,m,Hn2,Pn,bnd.k2)
-			Ch2 = core.matC(n,m,Hn2,Pn,bnd.k2,bnd.e12,B=Bh2)
+			Ah2 = spherical.matA(C,m,'h',2)
+			Bh2 = spherical.matB(C,m,'h',2)
+			Ch2 = spherical.matC(C,m,'h',2,bnd.e12,B=Bh2)
 
 			K22tm = bmat([[ Ah2.T ],\
 				      [ Ch2.T ] ])
@@ -318,20 +273,20 @@ def svm_bnd_system(n,m,bnd,Pn,Jn1,Jn2,Hn1,Hn2,axisymm=False):
 
 	# Non-axisymmetric part
 	else:
-		Dj2 = core.matD(n,m,Jn2,Pn,bnd.k2,bnd.e12,B=Bj2)
-		Ej2 = core.matE(n,m,Jn2,Pn,bnd.k2,bnd.e12)
-		Fj2 = core.matF(n,m,Jn2,Pn,bnd.k2,bnd.e12)
-		Gj2 = core.matG(n,m,Jn2,Pn,bnd.k2,bnd.e12,B=Bj2)
+		Dj2 = spherical.matD(C,m,'j',2,bnd.e12,B=Bj2)
+		Ej2 = spherical.matE(C,m,'j',2,bnd.e12)
+		Fj2 = spherical.matF(C,m,'j',2,bnd.e12)
+		Gj2 = spherical.matG(C,m,'j',2,bnd.e12,B=Bj2)
 		
-		Aj12 = core.matA12(n,m,Jn2,Pn,bnd.k2,bnd.e21,A=Aj2)
-		Aj22 = core.matA22(n,m,Jn2,Pn,bnd.k2,bnd.e21,B=Bj2)
-		Aj32 = core.matA32(n,m,Jn2,Pn,bnd.k2,bnd.e21)
-		Aj42 = core.matA42(n,m,Jn2,Pn,bnd.k2,bnd.e21)
+		Aj12 = spherical.matA12(C,m,'j',2,bnd.e21,A=Aj2)
+		Aj22 = spherical.matA22(C,m,'j',2,bnd.e21,B=Bj2)
+		Aj32 = spherical.matA32(C,m,'j',2,bnd.e21)
+		Aj42 = spherical.matA42(C,m,'j',2,bnd.e21)
 	
-		Aj14 = core.matA14(n,m,Jn2,Pn,bnd.k2,bnd.e21)
-		Aj24 = core.matA24(n,m,Jn2,Pn,bnd.k2,bnd.e21)
-		Aj34 = core.matA34(n,m,Jn2,Pn,bnd.k2,bnd.e21,A=Aj2)
-		Aj44 = core.matA44(n,m,Jn2,Pn,bnd.k2,bnd.e21,B=Bj2)
+		Aj14 = spherical.matA14(C,m,'j',2,bnd.e21)
+		Aj24 = spherical.matA24(C,m,'j',2,bnd.e21)
+		Aj34 = spherical.matA34(C,m,'j',2,bnd.e21,A=Aj2)
+		Aj44 = spherical.matA44(C,m,'j',2,bnd.e21,B=Bj2)
 	
 		c0 = mat(zeros_like(Aj2))
 
@@ -357,23 +312,23 @@ def svm_bnd_system(n,m,bnd,Pn,Jn1,Jn2,Hn1,Hn2,axisymm=False):
 
 		# For not-last boundaries we need Ah2,Bh2, etc.
 		if not bnd.is_last:
-			Ah2 = core.matA(n,m,Hn2,Pn)
-			Bh2 = core.matB(n,m,Hn2,Pn,bnd.k2)
+			Ah2 = spherical.matA(C,m,'h',2)
+			Bh2 = spherical.matB(C,m,'h',2)
 
-			Dh2 = core.matD(n,m,Hn2,Pn,bnd.k2,bnd.e12,B=Bh2)
-			Eh2 = core.matE(n,m,Hn2,Pn,bnd.k2,bnd.e12)
-			Fh2 = core.matF(n,m,Hn2,Pn,bnd.k2,bnd.e12)
-			Gh2 = core.matG(n,m,Hn2,Pn,bnd.k2,bnd.e12,B=Bh2)
+			Dh2 = spherical.matD(C,m,'h',2,bnd.e12,B=Bh2)
+			Eh2 = spherical.matE(C,m,'h',2,bnd.e12)
+			Fh2 = spherical.matF(C,m,'h',2,bnd.e12)
+			Gh2 = spherical.matG(C,m,'h',2,bnd.e12,B=Bh2)
 			
-			Ah12 = core.matA12(n,m,Hn2,Pn,bnd.k2,bnd.e21,A=Ah2)
-			Ah22 = core.matA22(n,m,Hn2,Pn,bnd.k2,bnd.e21,B=Bh2)
-			Ah32 = core.matA32(n,m,Hn2,Pn,bnd.k2,bnd.e21)
-			Ah42 = core.matA42(n,m,Hn2,Pn,bnd.k2,bnd.e21)
+			Ah12 = spherical.matA12(C,m,'h',2,bnd.e21,A=Ah2)
+			Ah22 = spherical.matA22(C,m,'h',2,bnd.e21,B=Bh2)
+			Ah32 = spherical.matA32(C,m,'h',2,bnd.e21)
+			Ah42 = spherical.matA42(C,m,'h',2,bnd.e21)
 		
-			Ah14 = core.matA14(n,m,Hn2,Pn,bnd.k2,bnd.e21)
-			Ah24 = core.matA24(n,m,Hn2,Pn,bnd.k2,bnd.e21)
-			Ah34 = core.matA34(n,m,Hn2,Pn,bnd.k2,bnd.e21,A=Ah2)
-			Ah44 = core.matA44(n,m,Hn2,Pn,bnd.k2,bnd.e21,B=Bh2)
+			Ah14 = spherical.matA14(C,m,'h',2,bnd.e21)
+			Ah24 = spherical.matA24(C,m,'h',2,bnd.e21)
+			Ah34 = spherical.matA34(C,m,'h',2,bnd.e21,A=Ah2)
+			Ah44 = spherical.matA44(C,m,'h',2,bnd.e21,B=Bh2)
 
 			K22tm = bmat( [[ Ah2.T,   c0  ],\
 				       [ Dh2.T, Eh2.T ],\

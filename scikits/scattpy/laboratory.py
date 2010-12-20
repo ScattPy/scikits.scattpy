@@ -23,7 +23,7 @@ class Shape(object):
 	def R(self,theta):
 		"""Surface equation and its 2 derivatives in spherical coordinates.
 			Returns r, r\', r\'\' """
-		return self._R(theta),Rd(theta),Rdd(theta)
+		return self._R(theta),self._Rd(theta),self._Rdd(theta)
 
 class ShapeSphere(Shape):
 	"""Shape class for spheres with radius R=xv"""
@@ -271,6 +271,17 @@ class Layered_EqShape_Particle(Particle):
 				+" with volume fractions "+vols_str
 
 class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
+	"""Layered particle whose layers have the same shapes,
+	i.e. differ only with parameter xv, each layer has the same volume.
+
+	EXAMPLE:
+	A multilayered spheroid with 8 cyclically repeating equivolume layers of matter 
+	and vacuum can be constructed with the following command:
+
+	P = Layered_EqShape_EqVolume_Particle( \\
+	     ShapeProlateSpheroid, {'ab':1.5,'xv':1.4},\\
+             ms=[1.33,1.0],NLayers=8)
+"""
 	def __init__(self,shape0,params,ms,Nlayers):
 		copy_args = locals()
 		volumes = zeros(len(ms))+1
@@ -279,6 +290,9 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 		self.copy_args = copy_args
 
 class EffMedium_Particle(HomogeneousParticle):
+	"""Particle using effective medium theory, an approximation of 
+	inhomogeneous particles with homogeneous one having averaged
+	complex refrecive index m. Average mixing rule is used."""
 	mixing_rule_str = "Average mixing rule"
 	def __init__(self,shape0,params,ms,volumes):
 		copy_args = locals()
@@ -303,12 +317,18 @@ class EffMedium_Particle(HomogeneousParticle):
 				+" with layer series "+ms_str+"\n"\
 				+" with volume fractions "+vols_str
 	def mixing_rule(self,ms,vols):
+		"""Average mixing rule"""
 		return sum(array(ms)*array(vols))/sum(array(vols))
 
 
 class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
+	"""Particle using Maxwell-Garnett effective medium theory, 
+	an approximation of inhomogeneous particles with homogeneous 
+	one having averaged complex refrecive index m.
+	Maxwell-Garnett mixing rule is used."""
 	mixing_rule_str = "Maxwell-Garnett"
 	def mixing_rule(self,ms,vols):
+		"""Maxwell-Garnett mixing rule"""
 		e1 = ms[0]**2
 		e2 = ms[1]**2
 		p = vols[0]/(sum(vols)+0.)
@@ -316,8 +336,13 @@ class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
 		return sqrt(ee)
 
 class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
+	"""Particle using inverse Maxwell-Garnett effective medium theory, 
+	an approximation of inhomogeneous particles with homogeneous 
+	one having averaged complex refrecive index m.
+	Inverse Maxwell-Garnett mixing rule is used."""
 	mixing_rule_str = "Inverse Maxwell-Garnett"
 	def mixing_rule(self,ms,vols):
+		"""Inverse Maxwell-Garnett mixing rule"""
 		e1 = ms[1]**2
 		e2 = ms[0]**2
 		p = vols[1]/(sum(vols)+0.)
@@ -325,8 +350,13 @@ class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
 		return sqrt(ee)
 
 class EffMedium_Bruggeman_Particle(EffMedium_Particle):
+	"""Particle using Bruggeman effective medium theory, 
+	an approximation of inhomogeneous particles with homogeneous 
+	one having averaged complex refrecive index m.
+	Bruggeman mixing rule is used."""
 	mixing_rule_str = "Bruggeman"
 	def mixing_rule(self,ms,vols):
+		"""Bruggeman mixing rule"""
 		e1 = ms[0]**2
 		e2 = ms[1]**2
 		p1 = vols[0]/(sum(vols)+0.)
@@ -338,7 +368,9 @@ class EffMedium_Bruggeman_Particle(EffMedium_Particle):
 		ee = (-b+sqrt(b**2-4*a*c))/(2*a)
 		return sqrt(ee)
 
-class Boundary:
+class Boundary(object):
+	"""Boundary class: describes a surface between layers and bounding layers' 
+	matter properties"""
 	def __init__(self,lab,l):
 		lay1 = lab.particle.layers[l]
 		shape = lay1.shape
@@ -382,6 +414,7 @@ class Boundary:
 	is_first=None
 
 class Lab:
+	"""Laboratory class"""
 	def __init__(self,particle,alpha,m1=1):
 		self.particle = particle.copy()
 		self.alpha = alpha
@@ -400,17 +433,21 @@ class Lab:
 	k1 = None
 	Pna= None
 	def boundary(self,l=0):
+		"""Returns l-th boundary"""
 		return Boundary(self,l)
 
 	def boundaries(self):
+		"""Iterator for boundaries"""
 		for l in xrange(len(self.particle.layers)):
 			yield self.boundary(l)
 
 	def boundaries_reversed(self):
+		"""Reversed iterator of boundaries"""
 		for l in reversed(xrange(len(self.particle.layers))):
 			yield self.boundary(l)
 
 	def get_inc(self,n,m,axisymm=False):
+		"""Return incident field expansion coefficients"""
 		#if (self.Pna is None) or (len(self.Pna)!=n):
 		self.Pna,self.Pdna = lpmn(n,n,cos(self.alpha))[:]
 		self.sina = sin(self.alpha)
@@ -432,6 +469,7 @@ class Lab:
 		return c_inc
 
 	def get_Cext(self,c_sca):
+		"""Return extinction cross-section Cext and efficiency factor Qext"""
 		Cext = self.get_Cext_m(1,c_sca[0],True)
 		for m in xrange(1,len(c_sca)):
 			Cext += self.get_Cext_m(m,c_sca[m],False)
@@ -441,6 +479,8 @@ class Lab:
 		return Cext,Qext
 
 	def get_Cext_m(self,m,c_sca,axisymm=False):
+		"""Return extinction cross-section Cext_m and efficiency factor Qext_m
+		for m-th term in expansion over azimuthal angle phi"""
 		sina = self.sina
 		k1 = self.k1
 		if axisymm:
@@ -466,6 +506,7 @@ class Lab:
 		return Cext
 
 	def get_Csca(self,c_sca):
+		"""Return scattering cross-section Csca and efficiency factor Qsca"""
 		Csca = self.get_Csca_m(1,c_sca[0],True)
 		for m in xrange(1,len(c_sca)):
 			Csca += self.get_Csca_m(m,c_sca[m],False)
@@ -475,6 +516,8 @@ class Lab:
 		return Csca,Qsca
 
 	def get_Csca_m(self,m,c_sca,axisymm=False):
+		"""Return scattering cross-section Csca_m and efficiency factor Qsca_m
+		for m-th term in expansion over azimuthal angle phi"""
 		k1 = self.k1
 		if axisymm:
 			n=len(c_sca)
@@ -496,6 +539,7 @@ class Lab:
 		return Csca
 
 	def get_amplitude_matrix(self,c_sca_tm,c_sca_te,Theta,phi):
+		"""Return amplitude matrices for angles Theta and phi"""
 		n_max = max(len(c_sca_tm[0]),len(c_sca_te[0]))
 		m_max = max(len(c_sca_tm),len(c_sca_te))
 		A2,A4 = self.__get_amplitude_matrix2(c_sca_tm,Theta,phi)
@@ -573,9 +617,11 @@ class Lab:
 
 
 def get_omegakappatau(n,m):
-	dim = n-m+1
-	delta11 = identity(dim)
-	if dim-1>0:
+	"""Return omega, kappa, tau integrals, required for the scattering 
+	cross-section evaluation"""
+        dim = n-m+1
+        delta11 = identity(dim)
+        if dim-1>0:
 		delta21 = diag(ones(dim-1),-1)
 		delta12 = diag(ones(dim-1), 1)
 	else:
