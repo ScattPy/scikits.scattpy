@@ -1,7 +1,7 @@
 from numpy import *
 from scipy.special.orthogonal import ps_roots
 from scipy import special
-from kmatrix import *
+import f_utils
 
 # (r, theta, phi)
 class spherical_utilities(object):
@@ -15,7 +15,7 @@ class spherical_utilities(object):
 	def set_ngauss(self):
 		k,w = ps_roots(self.ng)
 		self.knots,self.weights = k*pi,w*pi
-		self.thetas = kscalar(self.knots)
+		self.thetas = self.knots
 		self.sint=sin(self.thetas)
 		self.cost=cos(self.thetas)
 		self.tgt = tan(self.thetas)
@@ -28,10 +28,7 @@ class spherical_utilities(object):
 	def set_all_layers(self,lab):
 		self.data_layers=[0]
 		for bnd in lab.boundaries():
-			R,Rd,Rdd = bnd.shape.R(self.knots)
-			r=kscalar(R)
-			rd=kscalar(Rd)
-			rdd=kscalar(Rdd)
+			r,rd,rdd = bnd.shape.R(self.knots)
 			rdr=rd/r
 			r2rd2=r**2+rd**2
 			Rad =[0,{},{}]
@@ -76,141 +73,164 @@ class spherical_utilities(object):
 	ki  = property(_get_ki)
 
 	def Rad(self,m,ij,i):
-		return kmatrix(self.data_layers[self._lay]['Rad'][i][ij][:,m:])
+		return self.data_layers[self._lay]['Rad'][i][ij][:,m:]
 
 	def Radd(self,m,ij,i):
-		return kmatrix(self.data_layers[self._lay]['Radd'][i][ij][:,m:])
+		return self.data_layers[self._lay]['Radd'][i][ij][:,m:]
 
 	def Ang(self,m):
-		return kmatrix(self.data_Ang[:,m,m:])
+		return self.data_Ang[:,m,m:]
 
 	def Angd(self,m):
-		return kmatrix(self.data_Angd[:,m,m:])
+		return self.data_Angd[:,m,m:]
 
 
-def func_a(C,m,ij,i):
-	return C.Rad(m,ij,i)^C.Ang(m)
+def matA0(C,m,jh,i,coef):
+	Rad = C.Rad(m,jh,i)
+	Angm = C.Ang(m)
+	#func = lambda k:  outer( Rad[k]*Angm[k], coef[k]*Angm[k])
+	#return mat_integrate(func)
+	return f_utils.mat_a0(Rad,Angm,coef,C.weights)
 
-def func_b(C,m,ij,i):
-	ki=C.ki[i]
-	return (ki*C.r*C.Radd(m,ij,i)^C.Ang(m)) \
-		+(C.rdr*C.sint*C.Rad(m,ij,i)^C.Angd(m))
+def matA(C,m,jh,i):
+	return matA0(C,m,jh,i,coef=C.sint)
 
-def func_d(C,m,ij,i):
-	ki=C.ki[i]
-	return (ki*C.r*C.cost*C.Radd(m,ij,i)^C.Ang(m)) \
-		+(C.sint**2*C.Rad(m,ij,i)^C.Angd(m))
+def matB(C,m,jh,i):
+	ki = C.ki[i]
+	Rad = C.Rad(m,jh,i)
+	Radd= C.Radd(m,jh,i)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	#func = lambda k: \
+	#   outer(ki*r[k]*Radd[k]*Angm[k]+rdr[k]*sint[k]*Rad[k]*Angmd[k],\
+	#         sint[k]*Angm[k] )
+	#return mat_integrate(func)
+	return f_utils.mat_b(ki,Rad,Radd,Angm,Angmd,C.r,C.rdr,C.sint,C.weights)
 
-def func_e(C,m,ij,i):
-	ki=C.ki[i]
-	return ((ki*C.r*C.Radd(m,ij,i))+C.Rad(m,ij,i))^C.Ang(m)
-
-def func_g(C,m,ij,i):
-	ki=C.ki[i]
-	return (ki*C.rd*C.Radd(m,ij,i)^C.Ang(m)) \
-		-(C.sint*C.Rad(m,ij,i)^C.Angd(m))
-
-def matA0(C,m,ij,i,coef):
-	return ( (func_a(C,m,ij,i)).T * (coef*C.Ang(m)) ).integrate(C.weights)
-
-def matA(C,m,ij,i):
-	return matA0(C,m,ij,i,C.sint)
-
-def matB(C,m,ij,i):
-	return ( (func_b(C,m,ij,i)).T * (C.sint*C.Ang(m)) ).integrate(C.weights)
-
-def matC(C,m,ij,i,e12, B=None):
-	if B is None: B = matB(C,m,ij,i)
+def matC(C,m,jh,i,e12, B=None):
+	ki = C.ki[i]
+	if B is None: B = matB(n,m,fRad,fAng,ki)
 	ff = (1.-C.ctgt*C.rdr)*C.sint
-	A = matA0(C,m,ij,i,coef=ff)
+	A = matA0(C,m,jh,i,coef=ff)
 	return e12*B + (e12-1.)*A
 
-def matD0(C,m,ij,i,coef):
-	return ( (func_d(C,m,ij,i)).T * (coef*C.Ang(m)) ).integrate(C.weights)
-def matE0(C,m,ij,i,coef):
-	return ( (func_e(C,m,ij,i)).T * (coef*C.Ang(m)) ).integrate(C.weights)
-def matG0(C,m,ij,i,coef):
-	return ( (func_g(C,m,ij,i)).T * (coef*C.Ang(m)) ).integrate(C.weights)
+def matD0(C,m,jh,i,coef):
+	ki = C.ki[i]
+	Rad = C.Rad(m,jh,i)
+	Radd= C.Radd(m,jh,i)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	#func = lambda k: \
+	#   outer(ki*r[k]*cost[k]*Radd[k]*Angm[k]+sint[k]**2*Rad[k]*Angmd[k],\
+	#         Angm[k]*coef[k] )
+	#return mat_integrate(func)
+	return f_utils.mat_d0\
+			(ki,Rad,Radd,Angm,Angmd,C.r,C.sint,C.cost,coef,C.weights)
 
+def matE0(C,m,jh,i,coef):
+	ki = C.ki[i]
+	Rad = C.Rad(m,jh,i)
+	Radd= C.Radd(m,jh,i)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	#func = lambda k: \
+	#   outer((ki*r[k]*Radd[k]+Rad[k])*Angm[k], Angm[k]*coef[k] )
+	#return mat_integrate(func)
+	return f_utils.mat_e0(ki,Rad,Radd,Angm,C.r,coef,C.weights)
 
-def matD(C,m,ij,i,e12,B=None):
-	if B is None: B = matB(C,m,ij,i)
+def matG0(C,m,jh,i,coef):
+	ki = C.ki[i]
+	Rad = C.Rad(m,jh,i)
+	Radd= C.Radd(m,jh,i)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	#func = lambda k: \
+	#  outer(ki*rd[k]*Radd[k]*Angm[k] - sint[k]*Rad[k]*Angmd[k],\
+	#         Angm[k]*coef[k] )
+	#return mat_integrate(func)
+	return f_utils.mat_g0(ki,Rad,Radd,Angm,Angmd,C.r,C.rd,C.sint,coef,C.weights)
+
+def matD(C,m,jh,i,e12,B=None):
+	if B is None: B = matB(C,m,jh,i)
 	fd = C.rdr
-	D0 = matD0(C,m,ij,i,coef=fd)
+	D0 = matD0(C,m,jh,i,coef=fd)
 	return B + (e12-1.)*D0
 
-def matE(C,m,ij,i,e12):
+def matE(C,m,jh,i,e12):
 	fe = C.rd
-	E0 = matE0(C,m,ij,i,coef=fe)
+	E0 = matE0(C,m,jh,i,coef=fe)
 	return (e12-1.)*E0
 
-def matF(C,m,ij,i,e12):
+def matF(C,m,jh,i,e12):
 	fd = (C.rd*C.cost-C.r*C.sint)/C.r**2
-	D0 = matD0(C,m,ij,i,coef=fd)
+	D0 = matD0(C,m,jh,i,coef=fd)
 	return -(e12-1.)*D0
 
-def matG(C,m,ij,i,e12,B=None):
-	if B is None: B = matB(C,m,ij,i)
+def matG(C,m,jh,i,e12,B=None):
+	if B is None: B = matB(C,m,jh,i)
 	fe = (C.rd*C.cost-C.r*C.sint)/C.r
-	E0 = matE0(C,m,ij,i,coef=fe)
+	E0 = matE0(C,m,jh,i,coef=fe)
 	return B - (e12-1.)*E0
 
-def matA12(C,m,ij,i,e21,A=None):
-	if A is None: A = matA(C,m,ij,i)
+def matA12(C,m,jh,i,e21,A=None):
+	if A is None: A = matA(C,m,jh,i)
 	fa = C.r*(C.rd*C.cost-C.r*C.sint)/C.r2rd2
-	A0 = matA0(C,m,ij,i,coef=fa)
+	A0 = matA0(C,m,jh,i,coef=fa)
 	return A - (e21-1)*A0
 
-def matA14(C,m,ij,i,e21):
+def matA14(C,m,jh,i,e21):
 	fa = (C.r**2*C.rd)/C.r2rd2
-	A0 = matA0(C,m,ij,i,coef=fa)
+	A0 = matA0(C,m,jh,i,coef=fa)
 	return -(e21-1)*A0
 
-def matA32(C,m,ij,i,e21):
+def matA32(C,m,jh,i,e21):
 	fa = (C.rd*C.sint+C.r*C.cost)*(C.rd*C.cost-C.r*C.sint)/(C.r*C.r2rd2)
-	A0 = matA0(C,m,ij,i,coef=fa)
+	A0 = matA0(C,m,jh,i,coef=fa)
 	return (e21-1)*A0
 
-def matA34(C,m,ij,i,e21,A=None):
-	if A is None: A = matA(C,m,ij,i)
+def matA34(C,m,jh,i,e21,A=None):
+	if A is None: A = matA(C,m,jh,i)
 	fa = C.rd*(C.rd*C.sint+C.r*C.cost)/C.r2rd2
-	A0 = matA0(C,m,ij,i,coef=fa)
+	A0 = matA0(C,m,jh,i,coef=fa)
 	return A + (e21-1)*A0
 
-def matA22(C,m,ij,i,e21,B=None):
-	if B is None: B=matB(C,m,ij,i)
+def matA22(C,m,jh,i,e21,B=None):
+	if B is None: B=matB(C,m,jh,i)
 	fg = C.rd*(C.rd*C.cost-C.r*C.sint)/C.r2rd2
 	fa = (C.r**2 - C.r*C.rdd + 2*C.rd**2) \
 	    *( C.r*(C.rd*C.cost-C.r*C.sint) + C.rd*(C.rd*C.sint+C.r*C.cost) ) \
 	    /(C.r2rd2)**2
-	A0 = matA0(C,m,ij,i,coef=fa)
-	G0 = matG0(C,m,ij,i,coef=fg)
+	#fa = f_utils.f1(r,rd,rdd,sint,cost)
+	A0 = matA0(C,m,jh,i,coef=fa)
+	G0 = matG0(C,m,jh,i,coef=fg)
 	return B - (e21-1)*(G0-A0)
 
-def matA24(C,m,ij,i,e21):
+def matA24(C,m,jh,i,e21):
 	fg = C.r*C.rd**2/C.r2rd2
 	fa = C.rd*(C.r**4 - 2*C.r**3*C.rdd + 2*C.r**2*C.rd**2 - C.rd**4) \
 	    /(C.r2rd2)**2
-	A0 = matA0(C,m,ij,i,coef=fa)
-	G0 = matG0(C,m,ij,i,coef=fg)
+	#fa = f_utils.f2(r,rd,rdd) * rd
+	A0 = matA0(C,m,jh,i,coef=fa)
+	G0 = matG0(C,m,jh,i,coef=fg)
 	return -(e21-1)*(G0-A0)
 
-def matA42(C,m,ij,i,e21):
+def matA42(C,m,jh,i,e21):
 	fg = (C.rd*C.cost-C.r*C.sint)**2/(C.r*C.r2rd2)
 	fa = 2*(C.r**2 - C.r*C.rdd + 2*C.rd**2) \
 	    *(C.rd*C.cost-C.r*C.sint)*(C.rd*C.sint+C.r*C.cost) \
 	    /(C.r*C.r2rd2**2)
-	A0 = matA0(C,m,ij,i,coef=fa)
-	G0 = matG0(C,m,ij,i,coef=fg)
+	#fa = f_utils.f3(r,rd,rdd,sint,cost) / r
+	A0 = matA0(C,m,jh,i,coef=fa)
+	G0 = matG0(C,m,jh,i,coef=fg)
 	return (e21-1)*(G0-A0)
 
-def matA44(C,m,ij,i,e21,B=None):
-	if B is None: B = matB(C,m,ij,i)
+def matA44(C,m,jh,i,e21,B=None):
+	if B is None: B = matB(C,m,jh,i)
 	fg = C.rd*(C.rd*C.cost-C.r*C.sint)/C.r2rd2
 	fa =((C.r**3*C.rdd + C.r**2*C.rd**2 - C.r*C.rd**2*C.rdd +3*C.rd**4)*C.sint\
-	    +(C.rdr)*C.cost*(C.r**4 - 2*C.r**3*C.rdd + 2*C.r**2*C.rd**2 - C.rd**4)) \
+	    +C.rdr*C.cost*(C.r**4 - 2*C.r**3*C.rdd + 2*C.r**2*C.rd**2 - C.rd**4)) \
 	    /(C.r2rd2)**2
 	#fa = f_utils.f4(r,rd,rdd,sint,cost)
-	A0 = matA0(C,m,ij,i,coef=fa)
-	G0 = matG0(C,m,ij,i,coef=fg)
+	A0 = matA0(C,m,jh,i,coef=fa)
+	G0 = matG0(C,m,jh,i,coef=fg)
 	return B + (e21-1)*(G0-A0)

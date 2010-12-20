@@ -208,7 +208,7 @@ class Layered_EqShape_Particle(Particle):
 	and vacuum (20%) can be constructed with the following command:
 
 	P = Layered_EqShape_Particle( \\
-	     ShapeProlateSpheroid, {'ab':1.5,'xv':1.4},\\
+	     ShapeSpheroid, {'ab':1.5,'xv':1.4},\\
              ms=[1.33,1.0],volumes=[80,20],NLayers=8)
 """
 	def __init__(self,shape0,params,ms,volumes,Nlayers):
@@ -244,15 +244,17 @@ class Layered_EqShape_Particle(Particle):
 			coefs[i]=sum(volumes[i:])
 
 		serie_no = 0
+		xv0 = params['xv']
+		params1 = params.copy()
 		while len(self.layers)<Nlayers:
 			serie_no = serie_no+1
 			for i in xrange(series_len):
 				m = ms[i]
 				l = l+1
-				self.layers.append(Layer(shape0,params,m))
 				if l>1:
-				   self.layers[i].shape.xv *= ((coefs[i]+Nseries-serie_no)\
+				   params1['xv'] =xv0* ((coefs[i]+Nseries-serie_no)\
 				   		              /Nseries)**(1/3.)
+				self.layers.append(Layer(shape0,params1,m))
 				if l==Nlayers: break
 	def __str__(self):
 		ms_str = "[ "
@@ -279,7 +281,7 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 	and vacuum can be constructed with the following command:
 
 	P = Layered_EqShape_EqVolume_Particle( \\
-	     ShapeProlateSpheroid, {'ab':1.5,'xv':1.4},\\
+	     ShapeSpheroid, {'ab':1.5,'xv':1.4},\\
              ms=[1.33,1.0],NLayers=8)
 """
 	def __init__(self,shape0,params,ms,Nlayers):
