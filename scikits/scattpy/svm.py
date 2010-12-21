@@ -273,20 +273,20 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 	# Non-axisymmetric part
 	else:
-		Dj2 = spherical.matD(C,m,'j',2,bnd.e12,B=Bj2)
-		Ej2 = spherical.matE(C,m,'j',2,bnd.e12)
-		Fj2 = spherical.matF(C,m,'j',2,bnd.e12)
-		Gj2 = spherical.matG(C,m,'j',2,bnd.e12,B=Bj2)
+		Dj2 = spherical.matDtm(C,m,'j',2,bnd)
+		Ej2 = spherical.matEtm(C,m,'j',2,bnd)
+		Fj2 = spherical.matFtm(C,m,'j',2,bnd)
+		Gj2 = spherical.matGtm(C,m,'j',2,bnd)
 		
-		Aj12 = spherical.matA12(C,m,'j',2,bnd.e21,A=Aj2)
-		Aj22 = spherical.matA22(C,m,'j',2,bnd.e21,B=Bj2)
-		Aj32 = spherical.matA32(C,m,'j',2,bnd.e21)
-		Aj42 = spherical.matA42(C,m,'j',2,bnd.e21)
+		Aj12 = spherical.matAa(C,m,'j',2,bnd)
+		Aj22 = spherical.matAb(C,m,'j',2,bnd)
+		Aj32 = spherical.matAc(C,m,'j',2,bnd)
+		Aj42 = spherical.matAd(C,m,'j',2,bnd)
 	
-		Aj14 = spherical.matA14(C,m,'j',2,bnd.e21)
-		Aj24 = spherical.matA24(C,m,'j',2,bnd.e21)
-		Aj34 = spherical.matA34(C,m,'j',2,bnd.e21,A=Aj2)
-		Aj44 = spherical.matA44(C,m,'j',2,bnd.e21,B=Bj2)
+		Aj14 = spherical.matDte(C,m,'j',2,bnd)
+		Aj24 = spherical.matEte(C,m,'j',2,bnd)
+		Aj34 = spherical.matFte(C,m,'j',2,bnd)
+		Aj44 = spherical.matGte(C,m,'j',2,bnd)
 	
 		c0 = mat(zeros_like(Aj2))
 
@@ -312,23 +312,23 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 		# For not-last boundaries we need Ah2,Bh2, etc.
 		if not bnd.is_last:
-			Ah2 = spherical.matA(C,m,'h',2)
-			Bh2 = spherical.matB(C,m,'h',2)
+			Ah2 = spherical.matA(C,m,'h',2,bnd)
+			Bh2 = spherical.matB(C,m,'h',2,bnd)
 
-			Dh2 = spherical.matD(C,m,'h',2,bnd.e12,B=Bh2)
-			Eh2 = spherical.matE(C,m,'h',2,bnd.e12)
-			Fh2 = spherical.matF(C,m,'h',2,bnd.e12)
-			Gh2 = spherical.matG(C,m,'h',2,bnd.e12,B=Bh2)
+			Dh2 = spherical.matDtm(C,m,'h',2,bnd)
+			Eh2 = spherical.matEtm(C,m,'h',2,bnd)
+			Fh2 = spherical.matFtm(C,m,'h',2,bnd)
+			Gh2 = spherical.matGtm(C,m,'h',2,bnd)
 			
-			Ah12 = spherical.matA12(C,m,'h',2,bnd.e21,A=Ah2)
-			Ah22 = spherical.matA22(C,m,'h',2,bnd.e21,B=Bh2)
-			Ah32 = spherical.matA32(C,m,'h',2,bnd.e21)
-			Ah42 = spherical.matA42(C,m,'h',2,bnd.e21)
+			Ah12 = spherical.matAa(C,m,'h',2,bnd)
+			Ah22 = spherical.matAb(C,m,'h',2,bnd)
+			Ah32 = spherical.matAc(C,m,'h',2,bnd)
+			Ah42 = spherical.matAd(C,m,'h',2,bnd)
 		
-			Ah14 = spherical.matA14(C,m,'h',2,bnd.e21)
-			Ah24 = spherical.matA24(C,m,'h',2,bnd.e21)
-			Ah34 = spherical.matA34(C,m,'h',2,bnd.e21,A=Ah2)
-			Ah44 = spherical.matA44(C,m,'h',2,bnd.e21,B=Bh2)
+			Ah14 = spherical.matDte(C,m,'h',2,bnd)
+			Ah24 = spherical.matEte(C,m,'h',2,bnd)
+			Ah34 = spherical.matFte(C,m,'h',2,bnd)
+			Ah44 = spherical.matGte(C,m,'h',2,bnd)
 
 			K22tm = bmat( [[ Ah2.T,   c0  ],\
 				       [ Dh2.T, Eh2.T ],\

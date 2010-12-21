@@ -31,7 +31,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_beta = ki*r**2*radd*ang + r*rd*sint*rad*angd
+      func_beta = ki*r**2*radd*ang + rd*sint*rad*angd
       RETURN
       END
 
@@ -72,7 +72,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_c_te = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
+      func_c_te = func_beta()
       RETURN
       END
 
@@ -84,7 +84,7 @@
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_aa= (1d0-(e21-1d0)*(r*(rd*cost-r*sint))/((r**2+rd**2)*sint))
-     &        *func_alpha(rad,ang)
+     &        *func_alpha()
       RETURN
       END
 
@@ -95,7 +95,7 @@
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_ab= -(e21-1d0)*(r**2*rd)/((r**2+rd**2)*sint)
-     &        *func_alpha(rad,ang)
+     &        *func_alpha()
       RETURN
       END
 
@@ -107,7 +107,7 @@
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_ac= (e21-1d0)*((rd*sint+r*cost)*(rd*cost-r*sint))
      &                 /(r*(r**2+rd**2)*sint)
-     &        *func_alpha(rad,ang)
+     &        *func_alpha()
       RETURN
       END
 
@@ -118,7 +118,7 @@
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_ad= (1d0+(e21-1d0)*(rd*(rd*sint+r*cost))/((r**2+rd**2)*sint))
-     &           *func_alpha(rad,ang)
+     &           *func_alpha()
       RETURN
       END
 
@@ -134,132 +134,127 @@
       END
 
 
-      FUNCTION func_d_te(ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,e21)
+      FUNCTION func_d_te()
       implicit none
       COMPLEX*16 func_d_te
-      complex*16 rad,radd,ang,angd,ki,e21
-      real*8     r,rd,rdd,sint,cost
-      complex*16 f_alpha,f_beta,f_gamma, func_alpha,func_beta,func_gamma
+      complex*16 func_alpha,func_beta,func_gamma
       real*8     f1
-      f_alpha = func_alpha(rad,ang)
-      f_beta  = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
-      f_gamma = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
-      func_d_te = f_beta - (e21-1d0)*(
-     &                   rd*(rd*cost-r*sint)/((r**2+rd**2)*sint)*f_gamma
-     &                  -f1(r,rd,rdd,sint,cost)/sint*f_alpha)
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_d_te = func_beta() - (e21-1d0)*(
+     &              rd*(rd*cost-r*sint)/((r**2+rd**2)*sint)*func_gamma()
+     &             -f1()/sint*func_alpha())
       RETURN
       END
 
-      FUNCTION func_e_te(ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,e21)
+      FUNCTION func_e_te()
       implicit none
       COMPLEX*16 func_e_te
-      complex*16 rad,radd,ang,angd,ki,e21
-      real*8     r,rd,rdd,sint,cost
-      complex*16 f_alpha,f_gamma, func_alpha,func_gamma
+      complex*16 func_alpha,func_gamma
       real*8     f2
-      f_alpha = func_alpha(rad,ang)
-      f_gamma = func_gamma(ki,rad,radd,ang,angd,r,rd,sint)
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_e_te = -(e21-1d0)*(
-     &                   r*rd**2/(r**2+rd**2)/sint*f_gamma
-     &                  -rd*f2(r,rd,rdd)/sint*f_alpha)
+     &                   r*rd**2/(r**2+rd**2)/sint*func_gamma()
+     &                  -rd*f2()/sint*func_alpha())
       RETURN
       END
 
-      FUNCTION func_f_te(ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,e21)
+      FUNCTION func_f_te()
       implicit none
       COMPLEX*16 func_f_te
-      complex*16 rad,radd,ang,angd,ki,e21
-      real*8     r,rd,rdd,sint,cost
-      complex*16 f_alpha,f_gamma, func_alpha,func_gamma
+      complex*16 func_alpha,func_gamma
       real*8     f3
-      f_alpha = func_alpha(rad,ang)
-      f_gamma = func_gamma(ki,rad,radd,ang,angd,r,rd,sint)
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_f_te = (e21-1d0)*(
-     &                   (rd*cost-r*sint)**2/r/(r**2+rd**2)/sint*f_gamma
-     &                  -f3(r,rd,rdd,sint,cost)/sint/r*f_alpha)
+     &              (rd*cost-r*sint)**2/r/(r**2+rd**2)/sint*func_gamma()
+     &             -f3()/sint/r*func_alpha())
       RETURN
       END
 
-      FUNCTION func_g_te(ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,e21)
+      FUNCTION func_g_te()
       implicit none
       COMPLEX*16 func_g_te
-      complex*16 rad,radd,ang,angd,ki,e21
-      real*8     r,rd,rdd,sint,cost
-      complex*16 f_alpha,f_beta,f_gamma, func_alpha,func_beta,func_gamma
+      complex*16 func_alpha,func_beta,func_gamma
       real*8     f4
-      f_alpha = func_alpha(rad,ang)
-      f_beta  = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
-      f_gamma = func_gamma(ki,rad,radd,ang,angd,r,rd,sint)
-      func_g_te = f_beta + (e21-1d0)*(
-     &                   rd*(rd*cost-r*sint)/(r**2+rd**2)/sint*f_gamma
-     &                  -f4(r,rd,rdd,sint,cost)/sint*f_alpha)
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_g_te = func_beta() + (e21-1d0)*(
+     &                rd*(rd*cost-r*sint)/(r**2+rd**2)/sint*func_gamma()
+     &               -f4()/sint*func_alpha())
       RETURN
       END
 
 
 
-      FUNCTION func_delta(ki,rad,radd,ang,angd,r,sint,cost)
+      FUNCTION func_delta()
       implicit none
       COMPLEX*16 func_delta
-      complex*16 rad,radd,ang,angd,ki
-      real*8     r,sint,cost
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_delta = ki*r*cost*radd*ang + sint**2*rad*angd
       RETURN
       END
 
-      FUNCTION func_eps(ki,rad,radd,ang,r)
+      FUNCTION func_eps()
       implicit none
       COMPLEX*16 func_eps
-      COMPLEX*16 rad,radd,ang,ki
-      REAL*8     r
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       func_eps = (ki*r**2*radd+r*rad)*ang
       RETURN
       END
 
 
-      FUNCTION func_d_tm(ki,rad,radd,ang,angd,r,rd,sint,cost,e12)
+      FUNCTION func_d_tm()
       implicit none
       COMPLEX*16 func_d_tm
-      complex*16 rad,radd,ang,angd,ki,e12
-      real*8     r,rd,sint,cost
-      complex*16 f_beta,f_delta, func_beta,func_delta
-      f_beta = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
-      f_delta = func_delta(ki,rad,radd,ang,angd,r,sint,cost)
-      func_d_tm = f_beta+(e12-1d0)*rd/sint*f_delta
+      complex*16 func_beta,func_delta
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_d_tm = func_beta()+(e12-1d0)*rd/sint*func_delta()
       RETURN
       END
 
-      FUNCTION func_e_tm(ki,rad,radd,ang,angd,r,rd,sint,e12)
+      FUNCTION func_e_tm()
       implicit none
       COMPLEX*16 func_e_tm
-      complex*16 ki,rad,radd,ang,angd,e12
-      real*8     r,rd,sint
-      complex*16 f_eps,  func_eps
-      f_eps = func_eps(ki,rad,radd,ang,r)
-      func_e_tm = (e12-1d0)*rd/sint*f_eps
+      complex*16 func_eps
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_e_tm = (e12-1d0)*rd/sint*func_eps()
       RETURN
       END
 
-      FUNCTION func_f_tm(ki,rad,radd,ang,angd,r,rd,sint,cost,e12)
+      FUNCTION func_f_tm()
       implicit none
       COMPLEX*16 func_f_tm
-      complex*16 ki,rad,radd,ang,angd,e12
-      real*8     r,rd,sint,cost
-      complex*16 f_delta,  func_delta
-      f_delta = func_delta(ki,rad,radd,ang,angd,r,sint,cost)
-      func_f_tm = -(e12-1d0)*(rd*cost-r*sint)/r/sint*f_delta
+      complex*16 func_delta
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_f_tm = -(e12-1d0)*(rd*cost-r*sint)/r/sint*func_delta()
       RETURN
       END
 
-      FUNCTION func_g_tm(ki,rad,radd,ang,angd,r,rd,sint,cost,e12)
+      FUNCTION func_g_tm()
       implicit none
       COMPLEX*16 func_g_tm
-      complex*16 rad,radd,ang,angd,ki,e12
-      real*8     r,rd,sint,cost
-      complex*16 f_beta,f_eps,  func_beta,func_eps
-      f_beta = func_beta(ki,rad,radd,ang,angd,r,rd,sint)
-      f_eps = func_eps(ki,rad,radd,ang,angd,r)
-      func_g_tm = f_beta-(e12-1d0)*(rd*cost-r*sint)/r/sint*f_eps
+      complex*16 func_beta,func_eps
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      func_g_tm = func_beta()
+     &           -(e12-1d0)*(rd*cost-r*sint)/r/sint*func_eps()
       RETURN
       END
 
@@ -311,7 +306,305 @@ cf2py intent(hide) NG,NN
       END
 
 
-      
+      SUBROUTINE MAT__A(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a
+      COMPLEX*16 func_a
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_a,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__B(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_b
+      COMPLEX*16 func_b
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_b,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__C_tm(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_c_tm
+      COMPLEX*16 func_c_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_c_tm,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__D_tm(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_d_tm
+      COMPLEX*16 func_d_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_d_tm,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__E_tm(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_e_tm
+      COMPLEX*16 func_e_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_e_tm,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__F_tm(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_f_tm
+      COMPLEX*16 func_f_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_f_tm,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__G_tm(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_g_tm
+      COMPLEX*16 func_g_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_g_tm,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__D_te(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_d_te
+      COMPLEX*16 func_d_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_d_te,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__E_te(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_e_te
+      COMPLEX*16 func_e_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_e_te,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__F_te(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_f_te
+      COMPLEX*16 func_f_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_f_te,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__G_te(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_g_te
+      COMPLEX*16 func_g_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_g_te,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__Aa(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_aa
+      COMPLEX*16 func_aa
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_aa,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__Ab(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_ab
+      COMPLEX*16 func_ab
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_ab,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__Ac(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_ac
+      COMPLEX*16 func_ac
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_ac,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT__Ad(NG,NN,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 kki,e2e1,e1e2
+      COMPLEX*16 Rads(NG,NN),Radds(NG,NN),Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_ad
+      COMPLEX*16 func_ad
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_X(NG,NN,func_ad,kki,e1e2,e2e1,Rads,Radds,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
 
 
 
@@ -461,72 +754,14 @@ cf2py intent(hide) NG,NN
       END
 
 
-      SUBROUTINE f_f1(NG,R,Rd,Rdd,Sint,Cost,f)
+
+
+      FUNCTION f1()
       implicit real*8 (r)
-      INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
-cf2py intent(out) f
-cf2py intent(hide) NG
-      INTEGER K
-      real*8  f1
-      
-      DO k=1,NG
-        f(k) = f1(R(k),Rd(k),Rdd(k),Sint(k),Cost(k))
-      ENDDO
-      end
-
-      SUBROUTINE f_f2(NG,R,Rd,Rdd,f)
-      implicit real*8 (r)
-      INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
-cf2py intent(out) f
-cf2py intent(hide) NG
-      INTEGER K
-      real*8  f2
-      
-      DO k=1,NG
-        f(k) = f2(R(k),Rd(k),Rdd(k))
-      ENDDO
-      end
-
-      SUBROUTINE f_f3(NG,R,Rd,Rdd,Sint,Cost,f)
-      implicit real*8 (r)
-      INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
-cf2py intent(out) f
-cf2py intent(hide) NG
-      INTEGER K
-      real*8  f3
-      
-      DO k=1,NG
-        f(k) = f3(R(k),Rd(k),Rdd(k),Sint(k),Cost(k))
-      ENDDO
-      end
-
-      SUBROUTINE f_f4(NG,R,Rd,Rdd,Sint,Cost,f)
-      implicit real*8 (r)
-      INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
-cf2py intent(out) f
-cf2py intent(hide) NG
-      INTEGER K
-      real*8  f4
-      
-      DO k=1,NG
-        f(k) = f4(R(k),Rd(k),Rdd(k),Sint(k),Cost(k))
-      ENDDO
-      end
-
-
-
-
-      FUNCTION f1(r,rd,rdd,sint,cost)
-      implicit real*8 (r)
-      real*8 f1,sint,cost
+      real*8 f1
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
       rdr = rd/r
       r2r2 = r**2+rd**2
@@ -544,9 +779,12 @@ cf2py intent(hide) NG
       RETURN
       end
 
-      FUNCTION f2(r,rd,rdd)
+      FUNCTION f2()
       implicit real*8 (r)
       real*8 f2
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
       rdr = rd/r
       r2r2 = r**2+rd**2
@@ -558,9 +796,12 @@ cf2py intent(hide) NG
       RETURN
       end
 
-      FUNCTION f3(r,rd,rdd,sint,cost)
+      FUNCTION f3()
       implicit real*8 (r)
-      real*8 f3,sint,cost
+      real*8 f3
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
       rdr = rd/r
       r2r2 = r**2+rd**2
@@ -578,9 +819,12 @@ cf2py intent(hide) NG
       RETURN
       end
 
-      FUNCTION f4(r,rd,rdd,sint,cost)
+      FUNCTION f4()
       implicit real*8 (r)
-      real*8 f4,sint,cost
+      real*8 f4
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
       rdr = rd/r
       r2r2 = r**2+rd**2

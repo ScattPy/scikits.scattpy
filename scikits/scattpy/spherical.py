@@ -102,9 +102,46 @@ def get_matX(func):
                               Rad,Radd,Ang,Angd,C.r,C.rd,C.rdd,C.sint,C.cost,C.ctgt,C.weights)
 	return matX
 
-matA = get_matX(f_utils.func_a)
-matB = get_matX(f_utils.func_b)
-matC = get_matX(f_utils.func_c_tm)
+def get_matXX(func):
+	def matX(C,m,jh,i,bnd):
+	  Rad = C.Rad(m,jh,i)
+	  Radd= C.Radd(m,jh,i)
+	  Ang = C.Ang(m)
+	  Angd= C.Angd(m)
+	  return func(C.ki[i],bnd.e12,bnd.e21,\
+                              Rad,Radd,Ang,Angd,C.r,C.rd,C.rdd,C.sint,C.cost,C.ctgt,C.weights)
+	return matX
+
+matA = get_matXX(f_utils.mat__a)
+matB = get_matXX(f_utils.mat__b)
+matC = get_matXX(f_utils.mat__c_tm)
+matDtm = get_matXX(f_utils.mat__d_tm)
+matEtm = get_matXX(f_utils.mat__e_tm)
+matFtm = get_matXX(f_utils.mat__f_tm)
+matGtm = get_matXX(f_utils.mat__g_tm)
+matDte = get_matXX(f_utils.mat__d_te)
+matEte = get_matXX(f_utils.mat__e_te)
+matFte = get_matXX(f_utils.mat__f_te)
+matGte = get_matXX(f_utils.mat__g_te)
+matAa = get_matXX(f_utils.mat__aa)
+matAb = get_matXX(f_utils.mat__ab)
+matAc = get_matXX(f_utils.mat__ac)
+matAd = get_matXX(f_utils.mat__ad)
+#matA = get_matX(f_utils.func_a)
+#matB = get_matX(f_utils.func_b)
+#matC = get_matX(f_utils.func_c_tm)
+#matDtm = get_matX(f_utils.func_d_tm)
+#matEtm = get_matX(f_utils.func_e_tm)
+#matFtm = get_matX(f_utils.func_f_tm)
+#matGtm = get_matX(f_utils.func_g_tm)
+#matDte = get_matX(f_utils.func_d_te)
+#matEte = get_matX(f_utils.func_e_te)
+#matFte = get_matX(f_utils.func_f_te)
+#matGte = get_matX(f_utils.func_g_te)
+#matAa = get_matX(f_utils.func_aa)
+#matAb = get_matX(f_utils.func_ab)
+#matAc = get_matX(f_utils.func_ac)
+#matAd = get_matX(f_utils.func_ad)
 
 #def matB(C,m,jh,i,bnd):
 	#func = lambda k: \
