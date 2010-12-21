@@ -92,37 +92,33 @@ def matA0(C,m,jh,i,coef):
 	#return mat_integrate(func)
 	return f_utils.mat_a0(Rad,Angm,coef,C.weights)
 
-def matA(C,m,jh,i):
-	#return matA0(C,m,jh,i,coef=C.sint)
-	Rad = C.Rad(m,jh,i)
-	Angm = C.Ang(m)
-	return f_utils.mat__a(Rad,Angm,C.sint,C.weights)
+def get_matX(func):
+	def matX(C,m,jh,i,bnd):
+	  Rad = C.Rad(m,jh,i)
+	  Radd= C.Radd(m,jh,i)
+	  Ang = C.Ang(m)
+	  Angd= C.Angd(m)
+	  return f_utils.mat_x(func,C.ki[i],bnd.e12,bnd.e21,\
+                              Rad,Radd,Ang,Angd,C.r,C.rd,C.rdd,C.sint,C.cost,C.ctgt,C.weights)
+	return matX
 
-def matB(C,m,jh,i):
-	ki = C.ki[i]
-	Rad = C.Rad(m,jh,i)
-	Radd= C.Radd(m,jh,i)
-	Angm = C.Ang(m)
-	Angmd= C.Angd(m)
+matA = get_matX(f_utils.func_a)
+matB = get_matX(f_utils.func_b)
+matC = get_matX(f_utils.func_c_tm)
+
+#def matB(C,m,jh,i,bnd):
 	#func = lambda k: \
 	#   outer(ki*r[k]*Radd[k]*Angm[k]+rdr[k]*sint[k]*Rad[k]*Angmd[k],\
 	#         sint[k]*Angm[k] )
 	#return mat_integrate(func)
 	#return f_utils.mat_b(ki,Rad,Radd,Angm,Angmd,C.r,C.rdr,C.sint,C.weights)
-	return f_utils.mat__b(ki,Rad,Radd,Angm,Angmd,C.r,C.rd,C.sint,C.weights)
 
-def matC(C,m,jh,i,e12, B=None):
+#def matC(C,m,jh,i,e12, B=None):
 	#ki = C.ki[i]
 	#if B is None: B = matB(n,m,fRad,fAng,ki)
 	#ff = (1.-C.ctgt*C.rdr)*C.sint
 	#A = matA0(C,m,jh,i,coef=ff)
 	#return e12*B + (e12-1.)*A
-	ki = C.ki[i]
-	Rad = C.Rad(m,jh,i)
-	Radd= C.Radd(m,jh,i)
-	Angm = C.Ang(m)
-	Angmd= C.Angd(m)
-	return f_utils.mat__c(ki,Rad,Radd,Angm,Angmd,C.r,C.rd,C.sint,C.ctgt,e12,C.weights)
 
 def matD0(C,m,jh,i,coef):
 	ki = C.ki[i]

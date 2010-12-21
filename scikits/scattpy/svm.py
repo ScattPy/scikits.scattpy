@@ -234,16 +234,16 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 	#pdb.set_trace()
 	lay = bnd.layer_no
 	C.set_layer_no(lay)
-	Aj1 = spherical.matA(C,m,'j',1)
-	Aj2 = spherical.matA(C,m,'j',2)
-	Ah1 = spherical.matA(C,m,'h',1)
-	Bj1 = spherical.matB(C,m,'j',1)
-	Bj2 = spherical.matB(C,m,'j',2)
-	Bh1 = spherical.matB(C,m,'h',1)
+	Aj1 = spherical.matA(C,m,'j',1,bnd)
+	Aj2 = spherical.matA(C,m,'j',2,bnd)
+	Ah1 = spherical.matA(C,m,'h',1,bnd)
+	Bj1 = spherical.matB(C,m,'j',1,bnd)
+	Bj2 = spherical.matB(C,m,'j',2,bnd)
+	Bh1 = spherical.matB(C,m,'h',1,bnd)
 
 	# Axisymmetric part
 	if axisymm:
-		Cj2 = spherical.matC(C,m,'j',2,bnd.e12,B=Bj2)
+		Cj2 = spherical.matC(C,m,'j',2,bnd)
 
 		K11 = bmat([[ Aj1.T ],\
 			    [ Bj1.T ] ])
@@ -259,9 +259,9 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 		# For not-last boundaries we need Ah2,Bh2, etc.
 		if not bnd.is_last:
-			Ah2 = spherical.matA(C,m,'h',2)
-			Bh2 = spherical.matB(C,m,'h',2)
-			Ch2 = spherical.matC(C,m,'h',2,bnd.e12,B=Bh2)
+			Ah2 = spherical.matA(C,m,'h',2,bnd)
+			Bh2 = spherical.matB(C,m,'h',2,bnd)
+			Ch2 = spherical.matC(C,m,'h',2,bnd)
 
 			K22tm = bmat([[ Ah2.T ],\
 				      [ Ch2.T ] ])
