@@ -31,7 +31,9 @@ class Results:
 		self.N_tm = N_tm
 		self.convlog_tm = convlog_tm
 
-def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
+
+def methods_factory(meth_bnd_system):
+   def meth(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
 	print "\n","*"*60
 	print lab
 	print "*"*60
@@ -44,7 +46,7 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 
 	# first we need at least one run of solver to have initial values
 	global Ms
-	Cext_tm,c_sca_tm, Cext_te,c_sca_te = svm_n(lab,nrange[0],ngauss,Ms,iterative)
+	Cext_tm,c_sca_tm, Cext_te,c_sca_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative)
 
 	delta_tm = delta_te = 1e16 # vars for best accuracies obtained
 	Cext_tm_p = Cext_tm  # value of Cext_tm at previous iteration
@@ -58,7 +60,7 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 	for ni,n in enumerate(nrange[1:]):
 		try:
 		  Cext_tm_n,c_sca_tm_n, Cext_te_n,c_sca_te_n \
-				  = svm_n(lab,n,ngauss,Ms,iterative)
+				  = meth_n(meth_bnd_system,lab,n,ngauss,Ms,iterative)
 		except linalg.linalg.LinAlgError, e:
 			print "Terminating: '"+str(e)+"' error received"
 			break
@@ -131,8 +133,9 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 	RESULTS = Results(c_sca_te,delta_te,N_te,convlog_te,\
 	                  c_sca_tm,delta_tm,N_tm,convlog_tm)
 	return [c_sca_tm,delta_tm],[c_sca_te,delta_te]
+   return meth
 
-def svm_n(lab,n,ngauss,ms=None,iterative=True):
+def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
 	global th
 	if ngauss=="auto":
 		ng=ngauss_coef*n
@@ -171,7 +174,7 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 
 		for bnd in lab.boundaries_reversed():
 			K11,K12,K21tm,K21te,K22tm,K22te =\
-			   svm_bnd_system(C,m,bnd,axisymm)
+			   meth_bnd_system(C,m,bnd,axisymm)
 			if not iterative:
 			   # Single matrix method
 			   Nlay = bnd.layer_no
@@ -377,7 +380,7 @@ def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 
 	return Bs,Br
 
-def svm_test_M0(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,iterative=True):
+def meth_test_M0(meth_bnd_system,lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,iterative=True):
 	print "\n","*"*60
 	print "Convergence test: axisymmetric part"
 	print "*"*60
@@ -387,7 +390,7 @@ def svm_test_M0(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,itera
 
 	# first we need at least one run of solver to have initial values
 	Ms = [0]
-	Cext_tm,c_sca_tm, Cext_te,c_sca_te = svm_n(lab,nrange[0],ngauss,Ms,iterative)
+	Cext_tm,c_sca_tm, Cext_te,c_sca_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative)
 
 	delta_tm = delta_te = 1e16 # vars for best accuracies obtained
 	Cext_tm_p = Cext_tm  # value of Cext_tm at previous iteration
@@ -470,3 +473,5 @@ def test_cheb(nr=xrange(5,50,5),ngauss=80):
 def test_cprof():
 	import cProfile
 	#cProfile.run('test_svm
+
+svm = methods_factory(svm_bnd_system)
