@@ -276,7 +276,7 @@ cf2py intent(out) O
 cf2py intent(hide) NG,NN
       INTEGER   k,l,n
       EXTERNAL   FUNC
-      COMPLEX*16 FUNC
+      COMPLEX*16 FUNC,f_sint_w
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
@@ -285,23 +285,29 @@ cf2py intent(hide) NG,NN
       e12=e1e2
       e21=e2e1
 
-      DO l=1,NN
       DO n=1,NN
+      DO l=1,NN
          O(l,n)=0d0
-         DO k=1,NG
-            rad = Rads(k,l)
-            radd= Radds(k,l)
-            ang = Angs(k,l)
-            angd= Angds(k,l)
+      ENDDO
+      ENDDO
+
+      DO k=1,NG
             r   = Rs(k)
             rd  = Rds(k)
             rdd = Rdds(k)
             sint= Sints(k)
             cost= Costs(k)
             ctgt= Ctgts(k)
-            O(l,n) = O(l,n) + FUNC()*Angs(k,n)*Sints(k)*w(k)
-         ENDDO
-      ENDDO
+            DO l=1,NN
+             rad = Rads(k,l)
+             radd= Radds(k,l)
+             ang = Angs(k,l)
+             angd= Angds(k,l)
+             f_sint_w = FUNC()*sint*w(k)
+             DO n=1,NN
+               O(l,n) = O(l,n) + f_sint_w*Angs(k,n)
+             ENDDO
+            ENDDO
       ENDDO
       END
 
