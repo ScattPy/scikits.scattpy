@@ -231,7 +231,6 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 	return Cext_tm,c_sca_tm, Cext_te,c_sca_te
 
 def svm_bnd_system(C,m,bnd,axisymm=False):
-	#pdb.set_trace()
 	lay = bnd.layer_no
 	C.set_layer_no(lay)
 	Aj1 = spherical.matA(C,m,'j',1,bnd)
@@ -279,13 +278,13 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 		Gj2 = spherical.matGtm(C,m,'j',2,bnd)
 		
 		Aj12 = spherical.matAa(C,m,'j',2,bnd)
-		Aj22 = spherical.matAb(C,m,'j',2,bnd)
+		Aj14 = spherical.matAb(C,m,'j',2,bnd)
 		Aj32 = spherical.matAc(C,m,'j',2,bnd)
-		Aj42 = spherical.matAd(C,m,'j',2,bnd)
+		Aj34 = spherical.matAd(C,m,'j',2,bnd)
 	
-		Aj14 = spherical.matDte(C,m,'j',2,bnd)
+		Aj22 = spherical.matDte(C,m,'j',2,bnd)
 		Aj24 = spherical.matEte(C,m,'j',2,bnd)
-		Aj34 = spherical.matFte(C,m,'j',2,bnd)
+		Aj42 = spherical.matFte(C,m,'j',2,bnd)
 		Aj44 = spherical.matGte(C,m,'j',2,bnd)
 	
 		c0 = mat(zeros_like(Aj2))
@@ -321,13 +320,13 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 			Gh2 = spherical.matGtm(C,m,'h',2,bnd)
 			
 			Ah12 = spherical.matAa(C,m,'h',2,bnd)
-			Ah22 = spherical.matAb(C,m,'h',2,bnd)
+			Ah14 = spherical.matAb(C,m,'h',2,bnd)
 			Ah32 = spherical.matAc(C,m,'h',2,bnd)
-			Ah42 = spherical.matAd(C,m,'h',2,bnd)
-		
-			Ah14 = spherical.matDte(C,m,'h',2,bnd)
+			Ah34 = spherical.matAd(C,m,'h',2,bnd)
+	
+			Ah22 = spherical.matDte(C,m,'h',2,bnd)
 			Ah24 = spherical.matEte(C,m,'h',2,bnd)
-			Ah34 = spherical.matFte(C,m,'h',2,bnd)
+			Ah42 = spherical.matFte(C,m,'h',2,bnd)
 			Ah44 = spherical.matGte(C,m,'h',2,bnd)
 
 			K22tm = bmat( [[ Ah2.T,   c0  ],\

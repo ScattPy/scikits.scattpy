@@ -83,7 +83,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_aa= (1d0-(e21-1d0)*(r*(rd*cost-r*sint))/((r**2+rd**2)*sint))
+      func_aa= (1d0-(e21-1d0)*r*(rd*cost-r*sint)/(r**2+rd**2)/sint)
      &        *func_alpha()
       RETURN
       END
@@ -94,7 +94,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_ab= -(e21-1d0)*(r**2*rd)/((r**2+rd**2)*sint)
+      func_ab= -(e21-1d0)*(r**2*rd)/(r**2+rd**2)/sint
      &        *func_alpha()
       RETURN
       END
@@ -105,8 +105,8 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_ac= (e21-1d0)*((rd*sint+r*cost)*(rd*cost-r*sint))
-     &                 /(r*(r**2+rd**2)*sint)
+      func_ac= (e21-1d0)
+     &        *(rd*sint+r*cost)*(rd*cost-r*sint)/(r*(r**2+rd**2))/sint
      &        *func_alpha()
       RETURN
       END
@@ -117,7 +117,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_ad= (1d0+(e21-1d0)*(rd*(rd*sint+r*cost))/((r**2+rd**2)*sint))
+      func_ad= (1d0+(e21-1d0)*rd*(rd*sint+r*cost)/(r**2+rd**2)/sint)
      &           *func_alpha()
       RETURN
       END
@@ -129,7 +129,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_gamma = ki*radd*ang - sint*rad*angd
+      func_gamma = ki*rd*radd*ang - sint*rad*angd
       RETURN
       END
 
@@ -142,8 +142,8 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_d_te = func_beta() - (e21-1d0)*(
-     &              rd*(rd*cost-r*sint)/((r**2+rd**2)*sint)*func_gamma()
+      func_d_te = func_beta() - (e21-1d0)*r*(
+     &              rd*(rd*cost-r*sint)/(r**2+rd**2)/sint*func_gamma()
      &             -f1()/sint*func_alpha())
       RETURN
       END
@@ -156,7 +156,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_e_te = -(e21-1d0)*(
+      func_e_te = -(e21-1d0)*r*(
      &                   r*rd**2/(r**2+rd**2)/sint*func_gamma()
      &                  -rd*f2()/sint*func_alpha())
       RETURN
@@ -170,7 +170,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_f_te = (e21-1d0)*(
+      func_f_te = (e21-1d0)*r*(
      &              (rd*cost-r*sint)**2/r/(r**2+rd**2)/sint*func_gamma()
      &             -f3()/sint/r*func_alpha())
       RETURN
@@ -184,7 +184,7 @@
       complex*16 ki,e12,e21,rad,radd,ang,angd
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
-      func_g_te = func_beta() + (e21-1d0)*(
+      func_g_te = func_beta() + (e21-1d0)*r*(
      &                rd*(rd*cost-r*sint)/(r**2+rd**2)/sint*func_gamma()
      &               -f4()/sint*func_alpha())
       RETURN
@@ -769,19 +769,9 @@ cf2py intent(hide) NG,NN
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
-      rdr = rd/r
-      r2r2 = r**2+rd**2
-      r2r22 = r2r2**2
-      rsin = r *sint
-      rcos = r *cost
-      rdsin= rd*sint
-      rdcos= rd*cost
-      rdcosrsin = rdcos-rsin
-      rdsinrcos = rdsin+rcos
-
       f1 = (r**2 - r*rdd + 2*rd**2) 
-     &        *( r *rdcosrsin + rd*rdsinrcos) 
-     &        /r2r22
+     &    *( r*(rd*cost-r*sint) + rd*(rd*sint+r*cost) ) 
+     &    /(r**2+rd**2)**2
       RETURN
       end
 
@@ -792,13 +782,8 @@ cf2py intent(hide) NG,NN
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
-      rdr = rd/r
-      r2r2 = r**2+rd**2
-      r2r22 = r2r2**2
-
-      f2 = (r**4 - 2*(r**3)*rdd 
-     &          + 2*(r**2)*(rd**2) - rd**4)
-     &         /r2r22
+      f2 = (r**4 - 2*r**3*rdd + 2*r**2*rd**2 - rd**4) 
+     &    /(r**2+rd**2)**2
       RETURN
       end
 
@@ -809,19 +794,9 @@ cf2py intent(hide) NG,NN
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
-      rdr = rd/r
-      r2r2 = r**2+rd**2
-      r2r22 = r2r2**2
-      rsin = r *sint
-      rcos = r *cost
-      rdsin= rd*sint
-      rdcos= rd*cost
-      rdcosrsin = rdcos-rsin
-      rdsinrcos = rdsin+rcos
-
-      f3 = 2*(r**2 - r*rdd + 2*(rd**2)) 
-     &          *rdcosrsin*rdsinrcos 
-     &          /r2r22
+      f3 = 2*(r**2 - r*rdd + 2*rd**2) 
+     &    *(rd*cost-r*sint)*(rd*sint+r*cost) 
+     &    /(r**2+rd**2)**2
       RETURN
       end
 
@@ -832,21 +807,8 @@ cf2py intent(hide) NG,NN
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
       
-      rdr = rd/r
-      r2r2 = r**2+rd**2
-      r2r22 = r2r2**2
-      rsin = r *sint
-      rcos = r *cost
-      rdsin= rd*sint
-      rdcos= rd*cost
-      rdcosrsin = rdcos-rsin
-      rdsinrcos = rdsin+rcos
-
-      f4 = ( ((r**3)*rdd + (r**2)*(rd**2) 
-     &            -r*(rd**2)*rdd + 3*(rd**4)) *sint 
-     &          +rdr*cost
-     &           *(r**4 - 2*(r**3)*rdd 
-     &             +2*(r**2)*(rd**2) - rd**4)) 
-     &         /r2r22
+      f4 =((r**3*rdd + r**2*rd**2 - r*rd**2*rdd +3*rd**4)*sint
+     &    +(rd/r)*cost*(r**4 - 2*r**3*rdd + 2*r**2*rd**2 - rd**4)) 
+     &    /(r**2+rd**2)**2
       RETURN
       end
