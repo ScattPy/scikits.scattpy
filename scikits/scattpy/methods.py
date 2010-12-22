@@ -375,11 +375,11 @@ def ebcm_bnd_system(C,m,bnd,axisymm=False):
 		K12 = bmat([[ c0 ],\
 			    [ c1 ] ])
 
-		K21tm = bmat([[ QStm ],\
-			      [-QRtm ] ])
+		K21tm = bmat([[-QStm ],\
+			      [ QRtm ] ])
 
-		K21te = bmat([[ QSte ],\
-			      [-QRte ] ])
+		K21te = bmat([[-QSte ],\
+			      [ QRte ] ])
 
 		# For not-last boundaries we need Ah2,Bh2, etc.
 		if not bnd.is_last:
@@ -389,11 +389,11 @@ def ebcm_bnd_system(C,m,bnd,axisymm=False):
 			RSte = spherical.matQte(C,m,'h','h',bnd)
 			RRte = spherical.matQte(C,m,'j','h',bnd)
 
-			K22tm = bmat([[ RStm ],\
-				      [-RRtm ] ])
+			K22tm = bmat([[-RStm ],\
+				      [ RRtm ] ])
 
-			K22te = bmat([[ RSte ],\
-				      [-RRte ] ])
+			K22te = bmat([[-RSte ],\
+				      [ RRte ] ])
 
 		else:
 			K22tm=K22te=mat(zeros_like(K11))

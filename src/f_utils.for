@@ -704,7 +704,7 @@ cf2py intent(hide) NG,NN
 
       DO n=1,NN
       DO l=1,NN
-         O(l,n)=0d0
+         O(n,l)=0d0
       ENDDO
       ENDDO
 
@@ -731,7 +731,7 @@ cf2py intent(hide) NG,NN
                ki=k2
                fp1=fp1*FUNC2()
                fp3=fp3*FUNC4()
-               O(l,n) = O(l,n) + c1*(fp1-fp3)*sint*w(k)
+               O(n,l) = O(n,l) + c1*(fp1-fp3)*sint*w(k)
              ENDDO
             ENDDO
       ENDDO
