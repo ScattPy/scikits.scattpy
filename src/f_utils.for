@@ -666,3 +666,340 @@ cf2py intent(hide) NG,NN
      &    /(r**2+rd**2)**2
       RETURN
       end
+
+
+
+
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cc            E B C M
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+      SUBROUTINE MAT_XQ(NG,NN,FUNC1,FUNC2,FUNC3,FUNC4,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      INTEGER   k,l,n
+      EXTERNAL   FUNC1,FUNC2,FUNC3,FUNC4
+      COMPLEX*16 FUNC1,FUNC2,FUNC3,FUNC4
+      complex*16 fp1,fp3,c1
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+
+      c1 = complex(0,1)
+      e12=e1e2
+      e21=e2e1
+
+      DO n=1,NN
+      DO l=1,NN
+         O(l,n)=0d0
+      ENDDO
+      ENDDO
+
+      DO k=1,NG
+            r   = Rs(k)
+            rd  = Rds(k)
+            rdd = Rdds(k)
+            sint= Sints(k)
+            cost= Costs(k)
+            ctgt= Ctgts(k)
+            DO n=1,NN
+             rad = Rads1(k,n)
+             radd= Radds1(k,n)
+             ang = Angs(k,n)
+             angd= Angds(k,n)
+             ki=k1
+             fp1 = FUNC1()
+             fp3 = FUNC3()
+             DO l=1,NN
+               rad = Rads2(k,l)
+               radd= Radds2(k,l)
+               ang = Angs(k,l)
+               angd= Angds(k,l)
+               ki=k2
+               fp1=fp1*FUNC2()
+               fp3=fp3*FUNC4()
+               O(l,n) = O(l,n) + c1*(fp1-fp3)*sint*w(k)
+             ENDDO
+            ENDDO
+      ENDDO
+      END
+
+      FUNCTION czero()
+      complex*16 czero
+      czero=0d0
+      RETURN
+      END
+
+      SUBROUTINE MAT_Q_tm(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_c_tm
+      COMPLEX*16 func_a,func_b,func_c_tm
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_a,func_a,func_c_tm,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q_te(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_c_te
+      COMPLEX*16 func_a,func_b,func_c_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_a,func_a,func_c_te,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q11_te(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_aa,func_d_te
+      COMPLEX*16 func_a,func_b,func_aa,func_d_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_aa,func_a,func_d_te,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q12_te(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_ab,func_e_te
+      COMPLEX*16 func_a,func_b,func_ab,func_e_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_ab,func_a,func_e_te,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q21_te(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_ac,func_f_te
+      COMPLEX*16 func_a,func_b,func_ac,func_f_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_ac,func_a,func_f_te,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q22_te(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_b,func_ad,func_g_te
+      COMPLEX*16 func_a,func_b,func_ad,func_g_te
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,func_b,func_ad,func_a,func_g_te,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+
+      SUBROUTINE MAT_Q11_tm(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_d_tm,czero
+      COMPLEX*16 func_a,func_d_tm,czero
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,czero,czero,func_a,func_d_tm,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q12_tm(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_e_tm,czero
+      COMPLEX*16 func_a,func_e_tm,czero
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,czero,czero,func_a,func_e_tm,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q21_tm(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_f_tm,czero
+      COMPLEX*16 func_a,func_f_tm,czero
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,czero,czero,func_a,func_f_tm,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END
+
+      SUBROUTINE MAT_Q22_tm(NG,NN,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      implicit none
+      INTEGER NG,NN
+      COMPLEX*16 O(NN,NN)
+      COMPLEX*16 k1,k2,e2e1,e1e2
+      COMPLEX*16 Rads1(NG,NN),Radds1(NG,NN)
+      COMPLEX*16 Rads2(NG,NN),Radds2(NG,NN)
+      COMPLEX*16 Angs(NG,NN),Angds(NG,NN)
+      REAL*8     Rs(NG),Rds(NG),Rdds(NG)
+      REAL*8     Sints(NG),Costs(NG),Ctgts(NG),w(NG)
+cf2py intent(out) O
+cf2py intent(hide) NG,NN
+      EXTERNAL   func_a,func_g_tm,czero
+      COMPLEX*16 func_a,func_g_tm,czero
+      complex*16 ki,e12,e21,rad,radd,ang,angd
+      real*8     r,rd,rdd,sint,cost,ctgt
+      common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
+      call MAT_XQ(NG,NN,czero,czero,func_a,func_g_tm,
+     &                  k1,k2,e1e2,e2e1,
+     &                  Rads1,Radds1,Rads2,Radds2,Angs,Angds,
+     &                  Rs,Rds,Rdds,Sints,Costs,Ctgts,w,O)
+      END

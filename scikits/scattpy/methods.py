@@ -347,6 +347,131 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 	return K11,K12,K21tm,K21te,K22tm,K22te
 
+
+def ebcm_bnd_system(C,m,bnd,axisymm=False):
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	Aj1 = spherical.matA(C,m,'j',1,bnd)
+	Aj2 = spherical.matA(C,m,'j',2,bnd)
+	Ah1 = spherical.matA(C,m,'h',1,bnd)
+	Bj1 = spherical.matB(C,m,'j',1,bnd)
+	Bj2 = spherical.matB(C,m,'j',2,bnd)
+	Bh1 = spherical.matB(C,m,'h',1,bnd)
+
+	# Axisymmetric part
+	if axisymm:
+		QStm = spherical.matQtm(C,m,'h','j',bnd)
+		QRtm = spherical.matQtm(C,m,'j','j',bnd)
+
+		QSte = spherical.matQte(C,m,'h','j',bnd)
+		QRte = spherical.matQte(C,m,'j','j',bnd)
+
+		c0 = zeros_like(QStm)
+		c1 = identity(shape(QStm)[0])
+
+		K11 = bmat([[ c1 ],\
+			    [ c0 ] ])
+
+		K12 = bmat([[ c0 ],\
+			    [ c1 ] ])
+
+		K21tm = bmat([[ QStm ],\
+			      [-QRtm ] ])
+
+		K21te = bmat([[ QSte ],\
+			      [-QRte ] ])
+
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			RStm = spherical.matQtm(C,m,'h','h',bnd)
+			RRtm = spherical.matQtm(C,m,'j','h',bnd)
+
+			RSte = spherical.matQte(C,m,'h','h',bnd)
+			RRte = spherical.matQte(C,m,'j','h',bnd)
+
+			K22tm = bmat([[ RStm ],\
+				      [-RRtm ] ])
+
+			K22te = bmat([[ RSte ],\
+				      [-RRte ] ])
+
+		else:
+			K22tm=K22te=mat(zeros_like(K11))
+
+	# Non-axisymmetric part
+	else:
+		Dj2 = spherical.matDtm(C,m,'j',2,bnd)
+		Ej2 = spherical.matEtm(C,m,'j',2,bnd)
+		Fj2 = spherical.matFtm(C,m,'j',2,bnd)
+		Gj2 = spherical.matGtm(C,m,'j',2,bnd)
+		
+		Aj12 = spherical.matAa(C,m,'j',2,bnd)
+		Aj14 = spherical.matAb(C,m,'j',2,bnd)
+		Aj32 = spherical.matAc(C,m,'j',2,bnd)
+		Aj34 = spherical.matAd(C,m,'j',2,bnd)
+	
+		Aj22 = spherical.matDte(C,m,'j',2,bnd)
+		Aj24 = spherical.matEte(C,m,'j',2,bnd)
+		Aj42 = spherical.matFte(C,m,'j',2,bnd)
+		Aj44 = spherical.matGte(C,m,'j',2,bnd)
+	
+		c0 = mat(zeros_like(Aj2))
+
+		K11 = bmat( [[ Aj1.T,   c0  ],\
+			     [ Bj1.T,   c0  ],\
+			     [    c0, Aj1.T ],\
+			     [    c0, Bj1.T ]] )
+
+		K12 = bmat( [[ Ah1.T,   c0  ],\
+			     [ Bh1.T,   c0  ],\
+			     [    c0, Ah1.T ],\
+			     [    c0, Bh1.T ]] )
+
+		K21tm = bmat( [[ Aj2.T,   c0  ],\
+			       [ Dj2.T, Ej2.T ],\
+			       [    c0, Aj2.T ],\
+			       [ Fj2.T, Gj2.T ]] )
+
+		K21te = bmat( [[ Aj12.T, Aj14.T ],\
+			       [ Aj22.T, Aj24.T ],\
+			       [ Aj32.T, Aj34.T ],\
+			       [ Aj42.T, Aj44.T ]] )
+
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			Ah2 = spherical.matA(C,m,'h',2,bnd)
+			Bh2 = spherical.matB(C,m,'h',2,bnd)
+
+			Dh2 = spherical.matDtm(C,m,'h',2,bnd)
+			Eh2 = spherical.matEtm(C,m,'h',2,bnd)
+			Fh2 = spherical.matFtm(C,m,'h',2,bnd)
+			Gh2 = spherical.matGtm(C,m,'h',2,bnd)
+			
+			Ah12 = spherical.matAa(C,m,'h',2,bnd)
+			Ah14 = spherical.matAb(C,m,'h',2,bnd)
+			Ah32 = spherical.matAc(C,m,'h',2,bnd)
+			Ah34 = spherical.matAd(C,m,'h',2,bnd)
+	
+			Ah22 = spherical.matDte(C,m,'h',2,bnd)
+			Ah24 = spherical.matEte(C,m,'h',2,bnd)
+			Ah42 = spherical.matFte(C,m,'h',2,bnd)
+			Ah44 = spherical.matGte(C,m,'h',2,bnd)
+
+			K22tm = bmat( [[ Ah2.T,   c0  ],\
+				       [ Dh2.T, Eh2.T ],\
+				       [    c0, Ah2.T ],\
+				       [ Fh2.T, Gh2.T ]] )
+
+			K22te = bmat( [[ Ah12.T, Ah14.T ],\
+				       [ Ah22.T, Ah24.T ],\
+				       [ Ah32.T, Ah34.T ],\
+				       [ Ah42.T, Ah44.T ]] )
+
+		else:
+			K22tm = K22te = mat(zeros_like(K11))
+
+	return K11,K12,K21tm,K21te,K22tm,K22te
+
 def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 	Bs = Br = 0
 	k1 = bnd.k1
@@ -475,3 +600,4 @@ def test_cprof():
 	#cProfile.run('test_svm
 
 svm = methods_factory(svm_bnd_system)
+ebcm = methods_factory(ebcm_bnd_system)

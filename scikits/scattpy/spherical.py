@@ -127,3 +127,27 @@ matAa = get_matXX(f_utils.mat__aa)
 matAb = get_matXX(f_utils.mat__ab)
 matAc = get_matXX(f_utils.mat__ac)
 matAd = get_matXX(f_utils.mat__ad)
+
+def get_matXQ(func):
+	def matXQ(C,m,jh1,jh2,bnd):
+	  Rad1 = C.Rad(m,jh1,1)
+	  Radd1= C.Radd(m,jh1,1)
+	  Ang = C.Ang(m)
+	  Angd= C.Angd(m)
+	  Rad2 = C.Rad(m,jh2,2)
+	  Radd2= C.Radd(m,jh2,2)
+	  return func(bnd.k1,bnd.k2,bnd.e12,bnd.e21,\
+                              Rad1,Radd1,Rad2,Radd2,Ang,Angd,\
+			      C.r,C.rd,C.rdd,C.sint,C.cost,C.ctgt,C.weights)
+	return matXQ
+
+matQtm = get_matXQ(f_utils.mat_q_tm)
+matQte = get_matXQ(f_utils.mat_q_te)
+matQ11tm = get_matXQ(f_utils.mat_q11_tm)
+matQ12tm = get_matXQ(f_utils.mat_q12_tm)
+matQ21tm = get_matXQ(f_utils.mat_q21_tm)
+matQ22tm = get_matXQ(f_utils.mat_q22_tm)
+matQ11te = get_matXQ(f_utils.mat_q11_te)
+matQ12te = get_matXQ(f_utils.mat_q12_te)
+matQ21te = get_matXQ(f_utils.mat_q21_te)
+matQ22te = get_matXQ(f_utils.mat_q22_te)
