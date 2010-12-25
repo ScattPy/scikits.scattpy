@@ -59,7 +59,7 @@ def vector_spherical2cartesian(sVec,sPoint):
 	matr = matrix(\
 	  [[sin(t)*cos(p), cos(t)*cos(p), -sin(p)],\
 	   [sin(t)*sin(p), cos(t)*sin(p),  cos(p)],\
-	   [       cos(t),        sin(t),       0]])
+	   [       cos(t),       -sin(t),       0]])
 	cVec = array((matr*matrix(sVec).T).T)[0]
 	return cVec
 
