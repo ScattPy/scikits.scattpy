@@ -1,9 +1,21 @@
 from numpy import *
 from scikits import scattpy
-from scikits.scattpy import core
+from scikits.scattpy import f_coords
 import pylab
 from scipy.special import sph_jn,sph_jnyn,lpmn
-import f
+
+def get_Pmn(m,n,x):
+	return array([lpmn(m,n,xl) for xl in x])
+
+def norm(m,l):
+	return sqrt((2*l+1)/2. *factorial(l-m)/factorial(l+m))
+
+def get_Pmn_normed(m,n,x):
+	P = get_Pmn(m,n,x)
+	for M in xrange(m+1):
+		for L in xrange(n+1):
+			P[:,:,M,L] = P[:,:,M,L]*norm(M,L)
+	return P
 
 def get_JnHn(n,x):
 	JnYn = array([sph_jnyn(n,xl) for xl in x])
@@ -18,13 +30,13 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 	    for k,z in enumerate(zs):
 		U=V=0.
 		cPoint = [x,y,z]
-		sPoint = core.coord_cartesian2spherical(cPoint)
+		sPoint = f_coords.point_c2s(cPoint)
 		r,t,p = sPoint
 		cost = cos(t)
 		for m,coefs_m in enumerate(coefs):
 			if m==0:continue # skip axisymmetric part
 			n=len(coefs_m)/2+m-1
-		        P,Pd = core.get_Pmn(m,n,[cost])[0]
+		        P,Pd = get_Pmn(m,n,[cost])[0]
         		Pml  = P[m,m:n+1]
 		        Pdml = Pd[m,m:n+1]
         		Bess,Hank = get_JnHn(n,[ki*r])
@@ -42,7 +54,7 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 			V += sum(b*Rad*Pml)*cos(m*p)
 
 		sVec = (V,0.,0.)
-		cVec = core.vector_spherical2cartesian(sVec,sPoint)
+		cVec = f_coords.vector_s2c(sVec,sPoint)
 		cVec[2] += U
 		Rx[i,j,k],Ry[i,j,k],Rz[i,j,k] = cVec
 	return Rx,Ry,Rz
@@ -55,7 +67,7 @@ def get_I(particle,xs,ys,zs):
 	  for j,y in enumerate(ys):
 	    for k,z in enumerate(zs):
 			cPoint = [x,y,z]
-			sPoint = core.coord_cartesian2spherical(cPoint)
+			sPoint = f_coords.point_c2s(cPoint)
 			r,t,p = sPoint
 			R,Rd,Rdd = particle.layers[0].shape.R(t)
 			if r>=R:
@@ -65,7 +77,7 @@ def get_I(particle,xs,ys,zs):
 def get_If(particle,xs,ys,zs):
 	def fR(t):
 		return particle.layers[0].shape.R(t)[0]
-	return array(f.get_i(fR,xs,ys,zs))
+	return array(f_coords.get_i(fR,xs,ys,zs))
 
 def get_all(particle,xs,ys,zs):
 	LAB = scattpy.Lab(particle,0.)
@@ -73,10 +85,12 @@ def get_all(particle,xs,ys,zs):
 	dy=ys[1]-ys[0]
 	dz=zs[1]-zs[0]
 	I = get_I(particle,xs,ys,zs)
+
 	print "solve"
 	r = scattpy.svm(LAB,arange(10,30,2),ngauss=200)
 	from scikits.scattpy.svm import RESULTS
 
+	"""
 	print "scattered vector field"
 	Rs = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
 	Hs = curl(Rs,dx,dy,dz)
@@ -84,7 +98,7 @@ def get_all(particle,xs,ys,zs):
 	Hs = [real(Hs[0])*I,real(Hs[1])*I,real(Hs[2])*I]
 	Es = [real(Es[0])*I,real(Es[1])*I,real(Es[2])*I]
 	Ps = vector_cross(Es,Hs)
-	
+	"""
 	print "incident vector field"
 	c_inc = [[0],LAB.get_inc(1,len(RESULTS.c_sca_tm)/2)]
 	Ri = get_Ui_Vr(xs,ys,zs,c_inc,LAB.k1,'j')
@@ -94,7 +108,8 @@ def get_all(particle,xs,ys,zs):
 	Ei = [real(Ei[0])*I,real(Ei[1])*I,real(Ei[2])*I]
 	Pi = vector_cross(Ei,Hi)
 
-	return Hs,Es,Ps,Ei,Hi,Pi
+	#return Hs,Es,Ps,Ei,Hi,Pi
+	return Ei,Hi,Pi
 
 def plot_vf(vf,xs,ys,zs,str):
 	Fx,Fy,Fz = vf
