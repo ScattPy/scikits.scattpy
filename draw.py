@@ -22,7 +22,9 @@ def get_JnHn(n,x):
 	return JnYn[:,:2,:],JnYn[:,:2,:]+1j*JnYn[:,2:,:]
 
 def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
-	Rx=Ry=Rz = zeros([size(xs),size(ys),size(zs)],complex)
+	Rx = zeros([size(xs),size(ys),size(zs)],complex)
+	Ry = zeros([size(xs),size(ys),size(zs)],complex)
+	Rz = zeros([size(xs),size(ys),size(zs)],complex)
 	
 	for i,x in enumerate(xs):
 	  print x
@@ -60,7 +62,7 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 	return Rx,Ry,Rz
 
 def get_I(particle,xs,ys,zs):
-	I = zeros([size(xs),size(ys),size(zs)],int)
+	I = zeros([len(xs),len(ys),len(zs)],int)
 
 	for i,x in enumerate(xs):
 	  print x
@@ -90,7 +92,6 @@ def get_all(particle,xs,ys,zs):
 	r = scattpy.svm(LAB,arange(10,30,2),ngauss=200)
 	from scikits.scattpy.svm import RESULTS
 
-	"""
 	print "scattered vector field"
 	Rs = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
 	Hs = curl(Rs,dx,dy,dz)
@@ -98,9 +99,9 @@ def get_all(particle,xs,ys,zs):
 	Hs = [real(Hs[0])*I,real(Hs[1])*I,real(Hs[2])*I]
 	Es = [real(Es[0])*I,real(Es[1])*I,real(Es[2])*I]
 	Ps = vector_cross(Es,Hs)
-	"""
+
 	print "incident vector field"
-	c_inc = [[0],LAB.get_inc(1,len(RESULTS.c_sca_tm)/2)]
+	c_inc = [[0],LAB.get_inc(len(RESULTS.c_sca_tm[1])/2,1)]
 	Ri = get_Ui_Vr(xs,ys,zs,c_inc,LAB.k1,'j')
 	Hi = curl(Ri,dx,dy,dz)
 	Ei = array(curl(Hi,dx,dy,dz))*(-1./1j)
@@ -108,8 +109,7 @@ def get_all(particle,xs,ys,zs):
 	Ei = [real(Ei[0])*I,real(Ei[1])*I,real(Ei[2])*I]
 	Pi = vector_cross(Ei,Hi)
 
-	#return Hs,Es,Ps,Ei,Hi,Pi
-	return Ei,Hi,Pi
+	return Hs,Es,Ps,Hi,Ei,Pi
 
 def plot_vf(vf,xs,ys,zs,str):
 	Fx,Fy,Fz = vf
