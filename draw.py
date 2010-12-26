@@ -116,16 +116,25 @@ def plot_vf(vf,xs,ys,zs,str):
 	n = (len(xs)-1)/2
 	if str == 'xz':
 		X,Z = meshgrid(xs,zs)
-		pylab.contourf(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:])
-		pylab.quiver(X,Z,(Fx)[:,n,:],(Fz)[:,n,:])
+		pylab.pcolor(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:].T)
+		pylab.colorbar()
+		pylab.show()
+#		pylab.contourf(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:])
+#		pylab.quiver(X,Z,(Fx)[:,n,:],(Fz)[:,n,:])
 	elif str == 'yz':
 		Y,Z = meshgrid(ys,zs)
-		pylab.contourf(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:])
-		pylab.quiver(Y,Z,(Fy)[n,:,:],(Fz)[n,:,:])
+		pylab.pcolor(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:].T)
+		pylab.colorbar()
+		pylab.show()
+#		pylab.contourf(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:])
+#		pylab.quiver(Y,Z,(Fy)[n,:,:],(Fz)[n,:,:])
 	elif str == 'xy':
 		X,Y = meshgrid(xs,ys)
-		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
-		pylab.quiver(X,Y,(Fx)[:,:,n],(Fy)[:,:,n])
+		pylab.pcolor(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n].T)
+		pylab.colorbar()
+		pylab.show()
+#		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
+#		pylab.quiver(X,Y,(Fx)[:,:,n],(Fy)[:,:,n])
 
 	
 
