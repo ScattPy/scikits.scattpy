@@ -89,7 +89,7 @@ def get_all(particle,xs,ys,zs):
 	I = get_I(particle,xs,ys,zs)
 
 	print "solve"
-	r = scattpy.svm(LAB,arange(10,30,2),ngauss=200)
+	r = scattpy.svm(LAB,arange(10,40,2),ngauss=200)
 	from scikits.scattpy.svm import RESULTS
 
 	print "scattered vector field"
@@ -136,7 +136,43 @@ def plot_vf(vf,xs,ys,zs,str):
 #		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
 #		pylab.quiver(X,Y,(Fx)[:,:,n],(Fy)[:,:,n])
 
-	
+def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot'):
+	"""Plot vector field using colored linear integral convolution"""
+	from scikits import vectorplot as vp
+	from scipy import interpolate
+	Fx,Fy,Fz = F
+	n = (len(xs)-1)/2
+	if str == 'xz':
+		x1=xs
+		x2=zs
+		F1=F[0][:,n,:]
+		F2=F[2][:,n,:]
+	elif str == 'yz':
+		x1=ys
+		x2=zs
+		F1=F[1][n,:,:]
+		F2=F[2][n,:,:]
+	elif str == 'xy':
+		x1=xs
+		x2=ys
+		F1=F[0][:,:,n]
+		F2=F[1][:,:,n]
+	spl_F1 = interpolate.RectBivariateSpline(x1,x2,F1)
+	spl_F2 = interpolate.RectBivariateSpline(x1,x2,F2)
+	nx1 = linspace(min(x1),max(x1),nsize)
+	nx2 = linspace(min(x2),max(x2),nsize)
+	nF1 = spl_F1(nx1,nx2).T
+	nF2 = spl_F2(nx1,nx2).T
+
+	kernellen=31
+	kernel = sin(arange(kernellen)*pi/kernellen)
+	kernel = kernel.astype(float32)
+	texture = random.rand(nsize,nsize).astype(float32)
+	image = vp.line_integral_convolution(nF1.astype(float32), nF2.astype(float32), texture, kernel)
+
+	imax = max(image.reshape(nsize**2))
+	pylab.figimage(sqrt(nF1**2+nF2**2)*(image+imax)/imax/2,cmap=cmap)
+	pylab.show()
 
 def curl(F,dx,dy,dz):
 	Fx,Fy,Fz = F
