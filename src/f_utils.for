@@ -698,7 +698,7 @@ cf2py intent(hide) NG,NN
       real*8     r,rd,rdd,sint,cost,ctgt
       common /dk/ e12,e21,ki,rad,radd,ang,angd,r,rd,rdd,sint,cost,ctgt
 
-      c1 = complex(0,1)
+      c1 = CMPLX(0d0,1d0)
       e12=e1e2
       e21=e2e1
 
