@@ -348,6 +348,84 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 	return K11,K12,K21tm,K21te,K22tm,K22te
 
+def ebcm_bnd_system(C,m,bnd,axisymm=False):
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	# Axisymmetric part
+	if axisymm:
+		Ajjtm = spherical.mat_ebcm_axi_tm(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjtm = spherical.mat_ebcm_axi_tm(C,m,'h','j',bnd.e12,bnd.e21)
+		Ajjte = spherical.mat_ebcm_axi_te(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjte = spherical.mat_ebcm_axi_te(C,m,'h','j',bnd.e12,bnd.e21)
+
+		nshape = Ajjtm.shape
+		nsize = nshape[0]
+
+		K11 = bmat([[ identity(nsize) ],\
+			    [ zeros(nshape)   ] ])
+
+		K12 = bmat([[ zeros(nshape)   ],\
+			    [ identity(nsize) ] ])
+
+		K21tm = bmat([[ Ahjtm ],\
+			      [-Ajjtm ] ])
+
+		K21te = bmat([[ Ahjte ],\
+			      [-Ajjte ] ])
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			Ajhtm = spherical.mat_ebcm_axi_tm(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhtm = spherical.mat_ebcm_axi_tm(C,m,'h','h',bnd.e12,bnd.e21)
+			Ajhte = spherical.mat_ebcm_axi_te(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhte = spherical.mat_ebcm_axi_te(C,m,'h','h',bnd.e12,bnd.e21)
+
+			K22tm = bmat([[ Ahhtm ],\
+				      [-Ajhtm ] ])
+
+			K22te = bmat([[ Ahhte ],\
+				      [-Ajhte ] ])
+		else:
+			K22tm=K22te=mat(zeros_like(K11))
+
+	# Non-axisymmetric part
+	else:
+		Ajjtm = spherical.mat_ebcm_naxi_tm(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjtm = spherical.mat_ebcm_naxi_tm(C,m,'h','j',bnd.e12,bnd.e21)
+		Ajjte = spherical.mat_ebcm_naxi_te(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjte = spherical.mat_ebcm_naxi_te(C,m,'h','j',bnd.e12,bnd.e21)
+
+		nshape = Ajjtm.shape
+		nsize = nshape[0]
+
+		K11 = bmat([[ identity(nsize) ],\
+			    [ zeros(nshape)   ] ])
+
+		K12 = bmat([[ zeros(nshape)   ],\
+			    [ identity(nsize) ] ])
+
+		K21tm = bmat([[ Ahjtm ],\
+			      [-Ajjtm ] ])
+
+		K21te = bmat([[ Ahjte ],\
+			      [-Ajjte ] ])
+
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			Ajhtm = spherical.mat_ebcm_naxi_tm(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhtm = spherical.mat_ebcm_naxi_tm(C,m,'h','h',bnd.e12,bnd.e21)
+			Ajhte = spherical.mat_ebcm_naxi_te(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhte = spherical.mat_ebcm_naxi_te(C,m,'h','h',bnd.e12,bnd.e21)
+
+			K22tm = bmat([[ Ahhtm ],\
+				      [-Ajhtm ] ])
+
+			K22te = bmat([[ Ahhte ],\
+				      [-Ajhte ] ])
+		else:
+			K22tm = K22te = mat(zeros_like(K11))
+
+	return K11,K12,K21tm,K21te,K22tm,K22te
+
 def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 	Bs = Br = 0
 	k1 = bnd.k1
@@ -476,3 +554,4 @@ def test_cprof():
 	#cProfile.run('test_svm
 
 svm = methods_factory(svm_bnd_system)
+ebcm = methods_factory(ebcm_bnd_system)

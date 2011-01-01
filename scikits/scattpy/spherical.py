@@ -234,3 +234,54 @@ def matA44(C,m,jh,i,e21,B=None):
 	A0 = matA0(C,m,jh,i,coef=fa)
 	G0 = matG0(C,m,jh,i,coef=fg)
 	return B + (e21-1)*(G0-A0)
+
+############### EBCM #############################
+
+def mat_ebcm_axi_tm(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.axitm(Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,e12,C.weights)
+
+def mat_ebcm_axi_te(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.axite(Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,C.weights)
+
+def mat_ebcm_naxi_tm(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.naxitm(m,Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,e12,e21,C.weights)
+
+def mat_ebcm_naxi_te(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.naxite(m,Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.rdd,C.sint,C.cost,k1,k2,e12,e21,C.weights)
+
