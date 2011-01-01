@@ -68,9 +68,12 @@ if __name__ == "__main__":
         #test_suite="tester", # for python setup.py test
         zip_safe = True, # the package can run out of an .egg file
         classifiers =
-            [ 'Development Status :: 1 - Planning',
+            [ 'Development Status :: 3 - Alpha',
               'Environment :: Console',
               'Intended Audience :: Developers',
               'Intended Audience :: Science/Research',
+              'Intended Audience :: Education',
               'License :: OSI Approved :: BSD License',
-              'Topic :: Scientific/Engineering'])
+              'Topic :: Scientific/Engineering :: Mathematics',
+              'Topic :: Scientific/Engineering :: Physics',
+              'Topic :: Scientific/Engineering :: Astronomy', ])
