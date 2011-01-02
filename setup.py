@@ -11,6 +11,7 @@ by non-spherical particles.
 
 import os
 import sys
+from scikits import scattpy
 
 DISTNAME            = 'scikits.scattpy'
 DESCRIPTION         = 'ScattPy package'
@@ -20,7 +21,7 @@ MAINTAINER_EMAIL    = 'alexander.a.vinokurov@gmail.com',
 URL                 = 'http://vinokurov.github.com/scattpy'
 LICENSE             = 'BSD'
 DOWNLOAD_URL        = URL
-VERSION             = '0.1-git'
+VERSION             = scattpy.__version__
 
 import setuptools
 from numpy.distutils.core import setup

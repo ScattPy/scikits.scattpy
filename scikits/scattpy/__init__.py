@@ -20,3 +20,5 @@ from laboratory import \
 		EffMedium_InvMaxwellGarnett_Particle,\
 		EffMedium_Bruggeman_Particle,\
 		Lab
+
+__version__ = "0.1"
