@@ -24,6 +24,7 @@ class Shape(object):
 		"""Surface equation and its 2 derivatives in spherical coordinates.
 			Returns r, r\', r\'\' """
 		return self._R(theta),self._Rd(theta),self._Rdd(theta)
+	nrange = None
 
 class ShapeSphere(Shape):
 	"""Shape class for spheres with radius R=xv"""
@@ -84,6 +85,7 @@ class ShapeSpheroid(Shape):
 		return self.xv/self.ab**(1./3.)
 	a = property(fget=_get_a)
 	b = property(fget=_get_b)
+	nrange = arange(2,80,2)
 
 class ShapeChebyshev(Shape):
 	"""Shape class for Chebyshev particle shapes"""
@@ -91,6 +93,7 @@ class ShapeChebyshev(Shape):
 		self.N = N
 		self.eps = eps
 		self.xv = xv
+		self.nrange = arange(N,min([100,N*20]),N)
 	def __str__(self):
 		return "Chebyshev particle with N=%(N)s eps=%(eps)s, xv=%(xv)s" %self.__dict__
 	def copy(self):

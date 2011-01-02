@@ -12,8 +12,8 @@ import spherical
 
 delta_c=1e-16
 ngauss_coef = 6
-Nrange = range(10,40,2)
-Ms = None
+nrange_default = arange(2,61)
+Ms=[]
 
 
 RESULTS = None
@@ -33,7 +33,7 @@ class Results:
 
 
 def methods_factory(meth_bnd_system):
-   def meth(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
+   def meth(lab,nrange=None,accuracyLimit=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
 	print "\n","*"*60
 	print lab
 	print "*"*60
@@ -43,6 +43,14 @@ def methods_factory(meth_bnd_system):
 
 	convlog_te = {'N':[],'delta':[]}
 	convlog_tm = {'N':[],'delta':[]}
+
+	# get nrange
+	global nrange_default
+	if nrange==None:
+		if lab.particle.layers[0].shape.nrange == None:
+			nrange = nrange_default
+		else:
+			nrange = lab.particle.layers[0].shape.nrange
 
 	# first we need at least one run of solver to have initial values
 	global Ms
@@ -132,7 +140,7 @@ def methods_factory(meth_bnd_system):
 	global RESULTS
 	RESULTS = Results(c_sca_te,delta_te,N_te,convlog_te,\
 	                  c_sca_tm,delta_tm,N_tm,convlog_tm)
-	return [c_sca_tm,delta_tm],[c_sca_te,delta_te]
+	return RESULTS
    return meth
 
 def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
@@ -581,7 +589,7 @@ svm = methods_factory(svm_bnd_system)
 ebcm = methods_factory(ebcm_bnd_system)
 pmm0 = methods_factory(pmm_bnd_system)
 
-def pmm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
+def pmm(lab,nrange=None,accuracyLimit=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
 	print "Warning: layered structures aren't supported"
 	print "Warning: TE mode isn't supported"
 	return pmm0(lab,nrange,accuracyLimit,ngauss,conv_stop,conv_test,iterative)
