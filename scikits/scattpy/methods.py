@@ -426,6 +426,30 @@ def ebcm_bnd_system(C,m,bnd,axisymm=False):
 
 	return K11,K12,K21tm,K21te,K22tm,K22te
 
+def pmm_bnd_system(C,m,bnd,axisymm=False):
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	if axisymm:
+		Atm = spherical.mat_pmm_axi_tm(C,bnd.e12,bnd.shape.xv)
+	else:
+		Atm = spherical.mat_pmm_naxi_tm(C,m,bnd.e12,bnd.shape.xv)
+
+	nsize = Atm.shape[0]/2
+	nshape = (nsize,nsize)
+
+	K11 = Atm[:,2*nsize:]
+	K12 = Atm[:,:nsize]
+	K21tm=K21te = Atm[:,nsize:2*nsize]
+	#pdb.set_trace()
+
+	if not bnd.is_last:
+		K22tm=K22te=mat(zeros_like(K11))
+	else:
+		K22tm=K22te=mat(zeros_like(K11))
+
+	return K11,K12,K21tm,K21te,K22tm,K22te
+
+
 def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 	Bs = Br = 0
 	k1 = bnd.k1
@@ -555,3 +579,10 @@ def test_cprof():
 
 svm = methods_factory(svm_bnd_system)
 ebcm = methods_factory(ebcm_bnd_system)
+pmm0 = methods_factory(pmm_bnd_system)
+
+def pmm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
+	print "Warning: layered structures aren't supported"
+	print "Warning: TE mode isn't supported"
+	return pmm0(lab,nrange,accuracyLimit,ngauss,conv_stop,conv_test,iterative)
+
