@@ -135,7 +135,7 @@ class Particle(object):
 		return s
 	def copy(self):
 		kwargs = self.copy_args
-		del kwargs['self']
+		if 'self' in kwargs: del kwargs['self']
 		return self.__class__(**kwargs)
 	layers = []
 	def _get_xv(self):
