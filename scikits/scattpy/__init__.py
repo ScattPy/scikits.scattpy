@@ -21,4 +21,4 @@ from laboratory import \
 		EffMedium_Bruggeman_Particle,\
 		Lab
 
-__version__ = "0.1"
+__version__ = "0.1.0"

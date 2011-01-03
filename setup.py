@@ -20,8 +20,8 @@ MAINTAINER          = 'Alexander Vinokurov',
 MAINTAINER_EMAIL    = 'scattpy@googlegroups.com',
 URL                 = 'http://scattpy.github.com'
 LICENSE             = 'BSD'
-DOWNLOAD_URL        = 'http://github.com/downloads/ScattPy/scikits.scattpy/scikits.scattpy-0.1.tar.gz'
 VERSION             = scattpy.__version__
+DOWNLOAD_URL        = 'http://github.com/downloads/ScattPy/scikits.scattpy/scikits.scattpy-'+VERSION+'.tar.gz'
 
 import setuptools
 from numpy.distutils.core import setup
