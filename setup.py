@@ -11,7 +11,6 @@ by non-spherical particles.
 
 import os
 import sys
-from scikits import scattpy
 
 DISTNAME            = 'scikits.scattpy'
 DESCRIPTION         = 'Light Scattering methods for Python'
@@ -20,7 +19,7 @@ MAINTAINER          = 'Alexander Vinokurov',
 MAINTAINER_EMAIL    = 'scattpy@googlegroups.com',
 URL                 = 'http://scattpy.github.com'
 LICENSE             = 'BSD'
-VERSION             = scattpy.__version__
+VERSION             = '0.1.0'
 DOWNLOAD_URL        = 'http://github.com/downloads/ScattPy/scikits.scattpy/scikits.scattpy-'+VERSION+'.tar.gz'
 
 import setuptools

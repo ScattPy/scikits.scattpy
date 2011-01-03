@@ -20,5 +20,5 @@ from laboratory import \
 		EffMedium_InvMaxwellGarnett_Particle,\
 		EffMedium_Bruggeman_Particle,\
 		Lab
+from version import __version__
 
-__version__ = "0.1.0"
