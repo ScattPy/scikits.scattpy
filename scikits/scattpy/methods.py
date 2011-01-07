@@ -33,13 +33,13 @@ class Results:
 
 
 def methods_factory(meth_bnd_system):
-   def meth(lab,nrange=None,accuracyLimit=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
+   def meth(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
 	print "\n","*"*60
 	print lab
 	print "*"*60
 
 	if conv_test:
-		nrange = svm_test_M0(lab,nrange,accuracyLimit,ngauss,conv_stop,iterative)
+		nrange = svm_test_M0(lab,nrange,accuracy,ngauss,conv_stop,iterative)
 
 	convlog_te = {'N':[],'delta':[]}
 	convlog_tm = {'N':[],'delta':[]}
@@ -105,9 +105,9 @@ def methods_factory(meth_bnd_system):
 			print "Terminating: no more convergence expected"
 			break
 
-		if not accuracyLimit==None and\
+		if not accuracy==None and\
 		   delta_tm>=0 and delta_te>=0 and\
-		   delta_tm+delta_te<accuracyLimit:
+		   delta_tm+delta_te<accuracy:
 			print "Terminating: accuracy limit obtained"
 			break
 
@@ -491,7 +491,7 @@ def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 
 	return Bs,Br
 
-def meth_test_M0(meth_bnd_system,lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,iterative=True):
+def meth_test_M0(meth_bnd_system,lab,nrange,accuracy=None,ngauss="auto",conv_stop=True,iterative=True):
 	print "\n","*"*60
 	print "Convergence test: axisymmetric part"
 	print "*"*60
@@ -546,9 +546,9 @@ def meth_test_M0(meth_bnd_system,lab,nrange,accuracyLimit=None,ngauss="auto",con
 			   print "Terminating: no more convergence expected"
 			   break
 
-		if not accuracyLimit==None:
-			if delta_tm+delta_te<accuracyLimit:
-				print "Terminating: accuracy limit obtained"
+		if not accuracy==None:
+			if delta_tm+delta_te<accuracy:
+				print "Terminating: required accuracy obtained"
 				break
 
 		Cext_tm_p = Cext_tm_n
@@ -589,8 +589,8 @@ svm = methods_factory(svm_bnd_system)
 ebcm = methods_factory(ebcm_bnd_system)
 pmm0 = methods_factory(pmm_bnd_system)
 
-def pmm(lab,nrange=None,accuracyLimit=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
+def pmm(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
 	print "Warning: layered structures aren't supported"
 	print "Warning: TE mode isn't supported"
-	return pmm0(lab,nrange,accuracyLimit,ngauss,conv_stop,conv_test,iterative)
+	return pmm0(lab,nrange,accuracy,accuracy_criteria,ngauss,conv_stop,conv_test,iterative)
 
