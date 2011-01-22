@@ -373,6 +373,58 @@ class EffMedium_Bruggeman_Particle(EffMedium_Particle):
 		ee = (-b+sqrt(b**2-4*a*c))/(2*a)
 		return sqrt(ee)
 
+
+def ellipsoid_confocal_abc(a,b,c,xv1,prec=1e-15):
+                """Returns parameters aT,bT,cT for ellipssoid,
+                that is confocal with esllsispoid(a,b,c)"""
+                VxD = xv1**3
+                aT,sign,inv,error,da = a,1,0,1.0,a/100.
+                while error > prec:
+                        aT = aT - da*sign
+                        bT = (b**2 - a**2 + aT**2)
+                        cT = (c**2 - a**2 + aT**2)
+                        if bT < 0:
+                                bT = 0
+                        else:
+                                bT = bT**0.5
+                        if cT < 0:
+                                cT = 0
+                        else:
+                                cT = cT**0.5
+                        VxC = aT*bT*cT
+                        if VxC > 0:
+                                if VxC < VxD:
+                                        sign = -1
+                                        inv = 1
+                                else:
+                                        sign = 1
+                                        if inv == 1:
+                                                inv = 0
+                                                da = da/2.0
+                                error = abs(VxD - VxC)/(VxD + VxC)
+
+                        else:
+                                aT = aT + da
+                                da = da/2.0
+                return aT,bT,cT
+
+class LayeredConfocalSpheroid(Layered_EqShape_Particle):
+	def __init__(self,ab,xv,ms,volumes,Nlayers,prolate=True):
+		copy_args = locals()
+		params = {'ab':ab,'xv':xv,'prolate':prolate}
+		super(self.__class__,self)\
+                                .__init__(ShapeSpheroid,params,ms,volumes,Nlayers)
+                self.copy_args = copy_args
+		if self.Nlayers>1:
+		   a0 = self.layers[0].shape.a
+		   b0 = self.layers[0].shape.b
+		   for lay in self.layers[1:]:
+			if lay.shape.prolate:
+			   b,c,a = ellipsoid_confocal_abc(b0,b0,a0,lay.shape.xv)
+			else:
+			   a,c,b = ellipsoid_confocal_abc(a0,a0,b0,lay.shape.xv)
+			lay.shape.ab=a/b
+
 class Boundary(object):
 	"""Boundary class: describes a surface between layers and bounding layers' 
 	matter properties"""
