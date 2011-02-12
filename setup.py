@@ -19,7 +19,7 @@ MAINTAINER          = 'Alexander Vinokurov',
 MAINTAINER_EMAIL    = 'scattpy@googlegroups.com',
 URL                 = 'http://scattpy.github.com'
 LICENSE             = 'BSD'
-VERSION             = '0.1.0'
+VERSION             = '0.1.1'
 DOWNLOAD_URL        = 'http://github.com/downloads/ScattPy/scikits.scattpy/scikits.scattpy-'+VERSION+'.tar.gz'
 
 import setuptools
