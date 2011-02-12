@@ -14,12 +14,12 @@ from laboratory import \
 		ChebParticle,\
 		LayeredParticle,\
 		Layered_EqShape_Particle,\
-		Layered_EqShape_EqVolume_Particle,\
+		Layered_EqShapeEqVol_Particle,\
 		LayeredConfocalSpheroid,\
-		EffMedium_Particle,\
-		EffMedium_MaxwellGarnett_Particle,\
-		EffMedium_InvMaxwellGarnett_Particle,\
-		EffMedium_Bruggeman_Particle,\
+		EMT_Particle,\
+		EMT_MGarn_Particle,\
+		EMT_IMGarn_Particle,\
+		EMT_Brugg_Particle,\
 		Lab
 from version import __version__
 
