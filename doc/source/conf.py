@@ -198,7 +198,7 @@ _stdauthor = 'Alexander Vinokurov'
 #   _stdauthor, 'manual'),
 #]
 latex_documents = [('contents','scattpy-doc.tex','ScattPy Documentation',
-   _stdauthor, 'manual'),
+   _stdauthor, 'manual')]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
