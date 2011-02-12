@@ -1,0 +1,36 @@
+---
+layout: nanohub
+title: {{title|e}}
+{%- if next %}
+
+next:
+     title: {{ next.title }}
+     url:   {{ next.link|e }}
+{%- endif %}
+{%- if prev %}
+
+prev:
+     title: {{ prev.title }}
+     url:   {{ prev.link|e }}
+{%- endif %}
+
+topnav:
+   - title: Documentation
+     url:   /docs/
+{%- for parent in parents %}
+
+   - title: {{ parent.title }}
+     url:   {{ parent.link|e }}
+{%- endfor %}
+
+   - title: {{ title }}
+     url:   #
+
+sidenav: '
+   {{toctree() }}
+'
+---
+
+<div class="sphinxdoc">
+{% block body %} {% endblock %}
+</div>
