@@ -15,6 +15,7 @@ from laboratory import \
 		LayeredParticle,\
 		Layered_EqShape_Particle,\
 		Layered_EqShape_EqVolume_Particle,\
+		LayeredConfocalSpheroid,\
 		EffMedium_Particle,\
 		EffMedium_MaxwellGarnett_Particle,\
 		EffMedium_InvMaxwellGarnett_Particle,\

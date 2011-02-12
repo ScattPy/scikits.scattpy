@@ -275,7 +275,7 @@ class Layered_EqShape_Particle(Particle):
 				+" with layer series "+ms_str+"\n"\
 				+" with volume fractions "+vols_str
 
-class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
+class Layered_EqShape_EqVol_Particle(Layered_EqShape_Particle):
 	"""Layered particle whose layers have the same shapes,
 	i.e. differ only with parameter xv, each layer has the same volume.
 
@@ -283,7 +283,7 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 	A multilayered spheroid with 8 cyclically repeating equivolume layers of matter 
 	and vacuum can be constructed with the following command:
 
-	P = Layered_EqShape_EqVolume_Particle( \\
+	P = Layered_EqShape_EqVol_Particle( \\
 	     ShapeSpheroid, {'ab':1.5,'xv':1.4},\\
              ms=[1.33,1.0],NLayers=8)
 """
@@ -294,7 +294,7 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 				.__init__(shape0,params,ms,volumes,Nlayers)
 		self.copy_args = copy_args
 
-class EffMedium_Particle(HomogeneousParticle):
+class EMT_Particle(HomogeneousParticle):
 	"""Particle using effective medium theory, an approximation of 
 	inhomogeneous particles with homogeneous one having averaged
 	complex refrecive index m. Average mixing rule is used."""
@@ -326,7 +326,7 @@ class EffMedium_Particle(HomogeneousParticle):
 		return sum(array(ms)*array(vols))/sum(array(vols))
 
 
-class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
+class EMT_MaxwellGarnett_Particle(EffMedium_Particle):
 	"""Particle using Maxwell-Garnett effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
@@ -340,7 +340,7 @@ class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
 		ee = e2*(1 +(3*p*(e1-e2)/(e1+2*e2))/(1-p*(e1-e2)/(e1+2.*e2)))
 		return sqrt(ee)
 
-class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
+class EMT_InvMaxwellGarnett_Particle(EffMedium_Particle):
 	"""Particle using inverse Maxwell-Garnett effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
@@ -354,7 +354,7 @@ class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
 		ee = e2*(1 +(3*p*(e1-e2)/(e1+2*e2))/(1-p*(e1-e2)/(e1+2.*e2)))
 		return sqrt(ee)
 
-class EffMedium_Bruggeman_Particle(EffMedium_Particle):
+class EMT_Bruggeman_Particle(EffMedium_Particle):
 	"""Particle using Bruggeman effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
