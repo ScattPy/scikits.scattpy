@@ -70,15 +70,16 @@ def get_vector(cPoint,c_sca,k):
 
 	m=1
 
-	n=len(c_sca)/2+m-1
+	n=shape(c_sca)[2]
 	P,Pd = get_Pmn(m,n,[cos(t)])[0]
 	Pml  = P[m,m:n+1]
 	Pdml = Pd[m,m:n+1]
 	Bess,Hank = get_JnHn(n,[k*r])
 	Hankl = Hank[0,0,m:]
 	Hankdl= Hank[0,1,m:]
-	a = c_sca[:n-m+1]
-	b = c_sca[n-m+1:]
+	Nsize = n-m+1
+	a = c_sca[m,0,-Nsize:]
+	b = c_sca[m,1,-Nsize:]
 	l = arange(m,n+1)
 
 	if t==0 or t==pi:

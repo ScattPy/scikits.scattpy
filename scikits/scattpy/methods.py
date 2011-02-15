@@ -19,21 +19,39 @@ Ms=[]
 RESULTS = None
 
 class Results:
-	def __init__(self,c_sca_te,delta_te,N_te,convlog_te,\
-	                  c_sca_tm,delta_tm,N_tm,convlog_tm):
-		self.c_sca_te = c_sca_te
+	def _get_c_sca_te(self):
+		if self._allfields:
+			return self._c_all_te[0][1]
+		else:
+			return self._c_sca_te
+	def _get_c_sca_tm(self):
+		if self._allfields:
+			return self._c_all_tm[0][1]
+		else:
+			return self._c_sca_tm
+	c_sca_te = property(fget=_get_c_sca_te)
+	c_sca_tm = property(fget=_get_c_sca_tm)
+	def __init__(self,allfields,c_te,delta_te,N_te,convlog_te,\
+	                            c_tm,delta_tm,N_tm,convlog_tm):
+		self._allfields = allfields
+		if allfields:
+			self._c_all_te = c_te
+			self._c_all_tm = c_tm
+		else:
+			self._c_sca_te = c_te
+			self._c_sca_tm = c_tm
+
 		self.delta_te = delta_te
 		self.N_te = N_te
 		self.convlog_te = convlog_te
 
-		self.c_sca_tm = c_sca_tm
 		self.delta_tm = delta_tm
 		self.N_tm = N_tm
 		self.convlog_tm = convlog_tm
 
 
 def methods_factory(meth_bnd_system):
-   def meth(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
+   def meth(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True,allfields=False):
 	print "\n","*"*60
 	print lab
 	print "*"*60
@@ -54,7 +72,7 @@ def methods_factory(meth_bnd_system):
 
 	# first we need at least one run of solver to have initial values
 	global Ms
-	Cext_tm,c_sca_tm, Cext_te,c_sca_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative)
+	Cext_tm,c_tm, Cext_te,c_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative,allfields)
 
 	delta_tm = delta_te = 1e16 # vars for best accuracies obtained
 	Cext_tm_p = Cext_tm  # value of Cext_tm at previous iteration
@@ -67,8 +85,8 @@ def methods_factory(meth_bnd_system):
 	print "N \t\t err TM\t\t err TE"
 	for ni,n in enumerate(nrange[1:]):
 		try:
-		  Cext_tm_n,c_sca_tm_n, Cext_te_n,c_sca_te_n \
-				  = meth_n(meth_bnd_system,lab,n,ngauss,Ms,iterative)
+		  Cext_tm_n,c_tm_n, Cext_te_n,c_te_n \
+				  = meth_n(meth_bnd_system,lab,n,ngauss,Ms,iterative,allfields)
 		except linalg.linalg.LinAlgError, e:
 			print "Terminating: '"+str(e)+"' error received"
 			break
@@ -91,12 +109,12 @@ def methods_factory(meth_bnd_system):
 
 		if 0<delta_tm_n<delta_tm:
 			delta_tm = delta_tm_n
-			c_sca_tm = c_sca_tm_n
+			c_tm = c_tm_n
 			N_tm = n
 
 		if 0<delta_te_n<delta_te:
 			delta_te = delta_te_n
-			c_sca_te = c_sca_te_n
+			c_te = c_te_n
 			N_te = n
 
 		if conv_stop and\
@@ -124,26 +142,27 @@ def methods_factory(meth_bnd_system):
 			print "Terminating: no more convergence expected"
 			break
 
+	global RESULTS
+	res = Results(allfields,c_te,delta_te,N_te,convlog_te,\
+	                        c_tm,delta_tm,N_tm,convlog_tm)
+	RESULTS = res
 	
 	# Print results
-	Cext_tm,Qext_tm = lab.get_Cext(c_sca_tm)
-	Cext_te,Qext_te = lab.get_Cext(c_sca_te)
-	Csca_tm,Qsca_tm = lab.get_Csca(c_sca_tm)
-	Csca_te,Qsca_te = lab.get_Csca(c_sca_te)
-	n_tm = len(c_sca_tm[0])
-	n_te = len(c_sca_te[0])
+	Cext_tm,Qext_tm = lab.get_Cext(RESULTS.c_sca_tm)
+	Cext_te,Qext_te = lab.get_Cext(RESULTS.c_sca_te)
+	Csca_tm,Qsca_tm = lab.get_Csca(RESULTS.c_sca_tm)
+	Csca_te,Qsca_te = lab.get_Csca(RESULTS.c_sca_te)
+	n_tm = shape(RESULTS.c_sca_tm)[2]
+	n_te = shape(RESULTS.c_sca_te)[2]
 
 	print "TM mode: Qext=%(Qext_tm)20.16e , Qsca=%(Qsca_tm)20.16e, delta=%(delta_tm)5.1e , n=%(n_tm)s" % locals()
 
 	print "TE mode: Qext=%(Qext_te)20.16e , Qsca=%(Qsca_te)20.16e, delta=%(delta_te)5.1e , n=%(n_te)s" % locals()
 
-	global RESULTS
-	RESULTS = Results(c_sca_te,delta_te,N_te,convlog_te,\
-	                  c_sca_tm,delta_tm,N_tm,convlog_tm)
 	return RESULTS
    return meth
 
-def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
+def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True,allfields=False):
 	global th
 	if ngauss=="auto":
 		ng=ngauss_coef*n
@@ -152,22 +171,27 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
 	C=spherical.spherical_utilities(ng,n,lab)
 
 	Cext_tm = Cext_te = 0
-	c_sca_tm = []
-	c_sca_te = []
+
+	c_sca_tm = zeros((n+1,2,n),dtype=complex)
+	c_sca_te = zeros((n+1,2,n),dtype=complex)
+
+	if allfields:
+		c_all_tm = zeros((lab.particle.Nlayers+1,2,n+1,2,n),dtype=complex)
+		c_all_te = zeros((lab.particle.Nlayers+1,2,n+1,2,n),dtype=complex)
+
 	if lab.alpha==0:
 		ms = [1]
-		c_sca_tm.append(zeros(n))
-		c_sca_te.append(zeros(n))
 	else:
 		if not ms:
 			ms = xrange(n+1)
 
-	for m in ms:
-		# Instead of m=0 we start with m=-1 (axisymmetric part)
-		if m==0:
+	for mi in ms:
+		# Instead of m=0 we start with m=1 (axisymmetric part)
+		if mi==0:
 			m=1
 			axisymm = True
 		else:
+			m=mi
 			axisymm = False
 	
 		c_inc = lab.get_inc(n,m,axisymm)
@@ -207,8 +231,33 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
 				BB[:Nsize*2,:] = K11*mat(c_inc).T
 				#c_sca_tm_m = sparse.linalg.spsolve(AAtm.tocsr(),BB)[:Nsize]
 				#c_sca_te_m = sparse.linalg.spsolve(AAte.tocsr(),BB)[:Nsize]
-				c_sca_tm_m = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)[:Nsize]
-				c_sca_te_m = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)[:Nsize]
+				XXtm = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)
+				XXte = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)
+
+				if axisymm:
+					c_sca_tm[mi,0,-Nsize:] = XXtm[:Nsize]
+					c_sca_te[mi,0,-Nsize:] = XXte[:Nsize]
+				else:
+					c_sca_tm[mi,0,-Nsize/2:] = XXtm[:Nsize/2]
+					c_sca_tm[mi,1,-Nsize/2:] = XXtm[Nsize/2:Nsize]
+
+					c_sca_te[mi,0,-Nsize/2:] = XXte[:Nsize/2]
+					c_sca_te[mi,1,-Nsize/2:] = XXte[Nsize/2:Nsize]
+
+				if allfields:
+					c_all_tm[0,1,mi,:,:] = c_sca_tm[mi,:,:]
+					c_all_te[0,1,mi,:,:] = c_sca_te[mi,:,:]
+
+					if axisymm:
+					   c_all_tm[0,0,mi,0,-Nsize:] = c_inc
+					   c_all_te[0,0,mi,0,-Nsize:] = c_inc
+					else:
+					   c_all_tm[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_tm[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   c_all_te[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_te[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
 			else:
 			   # Iterative method
 			   if bnd.is_last:
@@ -223,23 +272,57 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
 				Pte = linalg.solve(c_[K11,K12],P0te)
 			   else:
 				BB = -K11*mat(c_inc).T
-				c_sca_tm_m = linalg.solve(c_[K12,P0tm],BB)
-				c_sca_te_m = linalg.solve(c_[K12,P0te],BB)
+				XXtm = array(linalg.solve(c_[K12,P0tm],BB))[:,0]
+				XXte = array(linalg.solve(c_[K12,P0te],BB))[:,0]
 
-				#cast to array
-				c_sca_tm_m = array(c_sca_tm_m)[:len(c_inc),0] 
-				c_sca_te_m = array(c_sca_te_m)[:len(c_inc),0]
+				if axisymm:
+					c_sca_tm[mi,0,-Nsize:] = XXtm[:Nsize]
+					c_sca_te[mi,0,-Nsize:] = XXte[:Nsize]
+				else:
+					c_sca_tm[mi,0,-Nsize/2:] = XXtm[:Nsize/2]
+					c_sca_tm[mi,1,-Nsize/2:] = XXtm[Nsize/2:Nsize]
 
-		CextM_tm_m = lab.get_Cext_m(m,c_sca_tm_m,axisymm)
-		CextM_te_m = lab.get_Cext_m(m,c_sca_te_m,axisymm)
+					c_sca_te[mi,0,-Nsize/2:] = XXte[:Nsize/2]
+					c_sca_te[mi,1,-Nsize/2:] = XXte[Nsize/2:Nsize]
+
+				if allfields:
+					c_all_tm[0,1,mi,:,:] = c_sca_tm[mi,:,:]
+					c_all_te[0,1,mi,:,:] = c_sca_te[mi,:,:]
+
+					if axisymm:
+					   # incident
+					   c_all_tm[0,0,mi,0,-Nsize:] = c_inc
+					   c_all_te[0,0,mi,0,-Nsize:] = c_inc
+
+					   # internal
+					   c_all_tm[1,0,mi,0,-Nsize:] = XXtm[Nsize:]
+					   c_all_te[1,0,mi,0,-Nsize:] = XXte[Nsize:]
+					else:
+					   # incident
+					   c_all_tm[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_tm[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   c_all_te[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_te[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   # internal
+					   c_all_tm[1,0,mi,0,-Nsize/2:] = XXtm[Nsize:3*Nsize/2]
+					   c_all_tm[1,0,mi,1,-Nsize/2:] = XXtm[3*Nsize/2:2*Nsize]
+
+					   c_all_te[1,0,mi,0,-Nsize/2:] = XXte[Nsize:3*Nsize/2]
+					   c_all_te[1,0,mi,1,-Nsize/2:] = XXte[3*Nsize/2:2*Nsize]
+
+		CextM_tm_m = lab.get_Cext_m(m,c_sca_tm[mi],axisymm)
+		CextM_te_m = lab.get_Cext_m(m,c_sca_te[mi],axisymm)
 		Cext_tm +=CextM_tm_m
 		Cext_te +=CextM_te_m
 		if CextM_tm_m/Cext_tm < delta_c and \
 		   CextM_te_m/Cext_te < delta_c       : break
-		c_sca_tm.append(c_sca_tm_m)
-		c_sca_te.append(c_sca_te_m)
 
-	return Cext_tm,c_sca_tm, Cext_te,c_sca_te
+	if allfields:
+		return Cext_tm,c_all_tm[:,:,:mi+1,:,:], Cext_te,c_all_te[:,:,:mi+1,:,:]
+	else:
+		return Cext_tm,c_sca_tm[:mi+1], Cext_te,c_sca_te[:mi+1]
 
 def svm_bnd_system(C,m,bnd,axisymm=False):
 	#pdb.set_trace()

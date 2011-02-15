@@ -535,22 +535,23 @@ class Lab:
 		Qext = Cext/g
 		return Cext,Qext
 
-	def get_Cext_m(self,m,c_sca,axisymm=False):
+	def get_Cext_m(self,m,c_sca_m,axisymm=False):
 		"""Return extinction cross-section Cext_m and efficiency factor Qext_m
 		for m-th term in expansion over azimuthal angle phi"""
 		sina = self.sina
 		k1 = self.k1
+		n = shape(c_sca_m)[1]
+		Nsize = n-m+1
 		if axisymm:
-			n=len(c_sca)
+			a = c_sca_m[0,-Nsize:]
 			Pna = self.Pna[1,1:n+1]
 			l = arange(1,n+1)
-			Cext = sum((1j**(-l)*c_sca).real*Pna)
+			Cext = sum((1j**(-l)*a).real*Pna)
 		else:
-			n=len(c_sca)/2+m-1
 			Pna  = self.Pna[m,m:n+1]
 			Pdna = self.Pdna[m,m:n+1]
-			a = c_sca[:n-m+1]
-			b = c_sca[n-m+1:]
+			a = c_sca_m[0,-Nsize:]
+			b = c_sca_m[1,-Nsize:]
 			l = arange(m,n+1)
 			if self.alpha==0 and m==1:
 				Cext = -sum((1j**(-l)*b*l*(l+1)/2.).real)
@@ -572,18 +573,19 @@ class Lab:
 		Qsca = Csca/g
 		return Csca,Qsca
 
-	def get_Csca_m(self,m,c_sca,axisymm=False):
+	def get_Csca_m(self,m,c_sca_m,axisymm=False):
 		"""Return scattering cross-section Csca_m and efficiency factor Qsca_m
 		for m-th term in expansion over azimuthal angle phi"""
 		k1 = self.k1
+		n = shape(c_sca_m)[1]
+		Nsize = n-m+1
 		if axisymm:
-			n=len(c_sca)
+			a = c_sca_m[0,-Nsize:]
 			l = arange(1,n+1)
-			Csca = 4*sum(abs(c_sca)**2 * l*(l+1)/(2*l+1.))
+			Csca = 4*sum(abs(a)**2 * l*(l+1)/(2*l+1.))
 		else:
-			n=len(c_sca)/2+m-1
-			a = c_sca[:n-m+1]
-			b = c_sca[n-m+1:]
+			a = c_sca_m[0,-Nsize:]
+			b = c_sca_m[1,-Nsize:]
 			l = arange(m,n+1)
 			om_ln,kap_ln,kap_nl,tau_ln = get_omegakappatau(n,m)
 			Csca = sum((
@@ -597,16 +599,16 @@ class Lab:
 
 	def get_amplitude_matrix(self,c_sca_tm,c_sca_te,Theta,phi):
 		"""Return amplitude matrices for angles Theta and phi"""
-		n_max = max(len(c_sca_tm[0]),len(c_sca_te[0]))
-		m_max = max(len(c_sca_tm),len(c_sca_te))
+		n_max = max(shape(c_sca_tm)[2],shape(c_sca_te)[2])
+		m_max = max(shape(c_sca_tm)[0],shape(c_sca_te)[0])
 		A2,A4 = self.__get_amplitude_matrix2(c_sca_tm,Theta,phi)
 		A1,A3 = self.__get_amplitude_matrix2(c_sca_te,Theta,phi)
 		return array([[-A2,A3],[A4,A1]])
 
 	def __get_amplitude_matrix2(self,c_sca,Theta,phi):
 		#debug_here()
-		n = len(c_sca[0])
-		ms = len(c_sca)
+		n  = shape(c_sca)[2]
+		ms = shape(c_sca)[0]
 		P = core.get_Pmn(ms-1,n,cos(self.alpha+Theta))
 		PnT = P[:,0,1,1:]
 		l = arange(1,n+1)
@@ -618,8 +620,9 @@ class Lab:
 			PnT = P[:,0,m,m:]
 			PdnT= P[:,1,m,m:]
 			l = arange(m,n+1)
-			a = c_sca[m][:n-m+1]
-			b = c_sca[m][n-m+1:]
+			Nsize = n-m+1
+			a = c_sca[m,0,-Nsize:]
+			b = c_sca[m,1,-Nsize:]
 			A1 -= sinT*cos(m*phi)\
 			     *sum(1j**(-l+1)*(a*PnT+1j*b*PdnT), axis=1)
 			#A2 += m*sin(m*phi)/sinT\
