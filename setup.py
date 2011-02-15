@@ -13,14 +13,14 @@ import os
 import sys
 
 DISTNAME            = 'scikits.scattpy'
-DESCRIPTION         = 'ScattPy package'
+DESCRIPTION         = 'Light Scattering methods for Python'
 LONG_DESCRIPTION    = descr
 MAINTAINER          = 'Alexander Vinokurov',
-MAINTAINER_EMAIL    = 'alexander.a.vinokurov@gmail.com',
-URL                 = 'http://vinokurov.github.com/scattpy'
+MAINTAINER_EMAIL    = 'scattpy@googlegroups.com',
+URL                 = 'http://scattpy.github.com'
 LICENSE             = 'BSD'
-DOWNLOAD_URL        = URL
-VERSION             = '0.1-git'
+VERSION             = '0.1.1'
+DOWNLOAD_URL        = 'http://github.com/downloads/ScattPy/scikits.scattpy/scikits.scattpy-'+VERSION+'.tar.gz'
 
 import setuptools
 from numpy.distutils.core import setup
@@ -71,9 +71,12 @@ if __name__ == "__main__":
         #test_suite="tester", # for python setup.py test
         zip_safe = True, # the package can run out of an .egg file
         classifiers =
-            [ 'Development Status :: 1 - Planning',
+            [ 'Development Status :: 4 - Beta',
               'Environment :: Console',
               'Intended Audience :: Developers',
               'Intended Audience :: Science/Research',
+              'Intended Audience :: Education',
               'License :: OSI Approved :: BSD License',
-              'Topic :: Scientific/Engineering'])
+              'Topic :: Scientific/Engineering :: Mathematics',
+              'Topic :: Scientific/Engineering :: Physics',
+              'Topic :: Scientific/Engineering :: Astronomy', ])

@@ -12,39 +12,67 @@ import spherical
 
 delta_c=1e-16
 ngauss_coef = 6
-Nrange = range(10,40,2)
-Ms = None
+nrange_default = arange(2,61)
+Ms=[]
 
 
 RESULTS = None
 
 class Results:
-	def __init__(self,c_sca_te,delta_te,N_te,convlog_te,\
-	                  c_sca_tm,delta_tm,N_tm,convlog_tm):
-		self.c_sca_te = c_sca_te
+	def _get_c_sca_te(self):
+		if self._allfields:
+			return self._c_all_te[0][1]
+		else:
+			return self._c_sca_te
+	def _get_c_sca_tm(self):
+		if self._allfields:
+			return self._c_all_tm[0][1]
+		else:
+			return self._c_sca_tm
+	c_sca_te = property(fget=_get_c_sca_te)
+	c_sca_tm = property(fget=_get_c_sca_tm)
+	def __init__(self,allfields,c_te,delta_te,N_te,convlog_te,\
+	                            c_tm,delta_tm,N_tm,convlog_tm):
+		self._allfields = allfields
+		if allfields:
+			self._c_all_te = c_te
+			self._c_all_tm = c_tm
+		else:
+			self._c_sca_te = c_te
+			self._c_sca_tm = c_tm
+
 		self.delta_te = delta_te
 		self.N_te = N_te
 		self.convlog_te = convlog_te
 
-		self.c_sca_tm = c_sca_tm
 		self.delta_tm = delta_tm
 		self.N_tm = N_tm
 		self.convlog_tm = convlog_tm
 
-def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=False,iterative=True):
+
+def methods_factory(meth_bnd_system):
+   def meth(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True,allfields=False):
 	print "\n","*"*60
 	print lab
 	print "*"*60
 
 	if conv_test:
-		nrange = svm_test_M0(lab,nrange,accuracyLimit,ngauss,conv_stop,iterative)
+		nrange = svm_test_M0(lab,nrange,accuracy,ngauss,conv_stop,iterative)
 
 	convlog_te = {'N':[],'delta':[]}
 	convlog_tm = {'N':[],'delta':[]}
 
+	# get nrange
+	global nrange_default
+	if nrange==None:
+		if lab.particle.layers[0].shape.nrange == None:
+			nrange = nrange_default
+		else:
+			nrange = lab.particle.layers[0].shape.nrange
+
 	# first we need at least one run of solver to have initial values
 	global Ms
-	Cext_tm,c_sca_tm, Cext_te,c_sca_te = svm_n(lab,nrange[0],ngauss,Ms,iterative)
+	Cext_tm,c_tm, Cext_te,c_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative,allfields)
 
 	delta_tm = delta_te = 1e16 # vars for best accuracies obtained
 	Cext_tm_p = Cext_tm  # value of Cext_tm at previous iteration
@@ -57,8 +85,8 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 	print "N \t\t err TM\t\t err TE"
 	for ni,n in enumerate(nrange[1:]):
 		try:
-		  Cext_tm_n,c_sca_tm_n, Cext_te_n,c_sca_te_n \
-				  = svm_n(lab,n,ngauss,Ms,iterative)
+		  Cext_tm_n,c_tm_n, Cext_te_n,c_te_n \
+				  = meth_n(meth_bnd_system,lab,n,ngauss,Ms,iterative,allfields)
 		except linalg.linalg.LinAlgError, e:
 			print "Terminating: '"+str(e)+"' error received"
 			break
@@ -81,12 +109,12 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 
 		if 0<delta_tm_n<delta_tm:
 			delta_tm = delta_tm_n
-			c_sca_tm = c_sca_tm_n
+			c_tm = c_tm_n
 			N_tm = n
 
 		if 0<delta_te_n<delta_te:
 			delta_te = delta_te_n
-			c_sca_te = c_sca_te_n
+			c_te = c_te_n
 			N_te = n
 
 		if conv_stop and\
@@ -95,9 +123,9 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 			print "Terminating: no more convergence expected"
 			break
 
-		if not accuracyLimit==None and\
+		if not accuracy==None and\
 		   delta_tm>=0 and delta_te>=0 and\
-		   delta_tm+delta_te<accuracyLimit:
+		   delta_tm+delta_te<accuracy:
 			print "Terminating: accuracy limit obtained"
 			break
 
@@ -114,25 +142,27 @@ def svm(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,conv_test=Fal
 			print "Terminating: no more convergence expected"
 			break
 
+	global RESULTS
+	res = Results(allfields,c_te,delta_te,N_te,convlog_te,\
+	                        c_tm,delta_tm,N_tm,convlog_tm)
+	RESULTS = res
 	
 	# Print results
-	Cext_tm,Qext_tm = lab.get_Cext(c_sca_tm)
-	Cext_te,Qext_te = lab.get_Cext(c_sca_te)
-	Csca_tm,Qsca_tm = lab.get_Csca(c_sca_tm)
-	Csca_te,Qsca_te = lab.get_Csca(c_sca_te)
-	n_tm = len(c_sca_tm[0])
-	n_te = len(c_sca_te[0])
+	Cext_tm,Qext_tm = lab.get_Cext(RESULTS.c_sca_tm)
+	Cext_te,Qext_te = lab.get_Cext(RESULTS.c_sca_te)
+	Csca_tm,Qsca_tm = lab.get_Csca(RESULTS.c_sca_tm)
+	Csca_te,Qsca_te = lab.get_Csca(RESULTS.c_sca_te)
+	n_tm = shape(RESULTS.c_sca_tm)[2]
+	n_te = shape(RESULTS.c_sca_te)[2]
 
 	print "TM mode: Qext=%(Qext_tm)20.16e , Qsca=%(Qsca_tm)20.16e, delta=%(delta_tm)5.1e , n=%(n_tm)s" % locals()
 
 	print "TE mode: Qext=%(Qext_te)20.16e , Qsca=%(Qsca_te)20.16e, delta=%(delta_te)5.1e , n=%(n_te)s" % locals()
 
-	global RESULTS
-	RESULTS = Results(c_sca_te,delta_te,N_te,convlog_te,\
-	                  c_sca_tm,delta_tm,N_tm,convlog_tm)
-	return [c_sca_tm,delta_tm],[c_sca_te,delta_te]
+	return RESULTS
+   return meth
 
-def svm_n(lab,n,ngauss,ms=None,iterative=True):
+def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True,allfields=False):
 	global th
 	if ngauss=="auto":
 		ng=ngauss_coef*n
@@ -141,22 +171,27 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 	C=spherical.spherical_utilities(ng,n,lab)
 
 	Cext_tm = Cext_te = 0
-	c_sca_tm = []
-	c_sca_te = []
+
+	c_sca_tm = zeros((n+1,2,n),dtype=complex)
+	c_sca_te = zeros((n+1,2,n),dtype=complex)
+
+	if allfields:
+		c_all_tm = zeros((lab.particle.Nlayers+1,2,n+1,2,n),dtype=complex)
+		c_all_te = zeros((lab.particle.Nlayers+1,2,n+1,2,n),dtype=complex)
+
 	if lab.alpha==0:
 		ms = [1]
-		c_sca_tm.append(zeros(n))
-		c_sca_te.append(zeros(n))
 	else:
 		if not ms:
 			ms = xrange(n+1)
 
-	for m in ms:
-		# Instead of m=0 we start with m=-1 (axisymmetric part)
-		if m==0:
+	for mi in ms:
+		# Instead of m=0 we start with m=1 (axisymmetric part)
+		if mi==0:
 			m=1
 			axisymm = True
 		else:
+			m=mi
 			axisymm = False
 	
 		c_inc = lab.get_inc(n,m,axisymm)
@@ -171,7 +206,7 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 
 		for bnd in lab.boundaries_reversed():
 			K11,K12,K21tm,K21te,K22tm,K22te =\
-			   svm_bnd_system(C,m,bnd,axisymm)
+			   meth_bnd_system(C,m,bnd,axisymm)
 			if not iterative:
 			   # Single matrix method
 			   Nlay = bnd.layer_no
@@ -196,8 +231,33 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 				BB[:Nsize*2,:] = K11*mat(c_inc).T
 				#c_sca_tm_m = sparse.linalg.spsolve(AAtm.tocsr(),BB)[:Nsize]
 				#c_sca_te_m = sparse.linalg.spsolve(AAte.tocsr(),BB)[:Nsize]
-				c_sca_tm_m = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)[:Nsize]
-				c_sca_te_m = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)[:Nsize]
+				XXtm = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)
+				XXte = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)
+
+				if axisymm:
+					c_sca_tm[mi,0,-Nsize:] = XXtm[:Nsize]
+					c_sca_te[mi,0,-Nsize:] = XXte[:Nsize]
+				else:
+					c_sca_tm[mi,0,-Nsize/2:] = XXtm[:Nsize/2]
+					c_sca_tm[mi,1,-Nsize/2:] = XXtm[Nsize/2:Nsize]
+
+					c_sca_te[mi,0,-Nsize/2:] = XXte[:Nsize/2]
+					c_sca_te[mi,1,-Nsize/2:] = XXte[Nsize/2:Nsize]
+
+				if allfields:
+					c_all_tm[0,1,mi,:,:] = c_sca_tm[mi,:,:]
+					c_all_te[0,1,mi,:,:] = c_sca_te[mi,:,:]
+
+					if axisymm:
+					   c_all_tm[0,0,mi,0,-Nsize:] = c_inc
+					   c_all_te[0,0,mi,0,-Nsize:] = c_inc
+					else:
+					   c_all_tm[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_tm[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   c_all_te[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_te[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
 			else:
 			   # Iterative method
 			   if bnd.is_last:
@@ -212,23 +272,57 @@ def svm_n(lab,n,ngauss,ms=None,iterative=True):
 				Pte = linalg.solve(c_[K11,K12],P0te)
 			   else:
 				BB = -K11*mat(c_inc).T
-				c_sca_tm_m = linalg.solve(c_[K12,P0tm],BB)
-				c_sca_te_m = linalg.solve(c_[K12,P0te],BB)
+				XXtm = array(linalg.solve(c_[K12,P0tm],BB))[:,0]
+				XXte = array(linalg.solve(c_[K12,P0te],BB))[:,0]
 
-				#cast to array
-				c_sca_tm_m = array(c_sca_tm_m)[:len(c_inc),0] 
-				c_sca_te_m = array(c_sca_te_m)[:len(c_inc),0]
+				if axisymm:
+					c_sca_tm[mi,0,-Nsize:] = XXtm[:Nsize]
+					c_sca_te[mi,0,-Nsize:] = XXte[:Nsize]
+				else:
+					c_sca_tm[mi,0,-Nsize/2:] = XXtm[:Nsize/2]
+					c_sca_tm[mi,1,-Nsize/2:] = XXtm[Nsize/2:Nsize]
 
-		CextM_tm_m = lab.get_Cext_m(m,c_sca_tm_m,axisymm)
-		CextM_te_m = lab.get_Cext_m(m,c_sca_te_m,axisymm)
+					c_sca_te[mi,0,-Nsize/2:] = XXte[:Nsize/2]
+					c_sca_te[mi,1,-Nsize/2:] = XXte[Nsize/2:Nsize]
+
+				if allfields:
+					c_all_tm[0,1,mi,:,:] = c_sca_tm[mi,:,:]
+					c_all_te[0,1,mi,:,:] = c_sca_te[mi,:,:]
+
+					if axisymm:
+					   # incident
+					   c_all_tm[0,0,mi,0,-Nsize:] = c_inc
+					   c_all_te[0,0,mi,0,-Nsize:] = c_inc
+
+					   # internal
+					   c_all_tm[1,0,mi,0,-Nsize:] = XXtm[Nsize:]
+					   c_all_te[1,0,mi,0,-Nsize:] = XXte[Nsize:]
+					else:
+					   # incident
+					   c_all_tm[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_tm[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   c_all_te[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
+					   c_all_te[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   # internal
+					   c_all_tm[1,0,mi,0,-Nsize/2:] = XXtm[Nsize:3*Nsize/2]
+					   c_all_tm[1,0,mi,1,-Nsize/2:] = XXtm[3*Nsize/2:2*Nsize]
+
+					   c_all_te[1,0,mi,0,-Nsize/2:] = XXte[Nsize:3*Nsize/2]
+					   c_all_te[1,0,mi,1,-Nsize/2:] = XXte[3*Nsize/2:2*Nsize]
+
+		CextM_tm_m = lab.get_Cext_m(m,c_sca_tm[mi],axisymm)
+		CextM_te_m = lab.get_Cext_m(m,c_sca_te[mi],axisymm)
 		Cext_tm +=CextM_tm_m
 		Cext_te +=CextM_te_m
 		if CextM_tm_m/Cext_tm < delta_c and \
 		   CextM_te_m/Cext_te < delta_c       : break
-		c_sca_tm.append(c_sca_tm_m)
-		c_sca_te.append(c_sca_te_m)
 
-	return Cext_tm,c_sca_tm, Cext_te,c_sca_te
+	if allfields:
+		return Cext_tm,c_all_tm[:,:,:mi+1,:,:], Cext_te,c_all_te[:,:,:mi+1,:,:]
+	else:
+		return Cext_tm,c_sca_tm[:mi+1], Cext_te,c_sca_te[:mi+1]
 
 def svm_bnd_system(C,m,bnd,axisymm=False):
 	#pdb.set_trace()
@@ -345,6 +439,108 @@ def svm_bnd_system(C,m,bnd,axisymm=False):
 
 	return K11,K12,K21tm,K21te,K22tm,K22te
 
+def ebcm_bnd_system(C,m,bnd,axisymm=False):
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	# Axisymmetric part
+	if axisymm:
+		Ajjtm = spherical.mat_ebcm_axi_tm(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjtm = spherical.mat_ebcm_axi_tm(C,m,'h','j',bnd.e12,bnd.e21)
+		Ajjte = spherical.mat_ebcm_axi_te(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjte = spherical.mat_ebcm_axi_te(C,m,'h','j',bnd.e12,bnd.e21)
+
+		nshape = Ajjtm.shape
+		nsize = nshape[0]
+
+		K11 = bmat([[ identity(nsize) ],\
+			    [ zeros(nshape)   ] ])
+
+		K12 = bmat([[ zeros(nshape)   ],\
+			    [ identity(nsize) ] ])
+
+		K21tm = bmat([[ Ahjtm ],\
+			      [-Ajjtm ] ])
+
+		K21te = bmat([[ Ahjte ],\
+			      [-Ajjte ] ])
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			Ajhtm = spherical.mat_ebcm_axi_tm(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhtm = spherical.mat_ebcm_axi_tm(C,m,'h','h',bnd.e12,bnd.e21)
+			Ajhte = spherical.mat_ebcm_axi_te(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhte = spherical.mat_ebcm_axi_te(C,m,'h','h',bnd.e12,bnd.e21)
+
+			K22tm = bmat([[ Ahhtm ],\
+				      [-Ajhtm ] ])
+
+			K22te = bmat([[ Ahhte ],\
+				      [-Ajhte ] ])
+		else:
+			K22tm=K22te=mat(zeros_like(K11))
+
+	# Non-axisymmetric part
+	else:
+		Ajjtm = spherical.mat_ebcm_naxi_tm(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjtm = spherical.mat_ebcm_naxi_tm(C,m,'h','j',bnd.e12,bnd.e21)
+		Ajjte = spherical.mat_ebcm_naxi_te(C,m,'j','j',bnd.e12,bnd.e21)
+		Ahjte = spherical.mat_ebcm_naxi_te(C,m,'h','j',bnd.e12,bnd.e21)
+
+		nshape = Ajjtm.shape
+		nsize = nshape[0]
+
+		K11 = bmat([[ identity(nsize) ],\
+			    [ zeros(nshape)   ] ])
+
+		K12 = bmat([[ zeros(nshape)   ],\
+			    [ identity(nsize) ] ])
+
+		K21tm = bmat([[ Ahjtm ],\
+			      [-Ajjtm ] ])
+
+		K21te = bmat([[ Ahjte ],\
+			      [-Ajjte ] ])
+
+		# For not-last boundaries we need Ah2,Bh2, etc.
+		if not bnd.is_last:
+			Ajhtm = spherical.mat_ebcm_naxi_tm(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhtm = spherical.mat_ebcm_naxi_tm(C,m,'h','h',bnd.e12,bnd.e21)
+			Ajhte = spherical.mat_ebcm_naxi_te(C,m,'j','h',bnd.e12,bnd.e21)
+			Ahhte = spherical.mat_ebcm_naxi_te(C,m,'h','h',bnd.e12,bnd.e21)
+
+			K22tm = bmat([[ Ahhtm ],\
+				      [-Ajhtm ] ])
+
+			K22te = bmat([[ Ahhte ],\
+				      [-Ajhte ] ])
+		else:
+			K22tm = K22te = mat(zeros_like(K11))
+
+	return K11,K12,K21tm,K21te,K22tm,K22te
+
+def pmm_bnd_system(C,m,bnd,axisymm=False):
+	lay = bnd.layer_no
+	C.set_layer_no(lay)
+	if axisymm:
+		Atm = spherical.mat_pmm_axi_tm(C,bnd.e12,bnd.shape.xv)
+	else:
+		Atm = spherical.mat_pmm_naxi_tm(C,m,bnd.e12,bnd.shape.xv)
+
+	nsize = Atm.shape[0]/2
+	nshape = (nsize,nsize)
+
+	K11 = Atm[:,2*nsize:]
+	K12 = Atm[:,:nsize]
+	K21tm=K21te = Atm[:,nsize:2*nsize]
+	#pdb.set_trace()
+
+	if not bnd.is_last:
+		K22tm=K22te=mat(zeros_like(K11))
+	else:
+		K22tm=K22te=mat(zeros_like(K11))
+
+	return K11,K12,K21tm,K21te,K22tm,K22te
+
+
 def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 	Bs = Br = 0
 	k1 = bnd.k1
@@ -378,7 +574,7 @@ def get_Bs_Br(bnd,Jn1,Jn2,Hn1,Pn):
 
 	return Bs,Br
 
-def svm_test_M0(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,iterative=True):
+def meth_test_M0(meth_bnd_system,lab,nrange,accuracy=None,ngauss="auto",conv_stop=True,iterative=True):
 	print "\n","*"*60
 	print "Convergence test: axisymmetric part"
 	print "*"*60
@@ -388,7 +584,7 @@ def svm_test_M0(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,itera
 
 	# first we need at least one run of solver to have initial values
 	Ms = [0]
-	Cext_tm,c_sca_tm, Cext_te,c_sca_te = svm_n(lab,nrange[0],ngauss,Ms,iterative)
+	Cext_tm,c_sca_tm, Cext_te,c_sca_te = meth_n(meth_bnd_system,lab,nrange[0],ngauss,Ms,iterative)
 
 	delta_tm = delta_te = 1e16 # vars for best accuracies obtained
 	Cext_tm_p = Cext_tm  # value of Cext_tm at previous iteration
@@ -433,9 +629,9 @@ def svm_test_M0(lab,nrange,accuracyLimit=None,ngauss="auto",conv_stop=True,itera
 			   print "Terminating: no more convergence expected"
 			   break
 
-		if not accuracyLimit==None:
-			if delta_tm+delta_te<accuracyLimit:
-				print "Terminating: accuracy limit obtained"
+		if not accuracy==None:
+			if delta_tm+delta_te<accuracy:
+				print "Terminating: required accuracy obtained"
 				break
 
 		Cext_tm_p = Cext_tm_n
@@ -471,3 +667,13 @@ def test_cheb(nr=xrange(5,50,5),ngauss=80):
 def test_cprof():
 	import cProfile
 	#cProfile.run('test_svm
+
+svm = methods_factory(svm_bnd_system)
+ebcm = methods_factory(ebcm_bnd_system)
+pmm0 = methods_factory(pmm_bnd_system)
+
+def pmm(lab,nrange=None,accuracy=1e-10,accuracy_criteria=None,ngauss=200,conv_stop=True,conv_test=False,iterative=True):
+	print "Warning: layered structures aren't supported"
+	print "Warning: TE mode isn't supported"
+	return pmm0(lab,nrange,accuracy,accuracy_criteria,ngauss,conv_stop,conv_test,iterative)
+

@@ -24,6 +24,7 @@ class Shape(object):
 		"""Surface equation and its 2 derivatives in spherical coordinates.
 			Returns r, r\', r\'\' """
 		return self._R(theta),self._Rd(theta),self._Rdd(theta)
+	nrange = None
 
 class ShapeSphere(Shape):
 	"""Shape class for spheres with radius R=xv"""
@@ -84,6 +85,7 @@ class ShapeSpheroid(Shape):
 		return self.xv/self.ab**(1./3.)
 	a = property(fget=_get_a)
 	b = property(fget=_get_b)
+	nrange = arange(2,80,2)
 
 class ShapeChebyshev(Shape):
 	"""Shape class for Chebyshev particle shapes"""
@@ -91,6 +93,7 @@ class ShapeChebyshev(Shape):
 		self.N = N
 		self.eps = eps
 		self.xv = xv
+		self.nrange = arange(N,min([100,N*20]),N)
 	def __str__(self):
 		return "Chebyshev particle with N=%(N)s eps=%(eps)s, xv=%(xv)s" %self.__dict__
 	def copy(self):
@@ -132,7 +135,7 @@ class Particle(object):
 		return s
 	def copy(self):
 		kwargs = self.copy_args
-		del kwargs['self']
+		if 'self' in kwargs: del kwargs['self']
 		return self.__class__(**kwargs)
 	layers = []
 	def _get_xv(self):
@@ -272,7 +275,7 @@ class Layered_EqShape_Particle(Particle):
 				+" with layer series "+ms_str+"\n"\
 				+" with volume fractions "+vols_str
 
-class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
+class Layered_EqShapeEqVol_Particle(Layered_EqShape_Particle):
 	"""Layered particle whose layers have the same shapes,
 	i.e. differ only with parameter xv, each layer has the same volume.
 
@@ -280,7 +283,7 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 	A multilayered spheroid with 8 cyclically repeating equivolume layers of matter 
 	and vacuum can be constructed with the following command:
 
-	P = Layered_EqShape_EqVolume_Particle( \\
+	P = Layered_EqShapeEqVol_Particle( \\
 	     ShapeSpheroid, {'ab':1.5,'xv':1.4},\\
              ms=[1.33,1.0],NLayers=8)
 """
@@ -291,7 +294,7 @@ class Layered_EqShape_EqVolume_Particle(Layered_EqShape_Particle):
 				.__init__(shape0,params,ms,volumes,Nlayers)
 		self.copy_args = copy_args
 
-class EffMedium_Particle(HomogeneousParticle):
+class EMT_Particle(HomogeneousParticle):
 	"""Particle using effective medium theory, an approximation of 
 	inhomogeneous particles with homogeneous one having averaged
 	complex refrecive index m. Average mixing rule is used."""
@@ -323,7 +326,7 @@ class EffMedium_Particle(HomogeneousParticle):
 		return sum(array(ms)*array(vols))/sum(array(vols))
 
 
-class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
+class EMT_MGarn_Particle(EMT_Particle):
 	"""Particle using Maxwell-Garnett effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
@@ -337,7 +340,7 @@ class EffMedium_MaxwellGarnett_Particle(EffMedium_Particle):
 		ee = e2*(1 +(3*p*(e1-e2)/(e1+2*e2))/(1-p*(e1-e2)/(e1+2.*e2)))
 		return sqrt(ee)
 
-class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
+class EMT_IMGarn_Particle(EMT_Particle):
 	"""Particle using inverse Maxwell-Garnett effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
@@ -351,7 +354,7 @@ class EffMedium_InvMaxwellGarnett_Particle(EffMedium_Particle):
 		ee = e2*(1 +(3*p*(e1-e2)/(e1+2*e2))/(1-p*(e1-e2)/(e1+2.*e2)))
 		return sqrt(ee)
 
-class EffMedium_Bruggeman_Particle(EffMedium_Particle):
+class EMT_Brugg_Particle(EMT_Particle):
 	"""Particle using Bruggeman effective medium theory, 
 	an approximation of inhomogeneous particles with homogeneous 
 	one having averaged complex refrecive index m.
@@ -369,6 +372,58 @@ class EffMedium_Bruggeman_Particle(EffMedium_Particle):
 		c = -(p1+p2)*e1*e2
 		ee = (-b+sqrt(b**2-4*a*c))/(2*a)
 		return sqrt(ee)
+
+
+def ellipsoid_confocal_abc(a,b,c,xv1,prec=1e-15):
+                """Returns parameters aT,bT,cT for ellipssoid,
+                that is confocal with esllsispoid(a,b,c)"""
+                VxD = xv1**3
+                aT,sign,inv,error,da = a,1,0,1.0,a/100.
+                while error > prec:
+                        aT = aT - da*sign
+                        bT = (b**2 - a**2 + aT**2)
+                        cT = (c**2 - a**2 + aT**2)
+                        if bT < 0:
+                                bT = 0
+                        else:
+                                bT = bT**0.5
+                        if cT < 0:
+                                cT = 0
+                        else:
+                                cT = cT**0.5
+                        VxC = aT*bT*cT
+                        if VxC > 0:
+                                if VxC < VxD:
+                                        sign = -1
+                                        inv = 1
+                                else:
+                                        sign = 1
+                                        if inv == 1:
+                                                inv = 0
+                                                da = da/2.0
+                                error = abs(VxD - VxC)/(VxD + VxC)
+
+                        else:
+                                aT = aT + da
+                                da = da/2.0
+                return aT,bT,cT
+
+class LayeredConfocalSpheroid(Layered_EqShape_Particle):
+	def __init__(self,ab,xv,ms,volumes,Nlayers,prolate=True):
+		copy_args = locals()
+		params = {'ab':ab,'xv':xv,'prolate':prolate}
+		super(self.__class__,self)\
+                                .__init__(ShapeSpheroid,params,ms,volumes,Nlayers)
+                self.copy_args = copy_args
+		if self.Nlayers>1:
+		   a0 = self.layers[0].shape.a
+		   b0 = self.layers[0].shape.b
+		   for lay in self.layers[1:]:
+			if lay.shape.prolate:
+			   b,c,a = ellipsoid_confocal_abc(b0,b0,a0,lay.shape.xv)
+			else:
+			   a,c,b = ellipsoid_confocal_abc(a0,a0,b0,lay.shape.xv)
+			lay.shape.ab=a/b
 
 class Boundary(object):
 	"""Boundary class: describes a surface between layers and bounding layers' 
@@ -480,22 +535,23 @@ class Lab:
 		Qext = Cext/g
 		return Cext,Qext
 
-	def get_Cext_m(self,m,c_sca,axisymm=False):
+	def get_Cext_m(self,m,c_sca_m,axisymm=False):
 		"""Return extinction cross-section Cext_m and efficiency factor Qext_m
 		for m-th term in expansion over azimuthal angle phi"""
 		sina = self.sina
 		k1 = self.k1
+		n = shape(c_sca_m)[1]
+		Nsize = n-m+1
 		if axisymm:
-			n=len(c_sca)
+			a = c_sca_m[0,-Nsize:]
 			Pna = self.Pna[1,1:n+1]
 			l = arange(1,n+1)
-			Cext = sum((1j**(-l)*c_sca).real*Pna)
+			Cext = sum((1j**(-l)*a).real*Pna)
 		else:
-			n=len(c_sca)/2+m-1
 			Pna  = self.Pna[m,m:n+1]
 			Pdna = self.Pdna[m,m:n+1]
-			a = c_sca[:n-m+1]
-			b = c_sca[n-m+1:]
+			a = c_sca_m[0,-Nsize:]
+			b = c_sca_m[1,-Nsize:]
 			l = arange(m,n+1)
 			if self.alpha==0 and m==1:
 				Cext = -sum((1j**(-l)*b*l*(l+1)/2.).real)
@@ -517,18 +573,19 @@ class Lab:
 		Qsca = Csca/g
 		return Csca,Qsca
 
-	def get_Csca_m(self,m,c_sca,axisymm=False):
+	def get_Csca_m(self,m,c_sca_m,axisymm=False):
 		"""Return scattering cross-section Csca_m and efficiency factor Qsca_m
 		for m-th term in expansion over azimuthal angle phi"""
 		k1 = self.k1
+		n = shape(c_sca_m)[1]
+		Nsize = n-m+1
 		if axisymm:
-			n=len(c_sca)
+			a = c_sca_m[0,-Nsize:]
 			l = arange(1,n+1)
-			Csca = 4*sum(abs(c_sca)**2 * l*(l+1)/(2*l+1.))
+			Csca = 4*sum(abs(a)**2 * l*(l+1)/(2*l+1.))
 		else:
-			n=len(c_sca)/2+m-1
-			a = c_sca[:n-m+1]
-			b = c_sca[n-m+1:]
+			a = c_sca_m[0,-Nsize:]
+			b = c_sca_m[1,-Nsize:]
 			l = arange(m,n+1)
 			om_ln,kap_ln,kap_nl,tau_ln = get_omegakappatau(n,m)
 			Csca = sum((
@@ -542,16 +599,16 @@ class Lab:
 
 	def get_amplitude_matrix(self,c_sca_tm,c_sca_te,Theta,phi):
 		"""Return amplitude matrices for angles Theta and phi"""
-		n_max = max(len(c_sca_tm[0]),len(c_sca_te[0]))
-		m_max = max(len(c_sca_tm),len(c_sca_te))
+		n_max = max(shape(c_sca_tm)[2],shape(c_sca_te)[2])
+		m_max = max(shape(c_sca_tm)[0],shape(c_sca_te)[0])
 		A2,A4 = self.__get_amplitude_matrix2(c_sca_tm,Theta,phi)
 		A1,A3 = self.__get_amplitude_matrix2(c_sca_te,Theta,phi)
 		return array([[-A2,A3],[A4,A1]])
 
 	def __get_amplitude_matrix2(self,c_sca,Theta,phi):
 		#debug_here()
-		n = len(c_sca[0])
-		ms = len(c_sca)
+		n  = shape(c_sca)[2]
+		ms = shape(c_sca)[0]
 		P = core.get_Pmn(ms-1,n,cos(self.alpha+Theta))
 		PnT = P[:,0,1,1:]
 		l = arange(1,n+1)
@@ -563,8 +620,9 @@ class Lab:
 			PnT = P[:,0,m,m:]
 			PdnT= P[:,1,m,m:]
 			l = arange(m,n+1)
-			a = c_sca[m][:n-m+1]
-			b = c_sca[m][n-m+1:]
+			Nsize = n-m+1
+			a = c_sca[m,0,-Nsize:]
+			b = c_sca[m,1,-Nsize:]
 			A1 -= sinT*cos(m*phi)\
 			     *sum(1j**(-l+1)*(a*PnT+1j*b*PdnT), axis=1)
 			#A2 += m*sin(m*phi)/sinT\

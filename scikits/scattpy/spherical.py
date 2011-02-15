@@ -84,6 +84,13 @@ class spherical_utilities(object):
 	def Angd(self,m):
 		return self.data_Angd[:,m,m:]
 
+def get_Jn(n,x):
+	return array([special.sph_jn(n,xl) for xl in x])
+
+def get_JnHn(n,x):
+	JnYn = array([special.sph_jnyn(n,xl) for xl in x])
+	return JnYn[:,:2,:],JnYn[:,:2,:]+1j*JnYn[:,2:,:]
+
 
 def matA0(C,m,jh,i,coef):
 	Rad = C.Rad(m,jh,i)
@@ -234,3 +241,93 @@ def matA44(C,m,jh,i,e21,B=None):
 	A0 = matA0(C,m,jh,i,coef=fa)
 	G0 = matG0(C,m,jh,i,coef=fg)
 	return B + (e21-1)*(G0-A0)
+
+############### EBCM #############################
+
+def mat_ebcm_axi_tm(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.axitm(Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,e12,C.weights)
+
+def mat_ebcm_axi_te(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.axite(Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,C.weights)
+
+def mat_ebcm_naxi_tm(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.naxitm(m,Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.sint,C.cost,k1,k2,e12,e21,C.weights)
+
+def mat_ebcm_naxi_te(C,m,jh1,jh2,e12,e21):
+        k1=C.ki[1]
+        k2=C.ki[2]
+	Rad1  = C.Rad (m,jh1,1)
+	Radd1 = C.Radd(m,jh1,1)
+	Rad2  = C.Rad (m,jh2,2)
+	Radd2 = C.Radd(m,jh2,2)
+	Angm = C.Ang(m)
+	Angmd= C.Angd(m)
+	return f_utils.naxite(m,Rad1,Radd1,Rad2,Radd2,Angm,Angmd,\
+			C.r,C.rd,C.rdd,C.sint,C.cost,k1,k2,e12,e21,C.weights)
+
+################### PMM ####################################
+
+def mat_pmm_axi_tm(C,e12,xv):
+        m=1
+	k1=C.ki[1]
+	k2=C.ki[2]
+	Radj1 = C.Rad (1,'j',1)
+	Raddj1= C.Radd(1,'j',1)
+	Radj2 = C.Rad (1,'j',2)
+	Raddj2= C.Radd(1,'j',2)
+	Radh1 = C.Rad (1,'h',1)
+	Raddh1= C.Radd(1,'h',1)
+	Angm  = C.Ang(1)
+	Angmd = C.Angd(1)
+	#RadjR = get_Jn(C.n,[xv*k2])[0,0,m:]
+	#RadhR = get_JnHn(C.n,[xv*k1])[1][0,0,m:]
+	RadjR = ones(shape(Radj1[1]))
+	RadhR = ones(shape(Radj1[1]))
+	return f_utils.pmmaxitm(Radj1,Raddj1,Radj2,Raddj2,Radh1,Raddh1,Angm,Angmd,\
+			RadjR,RadhR,C.r,C.rd,C.sint,C.ctgt,k1,k2,e12,C.weights)
+
+def mat_pmm_naxi_tm(C,m,e12,xv):
+	k1=C.ki[1]
+	k2=C.ki[2]
+	Radj1 = C.Rad (m,'j',1)
+	Raddj1= C.Radd(m,'j',1)
+	Radj2 = C.Rad (m,'j',2)
+	Raddj2= C.Radd(m,'j',2)
+	Radh1 = C.Rad (m,'h',1)
+	Raddh1= C.Radd(m,'h',1)
+	Angm  = C.Ang(m)
+	Angmd = C.Angd(m)
+	#RadjR = get_Jn(C.n,[xv*k2])[0,0,m:]
+	#RadhR = get_JnHn(C.n,[xv*k1])[1][0,0,m:]
+	RadjR = ones(shape(Radj1[1]))
+	RadhR = ones(shape(Radj1[1]))
+	return f_utils.pmmnaxitm(Radj1,Raddj1,Radj2,Raddj2,Radh1,Raddh1,Angm,Angmd,\
+			RadjR,RadhR,C.r,C.rd,C.sint,C.cost,k1,k2,e12,C.weights)
+
