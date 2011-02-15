@@ -82,15 +82,17 @@ def get_If(particle,xs,ys,zs):
 	return array(f_coords.get_i(fR,xs,ys,zs))
 
 def get_all(particle,xs,ys,zs):
+	global Hmax,Hmin,Emax,Emin,Pmax,Pmin
 	LAB = scattpy.Lab(particle,0.)
+	print "solve"
+	r = scattpy.svm(LAB,arange(10,40,2),ngauss=200)
+	from scikits.scattpy.svm import RESULTS
+
+	print "indicator function"
 	dx=xs[1]-xs[0]
 	dy=ys[1]-ys[0]
 	dz=zs[1]-zs[0]
 	I = get_I(particle,xs,ys,zs)
-
-	print "solve"
-	r = scattpy.svm(LAB,arange(10,40,2),ngauss=200)
-	from scikits.scattpy.svm import RESULTS
 
 	print "scattered vector field"
 	Rs = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
@@ -108,6 +110,11 @@ def get_all(particle,xs,ys,zs):
 	Hi = [real(Hi[0])*I,real(Hi[1])*I,real(Hi[2])*I]
 	Ei = [real(Ei[0])*I,real(Ei[1])*I,real(Ei[2])*I]
 	Pi = vector_cross(Ei,Hi)
+
+	Emax = max(sqrt(Ei[0]**2+Ei[1]**2+Ei[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	Hmax = max(sqrt(Hi[0]**2+Hi[1]**2+Hi[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	Pmax = max(sqrt(Pi[0]**2+Pi[1]**2+Pi[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	Hmin=Emin=Pmin = 0
 
 	return Hs,Es,Ps,Hi,Ei,Pi
 
@@ -136,11 +143,23 @@ def plot_vf(vf,xs,ys,zs,str):
 #		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
 #		pylab.quiver(X,Y,(Fx)[:,:,n],(Fy)[:,:,n])
 
-def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot'):
+def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype="P"):
 	"""Plot vector field using colored linear integral convolution"""
 	from scikits import vectorplot as vp
 	from scipy import interpolate
-	Fx,Fy,Fz = F
+	global Hmax,Hmin,Emax,Emin,Pmax,Pmin
+	if ftype == "H":
+		Fmax = Hmax
+		Fmin = Hmin
+	elif ftype == "E":
+		Fmax = Emax
+		Fmin = Emin
+	elif ftype == "P":
+		Fmax = Pmax
+		Fmin = Pmin
+	else:
+		Fmax = None
+		Fmin = None
 	n = (len(xs)-1)/2
 	if str == 'xz':
 		x1=xs
@@ -171,7 +190,7 @@ def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot'):
 	image = vp.line_integral_convolution(nF1.astype(float32), nF2.astype(float32), texture, kernel)
 
 	imax = max(image.reshape(nsize**2))
-	pylab.figimage(sqrt(nF1**2+nF2**2)*(image+imax)/imax/2,cmap=cmap)
+	pylab.figimage(sqrt(nF1**2+nF2**2)*(image+imax)/imax/2,cmap=cmap,vmin=Fmin,vmax=Fmax)
 	pylab.show()
 
 def curl(F,dx,dy,dz):
