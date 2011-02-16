@@ -35,9 +35,9 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 		sPoint = f_coords.point_c2s(cPoint)
 		r,t,p = sPoint
 		cost = cos(t)
+		n  = shape(coefs)[2]
 		for m,coefs_m in enumerate(coefs):
 			if m==0:continue # skip axisymmetric part
-			n=len(coefs_m)/2+m-1
 		        P,Pd = get_Pmn(m,n,[cost])[0]
         		Pml  = P[m,m:n+1]
 		        Pdml = Pd[m,m:n+1]
@@ -48,8 +48,9 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 			else:
 	        		Rad = Hank[0,0,m:]
         			Radd= Hank[0,1,m:]
-		        a = coefs_m[:n-m+1]
-        		b = coefs_m[n-m+1:]
+			Nsize = n-m+1
+		        a = coefs_m[0,-Nsize:]
+        		b = coefs_m[1,-Nsize:]
 	        	l = arange(m,n+1)
 
 			U += sum(a*Rad*Pml)*cos(m*p)
@@ -85,8 +86,7 @@ def get_all(particle,xs,ys,zs):
 	global Hmax,Hmin,Emax,Emin,Pmax,Pmin
 	LAB = scattpy.Lab(particle,0.)
 	print "solve"
-	r = scattpy.svm(LAB,arange(10,40,2),ngauss=200)
-	from scikits.scattpy.svm import RESULTS
+	RESULTS = scattpy.svm(LAB,allfields=True)
 
 	print "indicator function"
 	dx=xs[1]-xs[0]
@@ -94,29 +94,38 @@ def get_all(particle,xs,ys,zs):
 	dz=zs[1]-zs[0]
 	I = get_I(particle,xs,ys,zs)
 
+	I1 = where(I==0,1,0)
+
 	print "scattered vector field"
-	Rs = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
-	Hs = curl(Rs,dx,dy,dz)
-	Es = array(curl(Hs,dx,dy,dz))*(-1./1j)
-	Hs = [real(Hs[0])*I,real(Hs[1])*I,real(Hs[2])*I]
-	Es = [real(Es[0])*I,real(Es[1])*I,real(Es[2])*I]
-	Ps = vector_cross(Es,Hs)
+	Rsca = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
+	Hsca = curl(Rsca,dx,dy,dz)
+	Esca = array(curl(Hsca,dx,dy,dz))*(-1./1j)
+	Hsca = [real(Hsca[0])*I,real(Hsca[1])*I,real(Hsca[2])*I]
+	Esca = [real(Esca[0])*I,real(Esca[1])*I,real(Esca[2])*I]
+	Psca = vector_cross(Esca,Hsca)
 
 	print "incident vector field"
-	c_inc = [[0],LAB.get_inc(len(RESULTS.c_sca_tm[1])/2,1)]
-	Ri = get_Ui_Vr(xs,ys,zs,c_inc,LAB.k1,'j')
-	Hi = curl(Ri,dx,dy,dz)
-	Ei = array(curl(Hi,dx,dy,dz))*(-1./1j)
-	Hi = [real(Hi[0])*I,real(Hi[1])*I,real(Hi[2])*I]
-	Ei = [real(Ei[0])*I,real(Ei[1])*I,real(Ei[2])*I]
-	Pi = vector_cross(Ei,Hi)
+	Rinc = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[0,0],LAB.k1,'j')
+	Hinc = curl(Rinc,dx,dy,dz)
+	Einc = array(curl(Hinc,dx,dy,dz))*(-1./1j)
+	Hinc = [real(Hinc[0])*I,real(Hinc[1])*I,real(Hinc[2])*I]
+	Einc = [real(Einc[0])*I,real(Einc[1])*I,real(Einc[2])*I]
+	Pinc = vector_cross(Einc,Hinc)
 
-	Emax = max(sqrt(Ei[0]**2+Ei[1]**2+Ei[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
-	Hmax = max(sqrt(Hi[0]**2+Hi[1]**2+Hi[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
-	Pmax = max(sqrt(Pi[0]**2+Pi[1]**2+Pi[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	print "internal vector field"
+	Rint = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[1,0],LAB.boundary(0).k2,'j')
+	Hint = curl(Rint,dx,dy,dz)
+	Eint = array(curl(Hint,dx,dy,dz))*(-1./1j)
+	Hint = [real(Hint[0])*I1,real(Hint[1])*I1,real(Hint[2])*I1]
+	Eint = [real(Eint[0])*I1,real(Eint[1])*I1,real(Eint[2])*I1]
+	Pint = vector_cross(Eint,Hint)
+
+	Emax = max(sqrt(Einc[0]**2+Einc[1]**2+Einc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	Hmax = max(sqrt(Hinc[0]**2+Hinc[1]**2+Hinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+	Pmax = max(sqrt(Pinc[0]**2+Pinc[1]**2+Pinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
 	Hmin=Emin=Pmin = 0
 
-	return Hs,Es,Ps,Hi,Ei,Pi
+	return Hsca,Esca,Psca,Hinc,Einc,Pinc,Hint,Eint,Pint
 
 def plot_vf(vf,xs,ys,zs,str):
 	Fx,Fy,Fz = vf
