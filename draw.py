@@ -109,7 +109,7 @@ def get_all(particle,xs,ys,zs,res=None):
 		else:
 			ki = LAB.boundary(lay_no-1).k2
 		Ri = get_Ui_Vr(xs,ys,zs,c_lay_tm[0],ki,'j')
-		if lay_no<len(RESULTS._c_all_tm):
+		if lay_no+1<len(RESULTS._c_all_tm):
 			Ri += get_Ui_Vr(xs,ys,zs,c_lay_tm[1],ki,'h')
 		R = where(III==lay_no,Ri,R)
 
@@ -161,21 +161,24 @@ def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None,filename=None,titl
 		pylab.pcolor(X,Z,log10(Fabs)[:,n,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.quiver(X[::qs,::qs],Z[::qs,::qs],\
-				(Fx/Fabs)[::qs,n,::qs],(Fz/Fabs)[::qs,n,::qs],color='w')
+				(Fx/Fabs)[::qs,n,::qs],(Fz/Fabs)[::qs,n,::qs],\
+				color='w')
 	elif str == 'yz':
 		Y,Z = meshgrid(ys,zs)
 		pylab.pcolor(Y,Z,log10(Fabs)[n,:,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.quiver(Y[::qs,::qs],Z[::qs,::qs],\
-				(Fy/Fabs)[n,::qs,::qs],(Fz/Fabs)[n,::qs,::qs])
+				(Fy/Fabs)[n,::qs,::qs],(Fz/Fabs)[n,::qs,::qs],\
+				color='w')
 	elif str == 'xy':
 		X,Y = meshgrid(xs,ys)
 		pylab.pcolor(X,Y,log10(Fabs)[:,:,n].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.quiver(X[::qs,::qs],Y[::qs,::qs],\
-				(Fx/Fabs)[::qs,::qs,n],(Fy/Fabs)[::qs,::qs,n])
+				(Fx/Fabs)[::qs,::qs,n],(Fy/Fabs)[::qs,::qs,n],\
+				color='w')
 	if title:
-		pylab.title("title")
+		pylab.title(title)
 	if filename:
 		pylab.savefig(filename)
 	else:
