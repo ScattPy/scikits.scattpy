@@ -82,11 +82,14 @@ def get_If(particle,xs,ys,zs):
 		return particle.layers[0].shape.R(t)[0]
 	return array(f_coords.get_i(fR,xs,ys,zs))
 
-def get_all(particle,xs,ys,zs):
+def get_all(particle,xs,ys,zs,res=None):
 	global Hmax,Hmin,Emax,Emin,Pmax,Pmin
 	LAB = scattpy.Lab(particle,0.)
-	print "solve"
-	RESULTS = scattpy.svm(LAB,allfields=True)
+	if res:
+		RESULTS = res
+	else:
+		print "solve"
+		RESULTS = scattpy.svm(LAB,allfields=True)
 
 	print "indicator function"
 	dx=xs[1]-xs[0]
@@ -127,32 +130,37 @@ def get_all(particle,xs,ys,zs):
 
 	return Hsca,Esca,Psca,Hinc,Einc,Pinc,Hint,Eint,Pint
 
-def plot_vf(vf,xs,ys,zs,str):
+def plot_vf(vf,xs,ys,zs,str,quiver_step,Fmin=None,Fmax=None):
 	Fx,Fy,Fz = vf
 	n = (len(xs)-1)/2
+	qs = quiver_step
+	Fabs = sqrt(Fx**2+Fy**2+Fz**2)
 	if str == 'xz':
 		X,Z = meshgrid(xs,zs)
-		pylab.pcolor(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:].T)
+		pylab.pcolor(X,Z,log10(Fabs)[:,n,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.show()
 #		pylab.contourf(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:])
-#		pylab.quiver(X,Z,(Fx)[:,n,:],(Fz)[:,n,:])
+		pylab.quiver(X[::qs,::qs],Z[::qs,::qs],\
+				(Fx/Fabs)[::qs,n,::qs],(Fz/Fabs)[::qs,n,::qs],color='w')
 	elif str == 'yz':
 		Y,Z = meshgrid(ys,zs)
-		pylab.pcolor(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:].T)
+		pylab.pcolor(Y[,Z,log10(Fabs)[n,:,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.show()
 #		pylab.contourf(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:])
-#		pylab.quiver(Y,Z,(Fy)[n,:,:],(Fz)[n,:,:])
+		pylab.quiver(Y[::qs,::qs],Z[::qs,::qs],\
+				(Fy/Fabs)[n,::qs,::qs],(Fz/Fabs)[n,::qs,::qs])
 	elif str == 'xy':
 		X,Y = meshgrid(xs,ys)
-		pylab.pcolor(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n].T)
+		pylab.pcolor(X,Y,log10(Fabs)[:,:,n].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.show()
 #		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
-#		pylab.quiver(X,Y,(Fx)[:,:,n],(Fy)[:,:,n])
+		pylab.quiver(X[::qs,::qs],Y[::qs,::qs],\
+				(Fx/Fabs)[::qs,::qs,n],(Fy/Fabs)[::qs,::qs,n])
 
-def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype="P"):
+def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype=None,Fmin=None,Fmax=None):
 	"""Plot vector field using colored linear integral convolution"""
 	from scikits import vectorplot as vp
 	from scipy import interpolate
@@ -167,8 +175,10 @@ def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype="P"):
 		Fmax = Pmax
 		Fmin = Pmin
 	else:
-		Fmax = None
-		Fmin = None
+		if not Fmax:
+			Fmax = None
+		if not Fmin:
+			Fmin = None
 	n = (len(xs)-1)/2
 	if str == 'xz':
 		x1=xs
@@ -199,7 +209,7 @@ def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype="P"):
 	image = vp.line_integral_convolution(nF1.astype(float32), nF2.astype(float32), texture, kernel)
 
 	imax = max(image.reshape(nsize**2))
-	pylab.figimage(sqrt(nF1**2+nF2**2)*(image+imax)/imax/2,cmap=cmap,vmin=Fmin,vmax=Fmax)
+	pylab.figimage(log10(sqrt(nF1**2+nF2**2))*(image+imax)/imax/2,cmap=cmap,vmin=Fmin,vmax=Fmax)
 	pylab.show()
 
 def curl(F,dx,dy,dz):
