@@ -151,7 +151,7 @@ def get_all(particle,xs,ys,zs,res=None):
 #
 #	return Hsca,Esca,Psca,Hinc,Einc,Pinc,Hint,Eint,Pint
 
-def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None):
+def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None,filename=None,title=None):
 	Fx,Fy,Fz = vf
 	n = (len(xs)-1)/2
 	qs = quiver_step
@@ -162,24 +162,24 @@ def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None):
 		pylab.colorbar()
 		pylab.quiver(X[::qs,::qs],Z[::qs,::qs],\
 				(Fx/Fabs)[::qs,n,::qs],(Fz/Fabs)[::qs,n,::qs],color='w')
-		pylab.show()
-#		pylab.contourf(X,Z,sqrt(Fx**2+Fy**2+Fz**2)[:,n,:])
 	elif str == 'yz':
 		Y,Z = meshgrid(ys,zs)
 		pylab.pcolor(Y,Z,log10(Fabs)[n,:,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.quiver(Y[::qs,::qs],Z[::qs,::qs],\
 				(Fy/Fabs)[n,::qs,::qs],(Fz/Fabs)[n,::qs,::qs])
-		pylab.show()
-#		pylab.contourf(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:])
 	elif str == 'xy':
 		X,Y = meshgrid(xs,ys)
 		pylab.pcolor(X,Y,log10(Fabs)[:,:,n].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.quiver(X[::qs,::qs],Y[::qs,::qs],\
 				(Fx/Fabs)[::qs,::qs,n],(Fy/Fabs)[::qs,::qs,n])
+	if title:
+		pylab.title("title")
+	if filename:
+		pylab.savefig(filename)
+	else:
 		pylab.show()
-#		pylab.contourf(X,Y,sqrt(Fx**2+Fy**2+Fz**2)[:,:,n])
 
 def plot_vf_lic(F,xs,ys,zs,str,nsize=401,cmap='hot',ftype=None,Fmin=None,Fmax=None):
 	"""Plot vector field using colored linear integral convolution"""
