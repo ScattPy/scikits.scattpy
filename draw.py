@@ -60,7 +60,7 @@ def get_Ui_Vr(xs,ys,zs,coefs,ki,jh):
 		cVec = f_coords.vector_s2c(sVec,sPoint)
 		cVec[2] += U
 		Rx[i,j,k],Ry[i,j,k],Rz[i,j,k] = cVec
-	return Rx,Ry,Rz
+	return array([Rx,Ry,Rz])
 
 def get_I(particle,xs,ys,zs):
 	I = zeros([len(xs),len(ys),len(zs)],int)
@@ -72,9 +72,11 @@ def get_I(particle,xs,ys,zs):
 			cPoint = [x,y,z]
 			sPoint = f_coords.point_c2s(cPoint)
 			r,t,p = sPoint
-			R,Rd,Rdd = particle.layers[0].shape.R(t)
-			if r>=R:
-				I[i,j,k]=1
+			for lay_no in xrange(particle.Nlayers):
+				R,Rd,Rdd = particle.layers[0].shape.R(t)
+				if r<R:
+					I[i,j,k]=lay_no+1
+				
 	return I
 
 def get_If(particle,xs,ys,zs):
@@ -96,39 +98,58 @@ def get_all(particle,xs,ys,zs,res=None):
 	dy=ys[1]-ys[0]
 	dz=zs[1]-zs[0]
 	I = get_I(particle,xs,ys,zs)
+	III = array([I,I,I])
 
-	I1 = where(I==0,1,0)
+	R = zeros(III.shape,dtype=complex)
 
-	print "scattered vector field"
-	Rsca = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
-	Hsca = curl(Rsca,dx,dy,dz)
-	Esca = array(curl(Hsca,dx,dy,dz))*(-1./1j)
-	Hsca = [real(Hsca[0])*I,real(Hsca[1])*I,real(Hsca[2])*I]
-	Esca = [real(Esca[0])*I,real(Esca[1])*I,real(Esca[2])*I]
-	Psca = vector_cross(Esca,Hsca)
+	for lay_no,c_lay_tm in enumerate(RESULTS._c_all_tm):
+		print "Layer No.%s" % lay_no
+		if lay_no==0:
+			ki = LAB.k1
+		else:
+			ki = LAB.boundary(lay_no-1).k2
+		Ri = get_Ui_Vr(xs,ys,zs,c_lay_tm[0],ki,'j')
+		if lay_no<len(RESULTS._c_all_tm):
+			Ri += get_Ui_Vr(xs,ys,zs,c_lay_tm[1],ki,'h')
+		R = where(III==lay_no,Ri,R)
 
-	print "incident vector field"
-	Rinc = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[0,0],LAB.k1,'j')
-	Hinc = curl(Rinc,dx,dy,dz)
-	Einc = array(curl(Hinc,dx,dy,dz))*(-1./1j)
-	Hinc = [real(Hinc[0])*I,real(Hinc[1])*I,real(Hinc[2])*I]
-	Einc = [real(Einc[0])*I,real(Einc[1])*I,real(Einc[2])*I]
-	Pinc = vector_cross(Einc,Hinc)
+	H = curl(R,dx,dy,dz)
+	E = curl(H,dx,dy,dz)
 
-	print "internal vector field"
-	Rint = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[1,0],LAB.boundary(0).k2,'j')
-	Hint = curl(Rint,dx,dy,dz)
-	Eint = array(curl(Hint,dx,dy,dz))*(-1./1j)
-	Hint = [real(Hint[0])*I1,real(Hint[1])*I1,real(Hint[2])*I1]
-	Eint = [real(Eint[0])*I1,real(Eint[1])*I1,real(Eint[2])*I1]
-	Pint = vector_cross(Eint,Hint)
+	H = real(H)
+	E = real(E)
+	return H,E
 
-	Emax = max(sqrt(Einc[0]**2+Einc[1]**2+Einc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
-	Hmax = max(sqrt(Hinc[0]**2+Hinc[1]**2+Hinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
-	Pmax = max(sqrt(Pinc[0]**2+Pinc[1]**2+Pinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
-	Hmin=Emin=Pmin = 0
-
-	return Hsca,Esca,Psca,Hinc,Einc,Pinc,Hint,Eint,Pint
+#	print "scattered vector field"
+#	Rsca = get_Ui_Vr(xs,ys,zs,RESULTS.c_sca_tm,LAB.k1,'h')
+#	Hsca = curl(Rsca,dx,dy,dz)
+#	Esca = array(curl(Hsca,dx,dy,dz))*(-1./1j)
+#	Hsca = [real(Hsca[0])*I,real(Hsca[1])*I,real(Hsca[2])*I]
+#	Esca = [real(Esca[0])*I,real(Esca[1])*I,real(Esca[2])*I]
+#	Psca = vector_cross(Esca,Hsca)
+#
+#	print "incident vector field"
+#	Rinc = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[0,0],LAB.k1,'j')
+#	Hinc = curl(Rinc,dx,dy,dz)
+#	Einc = array(curl(Hinc,dx,dy,dz))*(-1./1j)
+#	Hinc = [real(Hinc[0])*I,real(Hinc[1])*I,real(Hinc[2])*I]
+#	Einc = [real(Einc[0])*I,real(Einc[1])*I,real(Einc[2])*I]
+#	Pinc = vector_cross(Einc,Hinc)
+#
+#	print "internal vector field"
+#	Rint = get_Ui_Vr(xs,ys,zs,RESULTS._c_all_tm[1,0],LAB.boundary(0).k2,'j')
+#	Hint = curl(Rint,dx,dy,dz)
+#	Eint = array(curl(Hint,dx,dy,dz))*(-1./1j)
+#	Hint = [real(Hint[0])*I1,real(Hint[1])*I1,real(Hint[2])*I1]
+#	Eint = [real(Eint[0])*I1,real(Eint[1])*I1,real(Eint[2])*I1]
+#	Pint = vector_cross(Eint,Hint)
+#
+#	Emax = max(sqrt(Einc[0]**2+Einc[1]**2+Einc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+#	Hmax = max(sqrt(Hinc[0]**2+Hinc[1]**2+Hinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+#	Pmax = max(sqrt(Pinc[0]**2+Pinc[1]**2+Pinc[2]**2).reshape(len(xs)*len(ys)*len(zs)))*2
+#	Hmin=Emin=Pmin = 0
+#
+#	return Hsca,Esca,Psca,Hinc,Einc,Pinc,Hint,Eint,Pint
 
 def plot_vf(vf,xs,ys,zs,str,quiver_step,Fmin=None,Fmax=None):
 	Fx,Fy,Fz = vf
@@ -145,7 +166,7 @@ def plot_vf(vf,xs,ys,zs,str,quiver_step,Fmin=None,Fmax=None):
 				(Fx/Fabs)[::qs,n,::qs],(Fz/Fabs)[::qs,n,::qs],color='w')
 	elif str == 'yz':
 		Y,Z = meshgrid(ys,zs)
-		pylab.pcolor(Y[,Z,log10(Fabs)[n,:,:].T,vmin=Fmin,vmax=Fmax)
+		pylab.pcolor(Y,Z,log10(Fabs)[n,:,:].T,vmin=Fmin,vmax=Fmax)
 		pylab.colorbar()
 		pylab.show()
 #		pylab.contourf(Y,Z,sqrt(Fx**2+Fy**2+Fz**2)[n,:,:])
