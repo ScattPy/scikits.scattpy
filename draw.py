@@ -117,7 +117,7 @@ def get_all(particle,xs,ys,zs,res=None):
 	E = curl(H,dx,dy,dz)
 
 	H = real(H)
-	E = real(E)
+	E = real(E)*(-1./1j)
 	return H,E
 
 #	print "scattered vector field"
@@ -241,9 +241,9 @@ def curl(F,dx,dy,dz):
 	Fxx,Fxy,Fxz = gradient(Fx,dx,dy,dz)
 	Fyx,Fyy,Fyz = gradient(Fy,dx,dy,dz)
 	Fzx,Fzy,Fzz = gradient(Fz,dx,dy,dz)
-	return [ Fzy-Fyz , Fxz-Fzx, Fyx-Fxy ]
+	return array([ Fzy-Fyz , Fxz-Fzx, Fyx-Fxy ])
 
 def vector_cross(A,B):
 	Ax,Ay,Az = A
 	Bx,By,Bz = B
-	return [ Ay*Bz-Az*By , Az*Bx-Ax*Bz , Ax*By-Ay*Bx ]
+	return array([ Ay*Bz-Az*By , Az*Bx-Ax*Bz , Ax*By-Ay*Bx ])
