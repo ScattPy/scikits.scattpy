@@ -114,10 +114,10 @@ def get_all(particle,xs,ys,zs,res=None):
 		R = where(III==lay_no,Ri,R)
 
 	H = curl(R,dx,dy,dz)
-	E = curl(H,dx,dy,dz)
+	E = curl(H,dx,dy,dz)*(-1./1j)
 
 	H = real(H)
-	E = real(E)*(-1./1j)
+	E = real(E)
 	return H,E
 
 #	print "scattered vector field"
