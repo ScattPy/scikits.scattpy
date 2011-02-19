@@ -154,22 +154,24 @@ def get_all(particle,xs,ys,zs,res=None,wavelen=None):
 def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None,filename=None,title=None,interp=False,nsize=100,wavelen=None,lab=None):
 	from scipy import interpolate
 	Fx,Fy,Fz = vf
-	n = (len(xs)-1)/2
 	qs = quiver_step
 	if str == 'xz':
+		n = (len(ys)-1)/2
 		Fabs = sqrt(Fx**2+Fy**2+Fz**2)[:,n,:]
 		F1 = Fx[:,n,:]
 		F2 = Fz[:,n,:]
 		x1=xs
 		x2=zs
 	elif str=='yz':
+		n = (len(xs)-1)/2
 		Fabs = sqrt(Fx**2+Fy**2+Fz**2)[n,:,:]
 		F1 = Fy[n,:,:]
-		F2 = Fz[:,n,:]
+		F2 = Fz[n,:,:]
 		x1=ys
 		x2=zs
 	if str == 'xy':
-		Fabs = sqrt(Fx**2+Fy**2+Fz**2)[:,n,:]
+		n = (len(zs)-1)/2
+		Fabs = sqrt(Fx**2+Fy**2+Fz**2)[:,:,n]
 		F1 = Fx[:,:,n]
 		F2 = Fy[:,:,n]
 		x1=xs
@@ -264,16 +266,17 @@ def vector_cross(A,B):
 	return array([ Ay*Bz-Az*By , Az*Bx-Ax*Bz , Ax*By-Ay*Bx ])
 
 def plot_particle(particle,str,color='k',wavelen=None):
-	if str=='xz' or str=='yz':
+	for lay in particle.layers:
+	  if str=='xz' or str=='yz':
 		thetas = linspace(0,pi,200)
-		r = particle.layers[0].shape.R(thetas)[0]
+		r = lay.shape.R(thetas)[0]
 		if wavelen:
 			r = r*wavelen/(2*pi)
 		pylab.plot( r*sin(thetas),r*cos(thetas),color)
 		pylab.plot(-r*sin(thetas),r*cos(thetas),color)
-	elif str=='xy':
+	  elif str=='xy':
 		phis = linspace(0,2*pi,400)
-		r = particle.layers[0].shape.R(pi/2)[0]
+		r = lay.shape.R(pi/2)[0]
 		if wavelen:
 			r = r*wavelen/(2*pi)
 		pylab.plot( r*sin(phis),r*cos(phis),color)
