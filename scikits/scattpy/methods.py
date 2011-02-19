@@ -205,10 +205,10 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True):
 				AAtm[:Nsize*2,:Nsize] = -K12
 				AAte[:Nsize*2,:Nsize] = -K12
 				BB[:Nsize*2,:] = K11*mat(c_inc).T
-				#c_sca_tm_m = sparse.linalg.spsolve(AAtm.tocsr(),BB)[:Nsize]
-				#c_sca_te_m = sparse.linalg.spsolve(AAte.tocsr(),BB)[:Nsize]
-				c_sca_tm_m = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)[:Nsize]
-				c_sca_te_m = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)[:Nsize]
+				c_sca_tm_m = sparse.linalg.spsolve(AAtm.tocsr(),BB)[:Nsize]
+				c_sca_te_m = sparse.linalg.spsolve(AAte.tocsr(),BB)[:Nsize]
+				#c_sca_tm_m = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)[:Nsize]
+				#c_sca_te_m = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)[:Nsize]
 			else:
 			   # Iterative method
 			   if bnd.is_last:
