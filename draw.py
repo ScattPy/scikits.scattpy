@@ -191,7 +191,7 @@ def plot_vf(vf,xs,ys,zs,str,quiver_step=1,Fmin=None,Fmax=None,filename=None,titl
 			(F1/Fabs)[::qs,::qs],(F2/Fabs)[::qs,::qs],\
 			color='w')
 	if lab:
-		plot_particle(lab.particle,str,wavelen)
+		plot_particle(lab.particle,str,wavelen=wavelen)
 	if title:
 		pylab.title(title)
 	if filename:
@@ -263,7 +263,7 @@ def vector_cross(A,B):
 	Bx,By,Bz = B
 	return array([ Ay*Bz-Az*By , Az*Bx-Ax*Bz , Ax*By-Ay*Bx ])
 
-def plot_particle(particle,str,coef=1,color='k',wavelen=None):
+def plot_particle(particle,str,color='k',wavelen=None):
 	if str=='xz' or str=='yz':
 		thetas = linspace(0,pi,200)
 		r = particle.layers[0].shape.R(thetas)[0]
@@ -275,5 +275,5 @@ def plot_particle(particle,str,coef=1,color='k',wavelen=None):
 		phis = linspace(0,2*pi,400)
 		r = particle.layers[0].shape.R(pi/2)[0]
 		if wavelen:
-			r = 2*pi*r/wavelen
+			r = r*wavelen/(2*pi)
 		pylab.plot( r*sin(phis),r*cos(phis),color)
