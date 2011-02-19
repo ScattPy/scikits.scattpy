@@ -230,8 +230,8 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True,allfields=False):
 				AAte[:Nsize*2,:Nsize] = -K12
 				BB[:Nsize*2,:] = K11*mat(c_inc).T
 
-				XXtm = sparse.linalg.spsolve(AAtm.tocsr(),BB)[:Nsize]
-				XXte = sparse.linalg.spsolve(AAte.tocsr(),BB)[:Nsize]
+				XXtm = sparse.linalg.spsolve(AAtm.tocsr(),BB)
+				XXte = sparse.linalg.spsolve(AAte.tocsr(),BB)
 				#XXtm = sparse.linalg.bicg(AAtm.tocsr(),BB,tol=1e-10)
 				#XXte = sparse.linalg.bicg(AAte.tocsr(),BB,tol=1e-10)
 
@@ -252,12 +252,30 @@ def meth_n(meth_bnd_system,lab,n,ngauss,ms=None,iterative=True,allfields=False):
 					if axisymm:
 					   c_all_tm[0,0,mi,0,-Nsize:] = c_inc
 					   c_all_te[0,0,mi,0,-Nsize:] = c_inc
+
+					   for lay_no in xrange(lab.particle.Nlayers):
+						c_all_tm[lay_no+1,0,mi,0,-Nsize:] = \
+						   XXtm[Nsize*(lay_no*2+1):Nsize*(lay_no*2+2)]
+						if lay_no<lab.particle.Nlayers:
+						  c_all_tm[lay_no+1,1,mi,0,-Nsize:] = \
+						     XXtm[Nsize*(lay_no*2+2):Nsize*(lay_no*2+3)]
 					else:
 					   c_all_tm[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
 					   c_all_tm[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
 
 					   c_all_te[0,0,mi,0,-Nsize/2:] = c_inc[:Nsize/2]
 					   c_all_te[0,0,mi,1,-Nsize/2:] = c_inc[Nsize/2:]
+
+					   for lay_no in xrange(lab.particle.Nlayers):
+						c_all_tm[lay_no+1,0,mi,0,-Nsize/2:] = \
+						  XXtm[Nsize/2*(lay_no*4+2):Nsize/2*(lay_no*4+3)]
+						c_all_tm[lay_no+1,0,mi,1,-Nsize/2:] = \
+						  XXtm[Nsize/2*(lay_no*4+3):Nsize/2*(lay_no*4+4)]
+						if lay_no+1<lab.particle.Nlayers:
+						  c_all_tm[lay_no+1,1,mi,0,-Nsize/2:] = \
+						     XXtm[Nsize/2*(lay_no*4+4):Nsize/2*(lay_no*4+5)]
+						  c_all_tm[lay_no+1,1,mi,1,-Nsize/2:] = \
+						     XXtm[Nsize/2*(lay_no*4+5):Nsize/2*(lay_no*4+6)]
 
 			else:
 			   # Iterative method
