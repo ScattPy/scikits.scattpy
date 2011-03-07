@@ -64,25 +64,31 @@ class ShapeSpheroid(Shape):
 	def R(self,theta):
 		sint = sin(theta)
 		cost = cos(theta)
-		xb=self.xv/self.ab**(1./3.)
-		if self.prolate:
-			ba=1./self.ab
+		sint2 = sint**2
+		cost2 = cost**2
+		# Here xa,xb,ba - considering xa along z-axis, xb anlong x-axis
+		if self.prolate: 
+			ba = 1./self.ab
+			xa = self.a
+			xb = self.b
 		else:
-			ba=self.ab
-		r=xb/sqrt(1.+(ba**2-1.)*cost**2)
-		rd=xb*(ba**2-1.)*sint*cost/(sqrt(1.+(ba**2-1.)*cost**2))**3
-
-		f = xb * (ba**2 -1) * sint * cost
-		g = (sqrt(1. + (ba**2 - 1) * cost**2))**3
-		f1 = xb * (ba**2 -1) * (cost**2 - sint**2)
-		g1 = - 3./2. * sqrt(1. + (ba**2 - 1) * cost**2) \
-		             * (ba**2 - 1.) * 2 * cost * sint
-		rdd = f1/g - f*g1/g**2
+			ba = self.ab
+			xa = self.b
+			xb = self.a
+		e2 = 1-ba**2 # eccentricity^2
+		g = sqrt(1-e2*cost2)
+		r = xb/g
+		g3 = g**3
+		rd = -e2*xb*cost*sint/g3
+		rdd = e2*xb*(sint2 -cost2)/g3 + 3*xb*e2**2*cost2*sint2/g**5
 		return r,rd,rdd
 	def _get_a(self):
 		return self.ab*self.b
 	def _get_b(self):
-		return self.xv/self.ab**(1./3.)
+		if self.prolate:
+			return self.xv/self.ab**(1/3.)
+		else:
+			return self.xv/self.ab**(2/3.)
 	a = property(fget=_get_a)
 	b = property(fget=_get_b)
 	nrange = arange(2,80,2)
