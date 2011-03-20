@@ -206,7 +206,7 @@ class LayeredParticle(Particle):
 		self.layers=[]
 		for lay in layers:
 			shape,params,m = lay
-			self.layers.append(L.Layer(shape,params,m))
+			self.layers.append(Layer(shape,params,m))
 
 class Layered_EqShape_Particle(Particle):
 	"""Layered particle whose layers have the same shapes,
