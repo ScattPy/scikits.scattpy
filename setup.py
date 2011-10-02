@@ -15,8 +15,8 @@ import sys
 DISTNAME            = 'scikits.scattpy'
 DESCRIPTION         = 'Light Scattering methods for Python'
 LONG_DESCRIPTION    = descr
-MAINTAINER          = 'Alexander Vinokurov',
-MAINTAINER_EMAIL    = 'scattpy@googlegroups.com',
+MAINTAINER          = 'Alexander Vinokurov'
+MAINTAINER_EMAIL    = 'scattpy@googlegroups.com'
 URL                 = 'http://scattpy.github.com'
 LICENSE             = 'BSD'
 VERSION             = '0.1.2'

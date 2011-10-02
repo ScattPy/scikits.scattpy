@@ -148,8 +148,8 @@ cf2py intent(hide) NG,NN
       SUBROUTINE f1(NG,R,Rd,Rdd,Sint,Cost,f)
       implicit real*8 (r)
       INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
+      REAL*8 R(NG),Rdd(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
+cf2py intent(in) R,Rd,Rdd,Sint,Cost
 cf2py intent(out) f
 cf2py intent(hide) NG
       INTEGER K
@@ -180,8 +180,8 @@ cf2py intent(hide) NG
       SUBROUTINE f2(NG,R,Rd,Rdd,f)
       implicit real*8 (r)
       INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
+      REAL*8 R(NG),Rdd(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
+cf2py intent(in) R,Rd,Rdd,Sint,Cost
 cf2py intent(out) f
 cf2py intent(hide) NG
       INTEGER K
@@ -204,8 +204,8 @@ cf2py intent(hide) NG
       SUBROUTINE f3(NG,R,Rd,Rdd,Sint,Cost,f)
       implicit real*8 (r)
       INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
+      REAL*8 R(NG),Rd(NG),Rdd(NG),Sint(NG),Cost(NG),f(NG)
+cf2py intent(in) R,Rd,Rdd,Sint,Cost
 cf2py intent(out) f
 cf2py intent(hide) NG
       INTEGER K
@@ -236,8 +236,8 @@ cf2py intent(hide) NG
       SUBROUTINE f4(NG,R,Rd,Rdd,Sint,Cost,f)
       implicit real*8 (r)
       INTEGER NG
-      REAL*8 R(NG),Rd(NG),Sint(NG),Cost(NG),f(NG)
-cf2py intent(in) R,Rd,Sint,Cost
+      REAL*8 R(NG),Rd(NG),Rdd(NG),Sint(NG),Cost(NG),f(NG)
+cf2py intent(in) R,Rd,Rdd,Sint,Cost
 cf2py intent(out) f
 cf2py intent(hide) NG
       INTEGER K
