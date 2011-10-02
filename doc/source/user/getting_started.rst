@@ -28,6 +28,8 @@ Ubuntu
    $ sudo easy_install numdifftools
    $ sudo easy_install scikits.scattpy
 
+Note: $ sudo apt-get install python-scipy doesn't work on Ubuntu 10.04. Please use, Ubuntu 10.10 or higher.
+
 Windows
 -------
 
