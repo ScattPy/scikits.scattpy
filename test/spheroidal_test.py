@@ -1,7 +1,6 @@
 import numpy
 import unittest
 
-from scipy.integrate import quad
 from scipy.special import *
 
 from spheroidal import *
@@ -59,13 +58,13 @@ class testSpheroidalProlateNorm(unittest.TestCase):
     def check_norm(self, m, n, c):
         norm = get_pro_norm(m,n,c)
         func = lambda x: power(pro_ang1(m, n, c, x)[0], 2)
-        self.assertAlmostEqual((quad(func, -1, 1, limit = 300, epsabs=10e-10,epsrel=10e-10))[0]/(norm*norm), 1, places = 7)
+        self.assertAlmostEqual((quad(func, -1, 1, limit = 300, epsabs=10e-10,epsrel=10e-10))/(norm*norm), 1, places = 7)
 
 class testSpheroidalOblateNorm(testSpheroidalProlateNorm):
     def check_norm(self, m, n, c):
         norm = get_obl_norm(m,n,c)
         func = lambda x: power(obl_ang1(m, n, c, x)[0] / norm, 2)
-        self.assertAlmostEqual((quad(func, -1, 1, limit = 300,epsabs=10e-10,epsrel=10e-10))[0], 1, places = 7)
+        self.assertAlmostEqual((quad(func, -1, 1, limit = 300,epsabs=10e-10,epsrel=10e-10)), 1, places = 7)
 
 class testFactorial(unittest.TestCase):
     

@@ -1,7 +1,9 @@
 import unittest
-from spheroidal import get_cv, get_a_functions, get_A, get_b_functions, get_c_functions,  get_B, get_C, get_fullA, get_fullB
+from spheroidal import get_cv, get_a_functions, get_A, get_b_functions, get_c_functions,  get_B, get_C, get_fullA, get_fullB, getSolution
 
 #tests without using derivatives
+#prolate spheroid
+from spheroidal_particles import TMInputWave
 
 class Particle:
     type = 1
@@ -74,23 +76,25 @@ class testSpheroidalMatrixA(unittest.TestCase):
     def test_get_A2(self):
         particle = Particle(3)
         c1 = 2.5; c2 = 1.5; nmax =2
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[0][0],0.0450505,5)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[1][0],0)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[0][1],0)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[1][1],0.238367,5)
+        A = get_A(particle,c2,c1,1,nmax)
+        self.assertAlmostEqual(A[0][0],0.0450505,5)
+        self.assertAlmostEqual(A[1][0],0)
+        self.assertAlmostEqual(A[0][1],0)
+        self.assertAlmostEqual(A[1][1],0.238367,5)
 
     def test_get_A3(self):
         particle = Particle(1.5)
         c1 = 0.5; c2 = 3.5; nmax =3
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[0][0],0.0800241,5)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[1][0],0)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[0][1],0)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[1][1],0.229468,5)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[2][2],0.248043,5)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[0][2],-0.0150865)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[2][0],0.0474487,5)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[2][1],0)
-        self.assertAlmostEqual(get_A(particle,c2,c1,1,nmax)[1][2],0)
+        A = get_A(particle,c2,c1,1,nmax)
+        self.assertAlmostEqual(A[0][0],0.0800241,5)
+        self.assertAlmostEqual(A[1][0],0)
+        self.assertAlmostEqual(A[0][1],0)
+        self.assertAlmostEqual(A[1][1],0.229468,5)
+        self.assertAlmostEqual(A[2][2],0.248043,5)
+        self.assertAlmostEqual(A[0][2],-0.0150865)
+        self.assertAlmostEqual(A[2][0],0.0474487,5)
+        self.assertAlmostEqual(A[2][1],0)
+        self.assertAlmostEqual(A[1][2],0)
 
     def test_get_fullA1(self):
         c1 = 0.5; c2 = 3.5; nmax =1; d =1.5; psi =1.5
@@ -105,22 +109,26 @@ class testSpheroidalMatrixA(unittest.TestCase):
         c1 = 0.5; c2 = 3.5; nmax =2; d =1.5; psi =1.5
         particle = Particle(psi,d)
         A = get_fullA(particle,c1,c2,nmax)
-        self.assertAlmostEqual(A[0,0],get_A(particle,c1,c1,3,nmax)[0,0])
-        self.assertAlmostEqual(A[0,1],get_A(particle,c1,c1,3,nmax)[0,1])
-        self.assertAlmostEqual(A[1,0],get_A(particle,c1,c1,3,nmax)[1,0])
-        self.assertAlmostEqual(A[1,1],get_A(particle,c1,c1,3,nmax)[1,1])
-        self.assertAlmostEqual(A[0,2],-get_A(particle,c2,c1,1,nmax)[0,0])
-        self.assertAlmostEqual(A[0,3],-get_A(particle,c2,c1,1,nmax)[0,1])
-        self.assertAlmostEqual(A[1,2],-get_A(particle,c2,c1,1,nmax)[1,0])
-        self.assertAlmostEqual(A[1,3],-get_A(particle,c2,c1,1,nmax)[1,1])
-        self.assertAlmostEqual(A[2,0],get_B(particle,c1,c1,3,nmax)[0,0])
-        self.assertAlmostEqual(A[2,1],get_B(particle,c1,c1,3,nmax)[0,1])
-        self.assertAlmostEqual(A[3,0],get_B(particle,c1,c1,3,nmax)[1,0])
-        self.assertAlmostEqual(A[3,1],get_B(particle,c1,c1,3,nmax)[1,1])
-        self.assertAlmostEqual(A[2,2],-get_C(particle,c2,c1,nmax)[0,0])
-        self.assertAlmostEqual(A[2,3],-get_C(particle,c2,c1,nmax)[0,1])
-        self.assertAlmostEqual(A[3,2],-get_C(particle,c2,c1,nmax)[1,0])
-        self.assertAlmostEqual(A[3,3],-get_C(particle,c2,c1,nmax)[1,1])
+        A11 = get_A(particle,c1,c1,3,nmax)
+        A12 = -get_A(particle,c2,c1,1,nmax)
+        A21 = get_B(particle,c1,c1,3,nmax)
+        A22 = -get_C(particle,c2,c1,nmax)
+        self.assertAlmostEqual(A[0,0],A11[0,0])
+        self.assertAlmostEqual(A[0,1],A11[0,1])
+        self.assertAlmostEqual(A[1,0],A11[1,0])
+        self.assertAlmostEqual(A[1,1],A11[1,1])
+        self.assertAlmostEqual(A[0,2],A12 [0,0])
+        self.assertAlmostEqual(A[0,3],A12 [0,1])
+        self.assertAlmostEqual(A[1,2],A12 [1,0])
+        self.assertAlmostEqual(A[1,3],A12 [1,1])
+        self.assertAlmostEqual(A[2,0],A21[0,0])
+        self.assertAlmostEqual(A[2,1],A21[0,1])
+        self.assertAlmostEqual(A[3,0],A21[1,0])
+        self.assertAlmostEqual(A[3,1],A21[1,1])
+        self.assertAlmostEqual(A[2,2],A22[0,0])
+        self.assertAlmostEqual(A[2,3],A22[0,1])
+        self.assertAlmostEqual(A[3,2],A22[1,0])
+        self.assertAlmostEqual(A[3,3],A22[1,1])
 
 class testSpheroidalMatrixZ(unittest.TestCase):
 
@@ -218,24 +226,26 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         d=2;psi=3
         c1 = 4; c2 = 5; nmax =2
         particle = Particle(psi,d)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[0][0],2.79893,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[1][0],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[0][1],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[1][1],1.55881,5)
+        B = get_B(particle,c2,c1,1,nmax)
+        self.assertAlmostEqual(B[0][0],2.79893,5)
+        self.assertAlmostEqual(B[1][0],0,5)
+        self.assertAlmostEqual(B[0][1],0,5)
+        self.assertAlmostEqual(B[1][1],1.55881,5)
 
     def test_get_B3(self):
         d=1;psi=10
         c1 = 0.5; c2 = 5; nmax =3
         particle = Particle(psi,d)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[0][0],-2.040523,4)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[1][0],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[0][1],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[1][1],-4.41099,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[1][2],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[2][1],0,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[0][2],0.618216,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[2][0],0.373256,5)
-        self.assertAlmostEqual(get_B(particle,c2,c1,1,nmax)[2][2],1.16732,5)
+        B = get_B(particle,c2,c1,1,nmax)
+        self.assertAlmostEqual(B[0][0],-2.040523,4)
+        self.assertAlmostEqual(B[1][0],0,5)
+        self.assertAlmostEqual(B[0][1],0,5)
+        self.assertAlmostEqual(B[1][1],-4.41099,5)
+        self.assertAlmostEqual(B[1][2],0,5)
+        self.assertAlmostEqual(B[2][1],0,5)
+        self.assertAlmostEqual(B[0][2],0.618216,5)
+        self.assertAlmostEqual(B[2][0],0.373256,5)
+        self.assertAlmostEqual(B[2][2],1.16732,5)
 
     def test_getFullB1(self):
         c1 = 4.5; nmax =1; d =2.5; psi =3.5
@@ -248,14 +258,16 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         c1 = 4.5; nmax =2; d =2.5; psi =3.5
         particle = Particle(psi,d)
         B = get_fullB(particle,c1,nmax)
-        self.assertAlmostEqual(B[0,0],-get_A(particle,c1,c1,1,nmax)[0,0])
-        self.assertAlmostEqual(B[0,1],-get_A(particle,c1,c1,1,nmax)[0,1])
-        self.assertAlmostEqual(B[1,0],-get_A(particle,c1,c1,1,nmax)[1,0])
-        self.assertAlmostEqual(B[1,1],-get_A(particle,c1,c1,1,nmax)[1,1])
-        self.assertAlmostEqual(B[2,0],-get_B(particle,c1,c1,1,nmax)[0,0])
-        self.assertAlmostEqual(B[2,1],-get_B(particle,c1,c1,1,nmax)[0,1])
-        self.assertAlmostEqual(B[3,0],-get_B(particle,c1,c1,1,nmax)[1,0])
-        self.assertAlmostEqual(B[3,1],-get_B(particle,c1,c1,1,nmax)[1,1])
+        B1 = -get_A(particle,c1,c1,1,nmax)
+        B2 = -get_B(particle,c1,c1,1,nmax)
+        self.assertAlmostEqual(B[0,0],B1[0,0])
+        self.assertAlmostEqual(B[0,1],B1[0,1])
+        self.assertAlmostEqual(B[1,0],B1[1,0])
+        self.assertAlmostEqual(B[1,1],B1[1,1])
+        self.assertAlmostEqual(B[2,0],B2[0,0])
+        self.assertAlmostEqual(B[2,1],B2[0,1])
+        self.assertAlmostEqual(B[3,0],B2[1,0])
+        self.assertAlmostEqual(B[3,1],B2[1,1])
 
     def test_get_C1(self):
         d=8;eps=0.7;psi=6
@@ -267,21 +279,23 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         d=2;psi=3; eps =5
         c1 = 4; c2 = 5; nmax =2
         particle = Particle(psi,d,eps)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[0][0],0.590814,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[1][0],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[0][1],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[1][1],0.166018,5)
+        C = get_C(particle,c2,c1,nmax)
+        self.assertAlmostEqual(C[0][0],0.590814,5)
+        self.assertAlmostEqual(C[1][0],0,5)
+        self.assertAlmostEqual(C[0][1],0,5)
+        self.assertAlmostEqual(C[1][1],0.166018,5)
 
     def test_get_C3(self):
         d=1;eps=0.3;psi=10
         c1 = 0.5; c2 = 5; nmax =3
         particle = Particle(psi,d,eps)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[0][0],-6.60149,4)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[1][0],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[0][1],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[1][1],-14.78301,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[1][2],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[2][1],0,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[0][2],2.00006,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[2][0],1.17881,5)
-        self.assertAlmostEqual(get_C(particle,c2,c1,nmax)[2][2],3.68663,5)
+        C = get_C(particle,c2,c1,nmax)
+        self.assertAlmostEqual(C[0][0],-6.60149,4)
+        self.assertAlmostEqual(C[1][0],0,5)
+        self.assertAlmostEqual(C[0][1],0,5)
+        self.assertAlmostEqual(C[1][1],-14.78301,5)
+        self.assertAlmostEqual(C[1][2],0,5)
+        self.assertAlmostEqual(C[2][1],0,5)
+        self.assertAlmostEqual(C[0][2],2.00006,5)
+        self.assertAlmostEqual(C[2][0],1.17881,5)
+        self.assertAlmostEqual(C[2][2],3.68663,5)

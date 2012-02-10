@@ -17,7 +17,7 @@ class testSVM(unittest.TestCase):
         k = 1
         C_ext = getCext(particle, alpha, 1, b_sca, nmax)[0]
         C_sca = getCsca(k,b_sca,nmax)[0]
-        self.assertAlmostEqual(C_ext, C_sca, 3)
+        self.assertAlmostEqual(C_ext, C_sca, 7)
 
 if __name__ == '__main__':
     unittest.main()
