@@ -1,6 +1,5 @@
-import scipy
 import unittest
-from spheroidal import get_cv, get_a_functions, get_A, get_b_functions, get_c_functions, get_B, get_C, get_fullA, get_fullB, getSolution, get_A11, rad3_cv, get_A12, rad1_cv, metric_phi, metric_psi, metric_nu, quad, get_A21, ang1_cv, get_A22, get_A10, get_A20
+from spheroidal import *
 
 #tests without using derivatives
 #prolate spheroid

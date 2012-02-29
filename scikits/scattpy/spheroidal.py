@@ -4,12 +4,18 @@ import scipy.special as special
 import scipy.linalg as linalg
 import f_spheroid
 
+
 from scipy import *
 
 # ---- Calculation of norm for spheroidal angular functions ----
+optimize_norm={}
 def get_norm_cv(m, n, c, cv, type):
     sum = 0
     k = 0
+    key = str(m)+' '+str(n)+' '+str(c)+' '+str(cv)
+    if key in optimize_norm:
+        return optimize_norm[key]
+
     d = f_spheroid.sdmn(m, n, c, cv, type)
     isEven = (n - m) % 2
     if(isEven == 1):
@@ -24,6 +30,7 @@ def get_norm_cv(m, n, c, cv, type):
         k += 2
 
     sum = sqrt(2.0 * sum)
+    optimize_norm[key] = sum
     return sum
 
 def get_norm_factorial(k, m):
