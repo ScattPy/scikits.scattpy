@@ -14,7 +14,7 @@ class SpheroidalSVM:
         self.nmax = nmax
 
     #according to (83)
-    def get_A(self, c2,c1,rank):
+    def __get_A(self, c2,c1,rank):
         A = zeros((self.nmax, self.nmax),dtype=complex)
         type = self.particle.type
         m = 1
@@ -24,12 +24,12 @@ class SpheroidalSVM:
                 n = k + m
                 cv_l = get_cv(m, l, c2, type)
                 cv_n = get_cv(m, n, c1, type)
-                func = lambda nu: spheroidal.get_a_functions(m, l, c2, cv_l, rank, self.particle)(nu) * ang1_cv(m, n, c1, cv_n, type, nu)[0]
+                func = lambda nu: spheroidal.get_a_function(m, l, c2, cv_l, rank, self.particle)(nu) * ang1_cv(m, n, c1, cv_n, type, nu)[0]
                 A[i][k] = spheroidal.quad(func, -1, 1)
         return A
 
     #according to (84)
-    def get_Z(self,get_z_functions,c2,c1, rank):
+    def __get_Z(self,z_function,c2,c1, rank):
         Z = zeros((self.nmax, self.nmax),dtype=complex)
         type = self.particle.type
         m = 1
@@ -39,44 +39,44 @@ class SpheroidalSVM:
                 n = k + m
                 cv_l = get_cv(m, l, c2, type)
                 cv_n = get_cv(m, n, c1, type)
-                func = lambda nu: get_z_functions(m, l, c2, cv_l, rank, self.particle)(nu) *\
+                func = lambda nu: z_function(m, l, c2, cv_l, rank, self.particle)(nu) *\
                                   ang1_cv(m, n, c1, cv_n, type, nu)[0] * spheroidal.metric_phi(nu, self.particle)
                 Z[i][k] = spheroidal.quad(func, -1, 1)
         return Z
 
 
-    def get_C(self):
-        return self.get_Z(spheroidal.get_c_functions, self.c2, self.c1, 1)
+    def __get_C(self):
+        return self.__get_Z(spheroidal.get_c_function, self.c2, self.c1, 1)
 
 
-    def get_B(self, rank):
-        return self.get_Z(spheroidal.get_b_functions, self.c1, self.c1, rank)
+    def __get_B(self, rank):
+        return self.__get_Z(spheroidal.get_b_function, self.c1, self.c1, rank)
 
     # ---- Generation of A matrices
 
     #according to (86)
     def get_A11(self):
-        return self.get_A(self.c1, self.c1, 3).transpose()
+        return self.__get_A(self.c1, self.c1, 3).transpose()
 
 
     def get_A12(self):
-        return -self.get_A(self.c2, self.c1, 1).transpose()
+        return -self.__get_A(self.c2, self.c1, 1).transpose()
 
 
     def get_A10(self):
-        return -self.get_A(self.c1, self.c1, 1).transpose()
+        return -self.__get_A(self.c1, self.c1, 1).transpose()
 
 
     def get_A21(self):
-        return self.get_B(3).transpose()
+        return self.__get_B(3).transpose()
 
 
     def get_A22(self):
-        return -self.get_C().transpose()
+        return -self.__get_C().transpose()
 
 
     def get_A20(self):
-        return -self.get_B(1).transpose()
+        return -self.__get_B(1).transpose()
 
     #according to (85)
     def get_fullB(self):

@@ -158,10 +158,10 @@ class testSpheroidalMatrixA(unittest.TestCase):
         particle = Particle(psi, d)
         svm = SpheroidalSVM(particle,c2,c1,nmax)
         A = svm.get_fullA()
-        self.assertAlmostEqual(A[0, 0], svm.get_A(c1, c1, 3))
-        self.assertAlmostEqual(A[0, 1], -svm.get_A(c2, c1, 1))
-        self.assertAlmostEqual(A[1, 0], svm.get_B(3))
-        self.assertAlmostEqual(A[1, 1], -svm.get_C())
+        self.assertAlmostEqual(A[0, 0], svm.get_A11())
+        self.assertAlmostEqual(A[0, 1], svm.get_A12())
+        self.assertAlmostEqual(A[1, 0], svm.get_A21())
+        self.assertAlmostEqual(A[1, 1], svm.get_A22())
 
     def test_get_fullA2(self):
         c1 = 0.5;
@@ -172,10 +172,10 @@ class testSpheroidalMatrixA(unittest.TestCase):
         particle = Particle(psi, d)
         svm = SpheroidalSVM(particle,c2,c1,nmax)
         A = svm.get_fullA()
-        A11 = svm.get_A(c1, c1, 3)
-        A12 = -svm.get_A(c2, c1, 1)
-        A21 = svm.get_B(3)
-        A22 = -svm.get_C()
+        A11 = svm.get_A11()
+        A12 = svm.get_A12()
+        A21 = svm.get_A21()
+        A22 = svm.get_A22()
         self.assertAlmostEqual(A[0, 0], A11[0, 0])
         self.assertAlmostEqual(A[0, 1], A11[0, 1])
         self.assertAlmostEqual(A[1, 0], A11[1, 0])
@@ -204,8 +204,8 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         particle = Particle(psi, d)
         svm = SpheroidalSVM(particle,c1,c1,nmax)
         B = svm.get_fullB()
-        self.assertAlmostEqual(B[0], -svm.get_A(c1, c1, 1))
-        self.assertAlmostEqual(B[1], -svm.get_B(1))
+        self.assertAlmostEqual(B[0], svm.get_A10())
+        self.assertAlmostEqual(B[1], svm.get_A20())
 
     def test_getFullB2(self):
         c1 = 4.5;
@@ -215,8 +215,8 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         particle = Particle(psi, d)
         svm = SpheroidalSVM(particle,c1,c1,nmax)
         B = svm.get_fullB()
-        B1 = -svm.get_A(c1, c1, 1)
-        B2 = -svm.get_B(1)
+        B1 = svm.get_A10()
+        B2 = svm.get_A20()
         self.assertAlmostEqual(B[0, 0], B1[0, 0])
         self.assertAlmostEqual(B[0, 1], B1[0, 1])
         self.assertAlmostEqual(B[1, 0], B1[1, 0])

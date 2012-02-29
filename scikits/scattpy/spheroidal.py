@@ -16,7 +16,7 @@ def quad(func, a, b, **kwargs):
     return real_integral[0] + 1j*imag_integral[0]
 
 #according to (81)
-def get_a_functions(m, n, c, cv, rank, particle):
+def get_a_function(m, n, c, cv, rank, particle):
     type = particle.type
     if rank == 1:
         return lambda nu: rad1_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[0]
@@ -24,7 +24,7 @@ def get_a_functions(m, n, c, cv, rank, particle):
         return lambda nu: rad3_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[0]
 
 #according to (81)
-def get_b_functions(m, n, c, cv, rank, particle):
+def get_b_function(m, n, c, cv, rank, particle):
     type = particle.type
     if rank == 1:
         return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
@@ -38,13 +38,13 @@ def get_b_functions(m, n, c, cv, rank, particle):
                              * rad3_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1])
 
 #according to (82)
-def get_c_functions(m, n, c, cv, rank, particle):
+def get_c_function(m, n, c, cv, rank, particle):
     eps = particle.eps
     #according to (30)
     delta = lambda nu: metric_phi(nu, particle)
     #according to (28)
-    return lambda nu: get_b_functions(m, n, c, cv, 1, particle)(nu) / eps -\
-                      (1.0 / eps - 1.0) * IzIt(nu,particle) / delta(nu) * get_a_functions(m, n, c, cv, 1, particle)(nu) \
+    return lambda nu: get_b_function(m, n, c, cv, 1, particle)(nu) / eps -\
+                      (1.0 / eps - 1.0) * IzIt(nu,particle) / delta(nu) * get_a_function(m, n, c, cv, 1, particle)(nu) \
                         * get_integral_metric(particle)(nu)
 
 #-------------------------Metric coefficients ------------------------------------------------
