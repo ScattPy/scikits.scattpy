@@ -56,6 +56,9 @@ def configuration(parent_package='', top_path=None, package_name=DISTNAME):
     config.add_extension('f_utils',
                          sources=[os.path.join('src', 'f_utils.for')]
                          )
+    config.add_extension('f_spheroid',
+                         sources=[os.path.join('src', 'sdmn.f')]
+                         )
 
     return config
 
