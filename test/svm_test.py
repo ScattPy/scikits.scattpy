@@ -8,7 +8,7 @@ from properties import *
 class testSVM(unittest.TestCase):
 
     def test_IntegrationCase(self):
-        nmax = 10
+        nmax = 6
         c1 = 1.3
         c2 = 2
         alpha = pi / 4

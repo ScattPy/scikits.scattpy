@@ -1,96 +1,15 @@
 import scipy
 import scipy.integrate
-import scipy.special as special
-import scipy.linalg as linalg
-import f_spheroid
-
+import scipy.linalg
 
 from scipy import *
 
-# ---- Calculation of norm for spheroidal angular functions ----
-optimize_norm={}
-def get_norm_cv(m, n, c, cv, type):
-    sum = 0
-    k = 0
-    key = str(m)+' '+str(n)+' '+str(c)+' '+str(cv)
-    if key in optimize_norm:
-        return optimize_norm[key]
-
-    d = f_spheroid.sdmn(m, n, c, cv, type)
-    isEven = (n - m) % 2
-    if(isEven == 1):
-        k = 1
-
-    while (k < d.shape[0]):
-        if (type == 1):
-            value = d[k / 2] * d[k / 2] / (2.0 * k + 2.0 * m + 1.0) * get_norm_factorial(k, m)
-        else:
-            value = d[k / 2] * d[k / 2] / (2.0 * k + 2.0 * m + 1.0) * get_norm_factorial(k, m)
-        sum += value
-        k += 2
-
-    sum = sqrt(2.0 * sum)
-    optimize_norm[key] = sum
-    return sum
-
-def get_norm_factorial(k, m):
-    fact = 1l
-    for i in range(1, 2 * m + 1):
-        fact *= k + i
-    return fact
-
-
-def get_pro_norm_cv(m, n, c, cv):
-    return get_norm_cv(m, n, c, cv, 1)
-
-
-def get_obl_norm_cv(m, n, c, cv):
-    return get_norm_cv(m, n, c, cv, -1)
-
-
-def get_pro_norm(m, n, c):
-    return get_pro_norm_cv(m, n, c, special.pro_cv(m, n, c))
-
-
-def get_obl_norm(m, n, c):
-    return get_obl_norm_cv(m, n, c, special.obl_cv(m, n, c))
-
-# ---- Shortcut for different types of spheroids
-
-def rad1_cv(m, n, c, cv, type, x):
-    if type == 1:
-        return special.pro_rad1_cv(m, n, c, cv, x)
-    elif type == -1:
-        return special.obl_rad1_cv(m, n, c, cv, x)
-
-
-def rad2_cv(m, n, c, cv, type, x):
-    if type == 1:
-        return special.pro_rad2_cv(m, n, c, cv, x)
-    elif type == -1:
-        return special.obl_rad2_cv(m, n, c, cv, x)
-
-
-def ang1_cv(m, n, c, cv, type, x):
-    if type == 1:
-        value = special.pro_ang1_cv(m, n, c, cv, x)
-    elif type == -1:
-        value = special.obl_ang1_cv(m, n, c, cv, x)
-    return value / get_norm_cv(m, n, c, cv, type)
-
-
-def get_cv(m, n, c, type):
-    if type == 1:
-        return special.pro_cv(m, n, c)
-    elif type == -1:
-        return special.obl_cv(m, n, c)
-
-#according to 1.41 Komarov, Slavyanov "Spheroidal funtions"
-def rad3_cv(m, n, c, cv, type, x):
-    return [rad1_cv(m, n, c, cv, type, x)[0] + 1j * rad2_cv(m, n, c, cv, type, x)[0],
-            rad1_cv(m, n, c, cv, type, x)[1] + 1j * rad2_cv(m, n, c, cv, type, x)[1]]
+from spheroidal_functions import *
+from spheroidal_svm import *
 
 #quad integration for complex numbers
+from spheroidal_svm import get_fullA
+
 def quad(func, a, b, **kwargs):
     def real_func(x):
         return scipy.real(func(x))
@@ -234,21 +153,7 @@ def get_C(particle, c2, c1, nmax):
 def get_B(particle, c2, c1, rank, nmax):
     return get_Z(get_b_functions, particle, c2, c1, rank, nmax)
 
-#-------Solve equation and find solution of scattering by SVM
-
-#according to (85)
-def get_fullA(particle, c1, c2, nmax):
-    A11 = get_A11(particle, c1, nmax)
-    A12 = get_A12(particle, c1, c2, nmax)
-    A21 = get_A21(particle, c1, nmax)
-    A22 = get_A22(particle, c1, c2, nmax)
-
-    return bmat([[A11, A12], [A21, A22]])
-
-
-def get_fullB(particle, c, nmax):
-    return bmat([[get_A10(particle, c, nmax)], [get_A20(particle, c, nmax)]])
-
+#-------Solve equation and find solution of scattering
 
 def get_Bin(inputWave, particle, c, nmax):
     b = zeros((nmax, 1),dtype=complex)
@@ -261,5 +166,5 @@ def get_Bin(inputWave, particle, c, nmax):
 def getSolution(particle, inputWave, c1, c2, nmax):
     A = get_fullA(particle, c1, c2, nmax)
     B = get_fullB(particle, c1, nmax) * get_Bin(inputWave, particle, c1, nmax)
-    x = linalg.solve(A, B)
+    x = scipy.linalg.solve(A, B)
     return (x[0:nmax + 1], x[nmax + 1:])

@@ -1,5 +1,6 @@
 import numpy
 import unittest
+import scipy.linalg
 
 from scipy.special import *
 

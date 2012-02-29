@@ -4,6 +4,7 @@ from spheroidal import *
 #tests without using derivatives
 #prolate spheroid
 from spheroidal_particles import TMInputWave
+from spheroidal_svm import *
 
 class Particle:
     type = 1
