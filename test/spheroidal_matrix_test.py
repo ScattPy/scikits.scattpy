@@ -1,5 +1,6 @@
+import scipy
 import unittest
-from spheroidal import get_cv, get_a_functions, get_A, get_b_functions, get_c_functions, get_B, get_C, get_fullA, get_fullB, getSolution
+from spheroidal import get_cv, get_a_functions, get_A, get_b_functions, get_c_functions, get_B, get_C, get_fullA, get_fullB, getSolution, get_A11, rad3_cv, get_A12, rad1_cv, metric_phi, metric_psi, metric_nu, quad, get_A21, ang1_cv, get_A22, get_A10, get_A20
 
 #tests without using derivatives
 #prolate spheroid
@@ -140,6 +141,126 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[2][1], 0)
         self.assertAlmostEqual(A[1][2], 0)
 
+    def test_getA11Simplest(self):
+        psi = 1.5
+        c = 2
+        particle = Particle(psi,d=1,eps=1)
+        nmax = 3
+        A = get_A11(particle,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        self.assertAlmostEqual(A[0][0],rad3_cv(1,1,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],rad3_cv(1,2,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],rad3_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
+    def test_getA12Simplest(self):
+        psi = 3
+        c = 2.5
+        particle = Particle(psi,d=2.0,eps=1)
+        nmax = 3
+        A = get_A12(particle,c,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        self.assertAlmostEqual(A[0][0],-rad1_cv(1,1,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],-rad1_cv(1,2,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],-rad1_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
+    def test_getA21Simplest(self):
+        psi = 3
+        c = 2.5
+        particle = Particle(psi,d=2.0,eps=1)
+        nmax = 3
+        A = get_A21(particle,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
+        coeff = quad(coeff,-1,1)
+        self.assertAlmostEqual(A[0][0],rad3_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],rad3_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],rad3_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
+    def test_getA22Simplest(self):
+        psi = 3
+        c = 2.5
+        particle = Particle(psi,d=2.0,eps=1)
+        nmax = 3
+        A = get_A22(particle,c,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
+        coeff = - quad(coeff,-1,1)
+        self.assertAlmostEqual(A[0][0],rad1_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],rad1_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],rad1_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
+    def test_getA10Simplest(self):
+        psi = 3
+        c = 2.5
+        particle = Particle(psi,d=2.0,eps=1)
+        nmax = 3
+        A = get_A10(particle,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        self.assertAlmostEqual(A[0][0],-rad1_cv(1,1,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],-rad1_cv(1,2,c,cv,particle.type,psi)[0])
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],-rad1_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
+    def test_getA20Simplest(self):
+        psi = 3
+        c = 2.5
+        particle = Particle(psi,d=2.0,eps=1)
+        nmax = 3
+        A = get_A20(particle,c,nmax)
+        cv = get_cv(1,1,c,particle.type)
+        coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
+        coeff = - quad(coeff,-1,1)
+        self.assertAlmostEqual(A[0][0],rad1_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,2,c,particle.type)
+        self.assertAlmostEqual(A[1][1],rad1_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        cv = get_cv(1,3,c,particle.type)
+        self.assertAlmostEqual(A[2][2],rad1_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1][0], 0)
+        self.assertAlmostEqual(A[0][1], 0)
+        self.assertAlmostEqual(A[0][2], 0)
+        self.assertAlmostEqual(A[2][0], 0)
+        self.assertAlmostEqual(A[2][1], 0)
+        self.assertAlmostEqual(A[1][2], 0)
+
     def test_get_fullA1(self):
         c1 = 0.5;
         c2 = 3.5;
@@ -184,177 +305,6 @@ class testSpheroidalMatrixA(unittest.TestCase):
 
 
 class testSpheroidalMatrixZ(unittest.TestCase):
-    def test_get_b_function_R11(self):
-        n = 1;
-        m = 0;
-        c = 2.5;
-        z = 0.5;
-        type = 1;
-        d = 1.5;
-        psi = 1.5
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 1, particle)(z), -0.592587, 5)
-
-    def test_get_b_function_R12(self):
-        n = 3;
-        m = 2;
-        c = 1.5;
-        z = -0.3;
-        type = 1;
-        d = 4;
-        psi = 2
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 1, particle)(z), -0.0508997)
-
-    def test_get_b_function_R13(self):
-        n = 3;
-        m = 2;
-        c = 3.5;
-        z = -0.3;
-        type = 1;
-        d = 4;
-        psi = 2
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 1, particle)(z), 0.19044, 5)
-
-    def test_get_b_function_R14(self):
-        n = 2;
-        m = 1;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        psi = 6
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 1, particle)(z), -0.00798306, 5)
-
-    def test_get_b_function_R15(self):
-        n = 4;
-        m = 2;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        psi = 6
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 1, particle)(z), -0.0192895, 5)
-
-    def test_get_b_function_R31(self):
-        n = 1;
-        m = 0;
-        c = 2.5;
-        z = 0.5;
-        type = 1;
-        d = 1.5;
-        psi = 1.5
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 3, particle)(z), -0.592587 + 0.513718j, 5)
-
-    def test_get_b_function_R32(self):
-        n = 3;
-        m = 2;
-        c = 1.5;
-        z = -0.3;
-        type = 1;
-        d = 4;
-        psi = 2
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 3, particle)(z), -0.0508997 - 0.300541j, 5)
-
-    def test_get_b_function_R33(self):
-        n = 3;
-        m = 2;
-        c = 3.5;
-        z = -0.3;
-        type = 1;
-        d = 4;
-        psi = 2
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 3, particle)(z), 0.19044 - 0.0680834j, 5)
-
-    def test_get_b_function_R34(self):
-        n = 2;
-        m = 1;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        psi = 6
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 3, particle)(z), -0.00798306 + 0.0386146j, 5)
-
-    def test_get_b_function_R35(self):
-        n = 4;
-        m = 2;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        psi = 6
-        particle = Particle(psi, d)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_b_functions(m, n, c, cv, type, 3, particle)(z), -0.0192895 + 0.0372034j, 5)
-
-    def test_get_c_function_R11(self):
-        n = 1;
-        m = 0;
-        c = 2.5;
-        z = 0.5;
-        type = 1;
-        d = 1.5;
-        eps = 0.4;
-        psi = 1.5
-        particle = Particle(psi, d, eps)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_c_functions(m, n, c, cv, type, 1, particle)(z), -1.91761, 5)
-
-    def test_get_c_function_R12(self):
-        n = 3;
-        m = 2;
-        c = 1.5;
-        z = -0.3;
-        type = 1;
-        d = 4;
-        eps = 1.5;
-        psi = 3
-        particle = Particle(psi, d, eps)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_c_functions(m, n, c, cv, type, 1, particle)(z), -0.01676767, 5)
-
-    def test_get_c_function_R13(self):
-        n = 2;
-        m = 1;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        eps = 3.5;
-        psi = 6
-        particle = Particle(psi, d, eps)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_c_functions(m, n, c, cv, type, 1, particle)(z), -0.00122861, 5)
-
-    def test_get_c_function_R14(self):
-        n = 4;
-        m = 2;
-        c = 4.5;
-        z = -0.6;
-        type = 1;
-        d = 8;
-        eps = 3.5;
-        psi = 6
-        particle = Particle(psi, d, eps)
-        cv = get_cv(m, n, c, type)
-        self.assertAlmostEqual(get_c_functions(m, n, c, cv, type, 1, particle)(z), -0.0044746, 5)
 
     def test_get_B1(self):
         d = 8;
