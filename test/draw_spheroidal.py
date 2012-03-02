@@ -6,9 +6,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
-from scikits.scattpy.spheroidal import *
-from scikits.scattpy.spheroidal_particles import *
-from scikits.scattpy.properties import *
+from spheroidal import *
+from spheroidal_particles import *
+from properties import *
 
 def plot_graphics():
     y=[]
@@ -18,16 +18,18 @@ def plot_graphics():
     alpha = pi / 4
     k = 1
     particle = ProlateSpheroid(psi=2,c=c1,derivative=0,eps=1)
-    for i in range(6,32,2):
+    for i in range(6,52,2):
         nmax = i
+        print nmax
         start = time.time()
-        b_sca = getSolution(particle, TMInputWave(alpha), c1, c2, nmax)[0]
+        svm = SpheroidalSVM(particle,c2,c1,nmax)
+        b_sca = getSolution(svm,particle, TMInputWave(alpha), c1, c2, nmax)[0]
         C_ext = -getCext(particle, alpha, k, b_sca, nmax)[0]
         C_sca = getCsca(k, b_sca, nmax)[0]
         delta=(C_ext-C_sca)/(C_ext+C_sca)
         execution_time.append(time.time() - start)
         y.append(delta)
-    x = np.arange(6,12,2)
+    x = np.arange(6,52,2)
     y= np.fabs(y)
     plt.plot(x,np.log10(y))
     plt.savefig('error')
@@ -35,4 +37,7 @@ def plot_graphics():
     plt.plot(x,np.log10(execution_time))
     plt.savefig('time')
 
-plot_graphics()
+if __name__ == '__main__':
+    plot_graphics()
+
+

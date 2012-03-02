@@ -2,9 +2,9 @@ from numpy import cos
 
 import spheroidal
 
-class ProlateSpheroid:
-    type = 1
-    d = 4.
+class Spheroid:
+
+    d = 2.
     c = 5.
 
     def __init__(self,psi=2.,eps=1.,c=1,derivative=0):
@@ -19,22 +19,12 @@ class ProlateSpheroid:
     def derivative(self, nu):
         return self.deriv
 
+class ProlateSpheroid(Spheroid):
+    type = 1
 
-class OblateSpheroid:
+
+class OblateSpheroid(Spheroid):
     type = -1
-    d = 1
-    eps = 1
-    c = 1
-
-    def __init__(self,psi=2,derivative=0):
-        self.psi = psi
-        self.deriv = derivative
-
-    def function(self, nu):
-        return self.psi
-
-    def derivative(self, nu):
-        return self.deriv
 
 #Incedent waves
 class TEInputWave:
