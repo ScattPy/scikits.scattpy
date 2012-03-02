@@ -30,22 +30,25 @@ def get_b_function(m, n, c, cv, rank, particle):
         return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
                            * rad1_cv(m, n, c, cv, type, particle.function(nu))[1] * ang1_cv(m, n, c, cv, type, nu)[0]
                            - particle.derivative(nu) * metric_psi(nu, particle) / metric_nu(nu, particle)
-                             * rad1_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1])
+                             * rad1_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1]) \
+                            / get_integral_metric(particle)(nu)
+
     elif rank == 3:
         return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
                            * rad3_cv(m, n, c, cv, type, particle.function(nu))[1] * ang1_cv(m, n, c, cv, type, nu)[0]
                            - particle.derivative(nu) * metric_psi(nu, particle) / metric_nu(nu, particle)
-                             * rad3_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1])
+                             * rad3_cv(m, n, c, cv, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1])\
+                           / get_integral_metric(particle)(nu)
 
 #according to (82)
 def get_c_function(m, n, c, cv, rank, particle):
     eps = particle.eps
     #according to (30)
+    #is there a minus?
     delta = lambda nu: metric_phi(nu, particle)
     #according to (28)
     return lambda nu: get_b_function(m, n, c, cv, 1, particle)(nu) / eps -\
-                      (1.0 / eps - 1.0) * IzIt(nu,particle) / delta(nu) * get_a_function(m, n, c, cv, 1, particle)(nu) \
-                        * get_integral_metric(particle)(nu)
+                      (1.0 / eps - 1.0) * IzIt(nu,particle) / delta(nu) * get_a_function(m, n, c, cv, 1, particle)(nu)
 
 #-------------------------Metric coefficients ------------------------------------------------
 

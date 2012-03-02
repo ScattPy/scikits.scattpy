@@ -1,8 +1,7 @@
-from numpy import zeros, asarray
+from numpy import zeros, asarray, mat
 import scipy
 
 from spheroidal_functions import *
-from spheroidal_svm import SpheroidalSVM
 
 import spheroidal
 from spheroidal_svm import SpheroidalSVM
@@ -23,16 +22,17 @@ class SpheroidalEBCM:
         for i in range(self.nmax):
             for k in range(self.nmax):
                 n = i + m
-                cv_n = get_cv(m, n, self.c1, type)
                 l = k + m
                 cv_l = get_cv(m, l, self.c2, type)
-                func = lambda nu: spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) *\
+                cv_n = get_cv(m, n, self.c1, type)
+                func = lambda nu: (spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) *\
                                   spheroidal.get_b_function(m, n, self.c1, cv_n, 3, self.particle)(nu) -\
                                   spheroidal.get_c_function(m, l, self.c2, cv_l, 1, self.particle)(nu) *\
-                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 3, self.particle)(nu)
+                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 3, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle) *\
+                                  spheroidal.get_integral_metric(self.particle)(nu)
 
-                Bs[i][k] = 1j * spheroidal.quad(func, -1, 1)
-        return 1j * Bs
+                Bs[i][k] = spheroidal.quad(func, -1, 1)
+        return  1j * mat(Bs)
 
     #according to (88)
     def get_BRi(self):
@@ -42,16 +42,17 @@ class SpheroidalEBCM:
         for i in range(self.nmax):
             for k in range(self.nmax):
                 n = i + m
-                cv_n = get_cv(m, n, self.c1, type)
                 l = k + m
                 cv_l = get_cv(m, l, self.c2, type)
-                func = lambda nu: spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) * \
+                cv_n = get_cv(m, n, self.c1, type)
+                func = lambda nu: (spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) * \
                                   spheroidal.get_b_function(m, n, self.c1, cv_n, 1, self.particle)(nu) - \
                                   spheroidal.get_c_function(m, l, self.c2, cv_l, 1, self.particle)(nu) * \
-                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 1, self.particle)(nu)
+                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 1, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle) *\
+                                  spheroidal.get_integral_metric(self.particle)(nu)
 
                 Br[i][k] = spheroidal.quad(func, -1, 1)
-        return 1j * Br
+        return  -1j * mat(Br)
 
     #according to (99)
     def get_BSm(self):

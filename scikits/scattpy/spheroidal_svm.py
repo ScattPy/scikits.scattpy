@@ -41,7 +41,8 @@ class SpheroidalSVM:
                 cv_l = get_cv(m, l, c2, type)
                 cv_n = get_cv(m, n, c1, type)
                 func = lambda nu: z_function(m, l, c2, cv_l, rank, self.particle)(nu) *\
-                                  ang1_cv(m, n, c1, cv_n, type, nu)[0] * spheroidal.metric_phi(nu, self.particle)
+                                  ang1_cv(m, n, c1, cv_n, type, nu)[0] * spheroidal.metric_phi(nu, self.particle) * \
+                                  spheroidal.get_integral_metric(self.particle)(nu)
                 Z[i][k] = spheroidal.quad(func, -1, 1)
         return mat(Z)
 
@@ -93,5 +94,5 @@ class SpheroidalSVM:
     def getSolution(self,inputWave):
         A = self.get_fullA()
         B = self.get_fullB() * spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
-        x = scipy.linalg.solve(A, B)
+        x = -scipy.linalg.solve(A, B)
         return (x[0:self.nmax + 1], x[self.nmax + 1:])
