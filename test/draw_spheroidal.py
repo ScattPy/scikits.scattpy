@@ -2,6 +2,7 @@ import time
 
 import matplotlib
 from spheroidal_ebcm import SpheroidalEBCM
+from spheroidal_pmm import SpheroidalPMM
 
 matplotlib.use('Agg')
 
@@ -26,12 +27,66 @@ def generate_data():
     n_min = 6
     n_max = 52
 
+#    for i in range(n_min,n_max,2):
+#        nmax = i
+#        print nmax
+#        start = time.time()
+#        svm = SpheroidalSVM(particle,c2,c1,nmax)
+#        b_sca = svm.getSolution(TMInputWave(alpha))[0]
+#        C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
+#        C_sca = getCsca(k, b_sca, nmax)[0]
+#        delta=(C_ext-C_sca)/(C_ext+C_sca)
+#        execution_time.append(time.time() - start)
+#        y.append(delta)
+#
+#    y= np.fabs(y)
+#    save("svm_delta",y)
+#    save("svm_time",execution_time)
+#    y=[]
+#    execution_time=[]
+#
+#    for i in range(n_min,n_max,2):
+#        nmax = i
+#        print nmax
+#        start = time.time()
+#        ebcm = SpheroidalEBCM(particle,c2,c1,nmax)
+#        b_sca = ebcm.getMatrixSolution(TMInputWave(alpha))[0]
+#        C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
+#        C_sca = getCsca(k, b_sca, nmax)[0]
+#        delta=(C_ext-C_sca)/(C_ext+C_sca)
+#        execution_time.append(time.time() - start)
+#        y.append(delta)
+#
+#    y= np.fabs(y)
+#    save("ebcm_m_delta",y)
+#    save("ebcm_m_time",execution_time)
+#    y=[]
+#    execution_time=[]
+#
+#    for i in range(n_min,n_max,2):
+#        nmax = i
+#        print nmax
+#        start = time.time()
+#        ebcm = SpheroidalEBCM(particle,c2,c1,nmax)
+#        b_sca = ebcm.getSolution(TMInputWave(alpha))[0]
+#        C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
+#        C_sca = getCsca(k, b_sca, nmax)[0]
+#        delta=(C_ext-C_sca)/(C_ext+C_sca)
+#        execution_time.append(time.time() - start)
+#        y.append(delta)
+#
+#    y= np.fabs(y)
+#    save("ebcm_delta",y)
+#    save("ebcm_time",execution_time)
+#    y=[]
+#    execution_time=[]
+
     for i in range(n_min,n_max,2):
         nmax = i
         print nmax
         start = time.time()
-        svm = SpheroidalSVM(particle,c2,c1,nmax)
-        b_sca = svm.getSolution(TMInputWave(alpha))[0]
+        pmm = SpheroidalPMM(particle,c2,c1,nmax)
+        b_sca = pmm.getMatrixSolution(TMInputWave(alpha))[0]
         C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
         C_sca = getCsca(k, b_sca, nmax)[0]
         delta=(C_ext-C_sca)/(C_ext+C_sca)
@@ -39,8 +94,8 @@ def generate_data():
         y.append(delta)
 
     y= np.fabs(y)
-    save("svm_delta",y)
-    save("svm_time",execution_time)
+    save("pmm_m_delta",y)
+    save("pmm_m_time",execution_time)
     y=[]
     execution_time=[]
 
@@ -48,8 +103,8 @@ def generate_data():
         nmax = i
         print nmax
         start = time.time()
-        ebcm = SpheroidalEBCM(particle,c2,c1,nmax)
-        b_sca = ebcm.getMatrixSolution(TMInputWave(alpha))[0]
+        pmm = SpheroidalPMM(particle,c2,c1,nmax)
+        b_sca = pmm.getSolution(TMInputWave(alpha))[0]
         C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
         C_sca = getCsca(k, b_sca, nmax)[0]
         delta=(C_ext-C_sca)/(C_ext+C_sca)
@@ -57,27 +112,8 @@ def generate_data():
         y.append(delta)
 
     y= np.fabs(y)
-    save("ebcm_m_delta",y)
-    save("ebcm_m_time",execution_time)
-    y=[]
-    execution_time=[]
-
-    for i in range(n_min,n_max,2):
-        nmax = i
-        print nmax
-        start = time.time()
-        ebcm = SpheroidalEBCM(particle,c2,c1,nmax)
-        b_sca = ebcm.getSolution(TMInputWave(alpha))[0]
-        C_ext = getCext(particle, alpha, k, b_sca, nmax)[0]
-        C_sca = getCsca(k, b_sca, nmax)[0]
-        delta=(C_ext-C_sca)/(C_ext+C_sca)
-        execution_time.append(time.time() - start)
-        y.append(delta)
-
-    y= np.fabs(y)
-    save("ebcm_delta",y)
-    save("ebcm_time",execution_time)
-    #x = np.arange(n_min,n_max,2)
+    save("pmm_delta",y)
+    save("pmm_time",execution_time)
 
 def plot_graphics():
     svm_delta=load('svm_delta.npy')
@@ -115,6 +151,6 @@ def plot_graphics():
 
 
 if __name__ == '__main__':
-    plot_graphics()
+    generate_data()
 
 

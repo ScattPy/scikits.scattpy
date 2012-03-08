@@ -1,5 +1,6 @@
 from numpy import zeros, bmat, mat, conjugate
 import scipy
+import scipy.linalg
 
 from spheroidal_functions import *
 

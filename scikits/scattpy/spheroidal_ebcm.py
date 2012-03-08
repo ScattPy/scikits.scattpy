@@ -1,5 +1,6 @@
 from numpy import zeros, asarray, mat
 import scipy
+import scipy.linalg
 
 from spheroidal_functions import *
 
