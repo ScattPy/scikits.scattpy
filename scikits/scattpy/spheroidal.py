@@ -1,3 +1,5 @@
+import scipy.integrate
+
 from scipy import *
 
 from spheroidal_svm import *
