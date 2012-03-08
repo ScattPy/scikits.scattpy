@@ -1,7 +1,4 @@
 from scipy import *
-import scipy
-import scipy.integrate
-import scipy.linalg
 
 from spheroidal_svm import *
 
