@@ -1,7 +1,5 @@
 import unittest
 
-from numpy import transpose
-
 from spheroidal import *
 from spheroidal_particles import *
 from properties import *
