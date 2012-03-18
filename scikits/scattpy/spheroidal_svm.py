@@ -9,10 +9,10 @@ import spheroidal
 
 class SpheroidalSVM:
 
-    def __init__(self,particle,c2,c1,nmax):
+    def __init__(self,particle,nmax):
         self.particle=particle
-        self.c2 = c2
-        self.c1 = c1
+        self.c2 = particle.c2
+        self.c1 = particle.c1
         self.nmax = nmax
 
     #according to (83)
@@ -94,6 +94,6 @@ class SpheroidalSVM:
 
     def getSolution(self,inputWave):
         A = self.get_fullA()
-        B = self.get_fullB() * spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
+        B = self.get_fullB() * spheroidal.get_Bin(inputWave, self.particle, self.nmax)
         x = -scipy.linalg.solve(A, B)
         return (x[0:self.nmax + 1], x[self.nmax + 1:])

@@ -9,10 +9,10 @@ from spheroidal_svm import SpheroidalSVM
 
 
 class SpheroidalEBCM:
-    def __init__(self, particle, c2, c1, nmax):
+    def __init__(self, particle, nmax):
         self.particle = particle
-        self.c2 = c2
-        self.c1 = c1
+        self.c2 = particle.c2
+        self.c1 = particle.c1
         self.nmax = nmax
 
     #according to (88)
@@ -57,14 +57,14 @@ class SpheroidalEBCM:
 
     #according to (99)
     def get_BSm(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         Bs = 1j * ( svm.get_B(3) * svm.get_A(self.c2, self.c1, 1).T -
                     svm.get_A(self.c1, self.c1, 3) * svm.get_C().T)
         return Bs
 
     #according to (99)
     def get_BRm(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         Br = -1j * ( svm.get_B(1) * svm.get_A(self.c2, self.c1, 1).T -
                     svm.get_A(self.c1, self.c1, 1) * svm.get_C().T)
         return Br
@@ -72,13 +72,13 @@ class SpheroidalEBCM:
 
     #Return b_sca and b_int. b_sca = result[0] and b_int = result[1]
     def getSolution(self, inputWave):
-        b_in = spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
+        b_in = spheroidal.get_Bin(inputWave, self.particle, self.nmax)
         b_int = scipy.linalg.solve(self.get_BSi(), -b_in)
         b_sca = asarray(self.get_BRi() * b_int)
         return (b_sca, b_int)
 
     def getMatrixSolution(self, inputWave):
-        b_in = spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
+        b_in = spheroidal.get_Bin(inputWave, self.particle, self.nmax)
         b_int = scipy.linalg.solve(self.get_BSm(), -b_in)
         b_sca = asarray(self.get_BRm() * b_int)
         return (b_sca, b_int)

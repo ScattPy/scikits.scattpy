@@ -89,16 +89,16 @@ def RIt(nu,particle):
 
 #-------Solve equation and find solution of scattering
 
-def get_Bin(inputWave, particle, c, nmax):
+def get_Bin(inputWave, particle,nmax):
     b = zeros((nmax, 1),dtype=complex)
     for i in range(nmax):
         l = i + 1
-        b[i] = inputWave.getB(particle, c, l)
+        b[i] = inputWave.getB(particle, particle.c1, l)
     return b
 
 #Return b_sca and b_int. b_sca = result[0] and b_int = result[1]
-def getSolution(method,particle, inputWave, c1, c2, nmax):
+def getSolution(method,particle, inputWave, nmax):
     A = method.get_fullA()
-    B = method.get_fullB() * get_Bin(inputWave, particle, c1, nmax)
+    B = method.get_fullB() * get_Bin(inputWave, particle, nmax)
     x = scipy.linalg.solve(A, B)
     return (x[0:nmax + 1], x[nmax + 1:])

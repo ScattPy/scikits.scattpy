@@ -1,30 +1,53 @@
-from numpy import cos
+from scipy import *
 
 import spheroidal
 
 class Spheroid:
 
-    d = 2.
-    c = 5.
+    def __init__(self,m,a_b,type):
+        if type == 1:
+            self.psi = a_b / sqrt(a_b * a_b - 1)
+        elif type == -1:
+            self.psi = 1 / sqrt(a_b * a_b - 1)
+        else:
+            print "Invalid value of type. Should be 1 or -1."
 
-    def __init__(self,psi=2.,eps=1.,c=1,derivative=0):
-        self.psi = psi
-        self.deriv = derivative
-        self.eps = eps
-        self.c = c
+        self.m = m
+        self.eps = sqrt(m)
+        self.type = type
+        self.k = 1
+
+    def set_xl(self, xl):
+        self.xl = xl
+        if self.type == 1:
+            self.c1 = xl / self.psi
+        elif self.type == -1:
+            self.c1 = xl / sqrt(self.psi**2 + 1)
+        else:
+            print "Invalid value of type. Should be 1 or -1."
+        self.xv = self.c1 * pow(self.psi * (self.psi * self.psi - self.type),1.0/3.0)
+        self.initialize()
+
+    def set_xv(self,xv):
+        self.xv = xv
+        self.c1 = xv / pow(self.psi * (self.psi * self.psi - self.type),1.0/3.0)
+        if self.type == 1:
+            self.xl = self.c1 * self.psi
+        elif self.type == -1:
+            self.xl = self.c1* sqrt(self.psi * self.psi + 1)
+        else:
+            print "Invalid value of type. Should be 1 or -1."
+        self.initialize()
+
+    def initialize(self):
+        self.c2 = self.m * self.c1
+        self.d = 2 * self.c1
 
     def function(self, nu):
         return self.psi
 
     def derivative(self, nu):
-        return self.deriv
-
-class ProlateSpheroid(Spheroid):
-    type = 1
-
-
-class OblateSpheroid(Spheroid):
-    type = -1
+        return 0
 
 #Incedent waves
 class TEInputWave:

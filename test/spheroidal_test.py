@@ -5,7 +5,7 @@ import scipy.linalg
 from scipy.special import *
 
 from spheroidal import *
-from spheroidal_particles import ProlateSpheroid,OblateSpheroid
+from spheroidal_particles import Spheroid
 
 class testSpheroidalProlateNorm(unittest.TestCase):
     numpy.seterr('print')
@@ -148,23 +148,31 @@ class testRadialRelations(unittest.TestCase):
 class testMetricCoefficients(unittest.TestCase):
 
     def testDelta1(self):
+        m=1.5;a_b=3;type=1
+        particle = Spheroid(m,a_b,type)
+        particle.set_xl(1.5)
         nu = 0.5
-        particle = ProlateSpheroid(2)
         self.assertAlmostEquals(IzIn(nu,particle)*RIt(nu,particle)-IzIt(nu,particle)*RIn(nu,particle),-metric_phi(nu,particle))
 
     def testDelta2(self):
+        m=1.5;a_b=3;type=-1
+        particle = Spheroid(m,a_b,type)
+        particle.set_xl(1.5)
         nu = -0.3
-        particle = OblateSpheroid(4)
         self.assertAlmostEquals(IzIn(nu,particle)*RIt(nu,particle)-IzIt(nu,particle)*RIn(nu,particle),-metric_phi(nu,particle))
 
     def testDelta3(self):
+        m=2;a_b=2;type=1
+        particle = Spheroid(m,a_b,type)
+        particle.set_xl(1.5)
         nu = -0.5
-        particle = ProlateSpheroid(2,3)
         self.assertAlmostEquals(IzIn(nu,particle)*RIt(nu,particle)-IzIt(nu,particle)*RIn(nu,particle),-metric_phi(nu,particle))
 
     def testDelta4(self):
+        m=2;a_b=2;type=-1
+        particle = Spheroid(m,a_b,type)
+        particle.set_xl(1.5)
         nu = 0.3
-        particle = OblateSpheroid(4,3)
         self.assertAlmostEquals(IzIn(nu,particle)*RIt(nu,particle)-IzIt(nu,particle)*RIn(nu,particle),-metric_phi(nu,particle))
 
 class testDeltaAngularFunctions(unittest.TestCase):

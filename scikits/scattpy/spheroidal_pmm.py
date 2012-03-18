@@ -10,10 +10,10 @@ from spheroidal_svm import SpheroidalSVM
 
 class SpheroidalPMM:
 
-    def __init__(self,particle,c2,c1,nmax):
+    def __init__(self,particle,nmax):
         self.particle=particle
-        self.c2 = c2
-        self.c1 = c1
+        self.c2 = particle.c2
+        self.c1 = particle.c1
         self.nmax = nmax
 
     def get_A(self,function):
@@ -100,34 +100,34 @@ class SpheroidalPMM:
 
     #according to (101)
     def get_A11m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return conjugate(svm.get_A(self.c1,self.c1,3)) * svm.get_A(self.c1,self.c1,3).T + \
             conjugate(svm.get_B(3)) * svm.get_B(3).T
 
 
     def get_A12m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return -(conjugate(svm.get_A(self.c1,self.c1,3)) * svm.get_A(self.c2,self.c1,1).T +\
                conjugate(svm.get_B(3)) * svm.get_C().T)
 
 
     def get_A21m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return -(conjugate(svm.get_A(self.c2,self.c1,1)) * svm.get_A(self.c1,self.c1,3).T +\
                conjugate(svm.get_C()) * svm.get_B(3).T)
 
     def get_A22m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return conjugate(svm.get_A(self.c2,self.c1,1)) * svm.get_A(self.c2,self.c1,1).T +\
                conjugate(svm.get_C()) * svm.get_C().T
 
     def get_A10m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return -(conjugate(svm.get_A(self.c1,self.c1,3)) * svm.get_A(self.c1,self.c1,1).T +\
                conjugate(svm.get_B(3)) * svm.get_B(1).T)
 
     def get_A20m(self):
-        svm = SpheroidalSVM(self.particle, self.c2, self.c1, self.nmax)
+        svm = SpheroidalSVM(self.particle, self.nmax)
         return conjugate(svm.get_A(self.c2,self.c1,1)) * svm.get_A(self.c1,self.c1,1).T +\
                  conjugate(svm.get_C()) * svm.get_B(1).T
 
@@ -143,7 +143,7 @@ class SpheroidalPMM:
 
     def getMatrixSolution(self,inputWave):
         A = self.get_fullAm()
-        B = self.get_fullBm() * spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
+        B = self.get_fullBm() * spheroidal.get_Bin(inputWave, self.particle, self.nmax)
         x = -scipy.linalg.solve(A, B)
         return (x[0:self.nmax + 1], x[self.nmax + 1:])
 
@@ -159,6 +159,6 @@ class SpheroidalPMM:
 
     def getSolution(self,inputWave):
         A = self.get_fullAi()
-        B = self.get_fullBi() * spheroidal.get_Bin(inputWave, self.particle, self.c1, self.nmax)
+        B = self.get_fullBi() * spheroidal.get_Bin(inputWave, self.particle, self.nmax)
         x = -scipy.linalg.solve(A, B)
         return (x[0:self.nmax + 1], x[self.nmax + 1:])
