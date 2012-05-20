@@ -2,15 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7aae2a26-12ed-4fa4-af1a-12c99cc47c9e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scikits/scattpy/properties.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/draw_spheroidal.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/radial.for" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/test_import.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ScattPy.iml" afterPath="$PROJECT_DIR$/.idea/ScattPy.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/Makefile" afterPath="$PROJECT_DIR$/doc/source/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_themes/github/layout.html.bak" afterPath="$PROJECT_DIR$/doc/source/_themes/github/layout.html.bak" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_themes/github/theme.conf" afterPath="$PROJECT_DIR$/doc/source/_themes/github/theme.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/maxal.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/maxal.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_static/scipy.css" afterPath="$PROJECT_DIR$/doc/source/_static/scipy.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_templates/indexcontent.html" afterPath="$PROJECT_DIR$/doc/source/_templates/indexcontent.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_themes/basic/changes/frameset.html" afterPath="$PROJECT_DIR$/doc/source/_themes/basic/changes/frameset.html" />
@@ -62,13 +68,22 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/doc_inherit.py" afterPath="$PROJECT_DIR$/scikits/scattpy/doc_inherit.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/laboratory.py" afterPath="$PROJECT_DIR$/scikits/scattpy/laboratory.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/methods.py" afterPath="$PROJECT_DIR$/scikits/scattpy/methods.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/properties.py" afterPath="$PROJECT_DIR$/scikits/scattpy/properties.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spherical.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spherical.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal_ebcm.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal_ebcm.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal_pmm.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal_pmm.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py" afterPath="$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scikits/scattpy/version.py" afterPath="$PROJECT_DIR$/scikits/scattpy/version.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/f_utils.for" afterPath="$PROJECT_DIR$/src/f_utils.for" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/sdmn.f" afterPath="$PROJECT_DIR$/src/sdmn.f" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/draw_spheroidal.py" afterPath="$PROJECT_DIR$/test/draw_spheroidal.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/ebcm_test.py" afterPath="$PROJECT_DIR$/test/ebcm_test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/pmm_test.py" afterPath="$PROJECT_DIR$/test/pmm_test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/spheroidal_matrix_test.py" afterPath="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/spheroidal_test.py" afterPath="$PROJECT_DIR$/test/spheroidal_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/svm_test.py" afterPath="$PROJECT_DIR$/test/svm_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test.py" afterPath="$PROJECT_DIR$/test/test.py" />
@@ -84,12 +99,14 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixZ_test_get_b_function_R35.coverage" NAME="Unittests in testSpheroidalMatrixZ.test_get_b_function_R35 Coverage Results" MODIFIED="1328787031335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSVM_test_svm2.coverage" NAME="Unittests in testSVM.test_svm2 Coverage Results" MODIFIED="1328877923057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSVM_test_simplestCase.coverage" NAME="Unittests in testSVM.test_simplestCase Coverage Results" MODIFIED="1329572401015" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixA_test_get_a_functionR3_4.coverage" NAME="Unittests in testSpheroidalMatrixA.test_get_a_functionR3_4 Coverage Results" MODIFIED="1328786436514" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixZ_test_get_C3.coverage" NAME="Unittests in testSpheroidalMatrixZ.test_get_C3 Coverage Results" MODIFIED="1328785194612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/ScattPy$Unittests.coverage" NAME="Unittests Coverage Results" MODIFIED="1328359435182" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/ScattPy$UnitTest.coverage" NAME="UnitTest Coverage Results" MODIFIED="1328787058411" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixA_test_get_fullA1.coverage" NAME="Unittests in testSpheroidalMatrixA.test_get_fullA1 Coverage Results" MODIFIED="1328788413224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixZ_test_get_C3.coverage" NAME="Unittests in testSpheroidalMatrixZ.test_get_C3 Coverage Results" MODIFIED="1328785194612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ScattPy$UnitTest.coverage" NAME="UnitTest Coverage Results" MODIFIED="1329565288873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixZ_test_get_B3.coverage" NAME="Unittests in testSpheroidalMatrixZ.test_get_B3 Coverage Results" MODIFIED="1328784605645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ScattPy$Unittests_in_testSpheroidalMatrixA_test_get_fullA1.coverage" NAME="Unittests in testSpheroidalMatrixA.test_get_fullA1 Coverage Results" MODIFIED="1328788413224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -102,19 +119,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="spheroidal.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal.py">
+      <file leaf-file-name="spheroidal_functions.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="208" column="14" selection-start="7188" selection-end="7188" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="92" column="20" selection-start="2320" selection-end="2320" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#31#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spheroidal_matrix_test.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/spheroidal_matrix_test.py">
+      <file leaf-file-name="ebcm_test.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/ebcm_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="256" column="71" selection-start="11552" selection-end="11552" vertical-scroll-proportion="0.7542017">
+            <state line="9" column="8" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -122,19 +141,30 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/test.py">
+      <file leaf-file-name="pmm_test.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/pmm_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="0" selection-start="321" selection-end="349" vertical-scroll-proportion="0.0">
+            <state line="19" column="44" selection-start="578" selection-end="578" vertical-scroll-proportion="0.3448276">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="svm_test.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/svm_test.py">
+      <file leaf-file-name="spheroidal.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="12" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0">
+            <state line="14" column="46" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#22#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="spheroidal_matrix_test.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/spheroidal_matrix_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="130" column="73" selection-start="5521" selection-end="5556" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -143,16 +173,38 @@
       <file leaf-file-name="spheroidal_test.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/spheroidal_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="194" column="20" selection-start="7314" selection-end="7314" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="13" selection-start="497" selection-end="497" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="spheroidal_ebcm.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_ebcm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="32" column="0" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spheroidal_particles.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py">
+      <file leaf-file-name="spheroidal_svm.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="0" selection-start="484" selection-end="484" vertical-scroll-proportion="0.0">
+            <state line="30" column="0" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -166,33 +218,35 @@
     </FindUsagesManager>
   </component>
   <component name="Git.Settings">
-    <option name="CHECKOUT_INCLUDE_TAGS" value="false" />
-    <option name="UPDATE_CHANGES_POLICY" value="STASH" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/f_utils.for" />
-        <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/test/test.py" />
-        <option value="$PROJECT_DIR$/doc/source/user/getting_started.rst" />
-        <option value="$PROJECT_DIR$/src/sdmn.f" />
-        <option value="$PROJECT_DIR$/test/draw_spheroidal.py" />
-        <option value="$PROJECT_DIR$/scikits/__init__.py" />
         <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py" />
         <option value="$PROJECT_DIR$/test/svm_test.py" />
-        <option value="$PROJECT_DIR$/scikits/scattpy/properties.py" />
-        <option value="$PROJECT_DIR$/test/spheroidal_test.py" />
+        <option value="$PROJECT_DIR$/src/prolate.for" />
+        <option value="$PROJECT_DIR$/src/radial.f" />
+        <option value="$PROJECT_DIR$/src/sdmn.f" />
+        <option value="$PROJECT_DIR$/src/lib.f90" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/src/radial.for" />
+        <option value="$PROJECT_DIR$/src/lib.for" />
+        <option value="$PROJECT_DIR$/test/test_import.py" />
+        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py" />
+        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py" />
         <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal.py" />
         <option value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
+        <option value="$PROJECT_DIR$/test/spheroidal_test.py" />
+        <option value="$PROJECT_DIR$/test/pmm_test.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-1" />
     <option name="y" value="24" />
-    <option name="width" value="1183" />
-    <option name="height" value="913" />
+    <option name="width" value="1922" />
+    <option name="height" value="929" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -278,6 +332,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ScattPy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sf_ScattPy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="scikits" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -315,20 +383,20 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="69" />
-    <property name="options.lastSelected" value="coverage" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="recentsLimit" value="5" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="70" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="676" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="690" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="676" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="69" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="68" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -341,19 +409,67 @@
   <component name="PyCoverageOptionsProvider">
     <option name="myUseBundledCoveragePy" value="true" />
   </component>
-  <component name="RunManager" selected="Python's test.Unittests in testSpheroidalMatrixZ.test_getFullB1">
-    <configuration default="false" name="Unittests in testSpheroidalMatrixZ.test_get_b_function_R33" type="tests" factoryName="Unittests" temporary="true">
+  <component name="RunManager" selected="Python's test.Unittests in testPMM.test_IntegrationCase1">
+    <configuration default="false" name="Unittests in testRadialRelations" type="tests" factoryName="Unittests" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <module name="ScattPy" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <option name="CLASS_NAME" value="testSpheroidalMatrixZ" />
-      <option name="METHOD_NAME" value="test_get_b_function_R33" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_test.py" />
+      <option name="CLASS_NAME" value="testRadialRelations" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_CLASS" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittests in spheroidal_test" type="tests" factoryName="Unittests" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_test.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittests in testDeltaAngularFunctions.testDelta_n_different2" type="tests" factoryName="Unittests" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_test.py" />
+      <option name="CLASS_NAME" value="testDeltaAngularFunctions" />
+      <option name="METHOD_NAME" value="testDelta_n_different2" />
       <option name="FOLDER_NAME" value="" />
       <option name="TEST_TYPE" value="TEST_METHOD" />
       <option name="PATTERN" value="" />
@@ -363,64 +479,20 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittests in testSpheroidalMatrixA.test_get_fullA" type="tests" factoryName="Unittests" temporary="true">
+    <configuration default="false" name="Unittests in testPMM.test_IntegrationCase2" type="tests" factoryName="Unittests" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <module name="ScattPy" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <option name="CLASS_NAME" value="testSpheroidalMatrixA" />
-      <option name="METHOD_NAME" value="test_get_fullA" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_METHOD" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Unittests in testSpheroidalMatrixA.test_get_fullA1" type="tests" factoryName="Unittests" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <module name="ScattPy" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <option name="CLASS_NAME" value="testSpheroidalMatrixA" />
-      <option name="METHOD_NAME" value="test_get_fullA1" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_METHOD" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <RunnerSettings RunnerId="PythonCover" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonCover" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Unittests in testSpheroidalMatrixA.test_get_fullA2" type="tests" factoryName="Unittests" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <module name="ScattPy" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <option name="CLASS_NAME" value="testSpheroidalMatrixA" />
-      <option name="METHOD_NAME" value="test_get_fullA2" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/pmm_test.py" />
+      <option name="CLASS_NAME" value="testPMM" />
+      <option name="METHOD_NAME" value="test_IntegrationCase2" />
       <option name="FOLDER_NAME" value="" />
       <option name="TEST_TYPE" value="TEST_METHOD" />
       <option name="PATTERN" value="" />
@@ -430,18 +502,20 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittests in testSpheroidalMatrixZ.test_getFullB1" type="tests" factoryName="Unittests" temporary="true">
+    <configuration default="false" name="Unittests in testPMM.test_IntegrationCase1" type="tests" factoryName="Unittests" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <module name="ScattPy" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
-      <option name="CLASS_NAME" value="testSpheroidalMatrixZ" />
-      <option name="METHOD_NAME" value="test_getFullB1" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/pmm_test.py" />
+      <option name="CLASS_NAME" value="testPMM" />
+      <option name="METHOD_NAME" value="test_IntegrationCase1" />
       <option name="FOLDER_NAME" value="" />
       <option name="TEST_TYPE" value="TEST_METHOD" />
       <option name="PATTERN" value="" />
@@ -451,20 +525,7 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="true" type="Python.AppEngineServer" factoryName="App Engine server">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <module name="ScattPy" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="browserUrl" value="" />
-      <option name="additionalOptions" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -475,12 +536,12 @@
       <option name="IS_MODULE_SDK" value="false" />
       <module name="ScattPy" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="MULTIPROCESS" value="false" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
+    <configuration default="true" type="tests" factoryName="py.test">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -496,13 +557,91 @@
       <option name="TEST_TYPE" value="TEST_SCRIPT" />
       <option name="PATTERN" value="" />
       <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="UnitTest" type="tests" factoryName="Unittests">
+    <configuration default="true" type="tests" factoryName="Nosetests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Python.AppEngineServer" factoryName="App Engine server">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="browserUrl" value="" />
+      <option name="additionalOptions" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="MULTIPROCESS" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Python.DjangoServer" factoryName="Django server">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
       <option name="SDK_HOME" value="/usr/bin/python2.6" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -511,15 +650,29 @@
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="$PROJECT_DIR$/test" />
-      <option name="TEST_TYPE" value="TEST_FOLDER" />
-      <option name="PATTERN" value="spheroid*" />
-      <option name="USE_PATTERN" value="true" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
       <option name="PUREUNITTEST" value="true" />
-      <RunnerSettings RunnerId="PythonCover" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonCover" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
     <configuration default="false" name="setup" type="PythonConfigurationType" factoryName="Python">
@@ -542,18 +695,45 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
+    <configuration default="false" name="UnitTest" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="LD_LIBRARY_PATH" value="$PROJECT_DIR$/lib" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.6" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <module name="ScattPy" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="$PROJECT_DIR$/test" />
+      <option name="TEST_TYPE" value="TEST_FOLDER" />
+      <option name="PATTERN" value=".*_test.*" />
+      <option name="USE_PATTERN" value="true" />
+      <option name="PUREUNITTEST" value="true" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonCover" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonCover" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
     <list size="7">
-      <item index="0" class="java.lang.String" itemvalue="Python's test.UnitTest" />
-      <item index="1" class="java.lang.String" itemvalue="Python.setup" />
-      <item index="2" class="java.lang.String" itemvalue="Python's test.Unittests in testSpheroidalMatrixZ.test_get_b_function_R33" />
-      <item index="3" class="java.lang.String" itemvalue="Python's test.Unittests in testSpheroidalMatrixA.test_get_fullA" />
-      <item index="4" class="java.lang.String" itemvalue="Python's test.Unittests in testSpheroidalMatrixA.test_get_fullA1" />
-      <item index="5" class="java.lang.String" itemvalue="Python's test.Unittests in testSpheroidalMatrixA.test_get_fullA2" />
-      <item index="6" class="java.lang.String" itemvalue="Python's test.Unittests in testSpheroidalMatrixZ.test_getFullB1" />
+      <item index="0" class="java.lang.String" itemvalue="Python.setup" />
+      <item index="1" class="java.lang.String" itemvalue="Python's test.UnitTest" />
+      <item index="2" class="java.lang.String" itemvalue="Python's test.Unittests in testRadialRelations" />
+      <item index="3" class="java.lang.String" itemvalue="Python's test.Unittests in spheroidal_test" />
+      <item index="4" class="java.lang.String" itemvalue="Python's test.Unittests in testDeltaAngularFunctions.testDelta_n_different2" />
+      <item index="5" class="java.lang.String" itemvalue="Python's test.Unittests in testPMM.test_IntegrationCase2" />
+      <item index="6" class="java.lang.String" itemvalue="Python's test.Unittests in testPMM.test_IntegrationCase1" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="SvnConfiguration" maxAnnotateRevisions="500">
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
     <option name="mySSHConnectionTimeout" value="30000" />
@@ -600,23 +780,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="24" width="1183" height="913" extended-state="6" />
-    <editor active="true" />
+    <frame x="-1" y="24" width="1922" height="929" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814527" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294423" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16990921" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30238727" sideWeight="0.7178808" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47284767" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15882353" sideWeight="0.6329442" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46984926" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2821192" sideWeight="0.6688453" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33592737" sideWeight="0.32994652" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36705577" sideWeight="0.66631013" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814527" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33333334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -657,7 +837,10 @@
     <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <option name="CREATE_PATCH_EXPAND_DETAILS_DEFAULT" value="true" />
+    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
     <option name="LAST_COMMIT_MESSAGE" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -691,107 +874,129 @@
           <url>file://C:/Python27/Lib/site-packages/scikits/scattpy/spherical.py</url>
           <line>255</line>
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scikits/scattpy/properties.py</url>
-          <line>11</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scikits/scattpy/properties.py</url>
-          <line>20</line>
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scikits/scattpy/laboratory.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/pymodules/python2.6/mpmath/calculus/quadrature.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="745" column="0" selection-start="28166" selection-end="28166" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/draw_spheroidal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file:///usr/share/pyshared/mpmath/calculus/quadrature.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="721" column="0" selection-start="27213" selection-end="27213" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spherical.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="201" column="8" selection-start="5628" selection-end="5628" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scikits/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scikits/scattpy/properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="22" selection-start="198" selection-end="198" vertical-scroll-proportion="0.20428015">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pycharm/utrunner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="0" selection-start="3091" selection-end="3091" vertical-scroll-proportion="0.33190578" />
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.6/re.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="244" column="0" selection-start="10411" selection-end="10411" vertical-scroll-proportion="0.33190578" />
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.6/unittest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="369" column="0" selection-start="13178" selection-end="13178" vertical-scroll-proportion="0.2963671" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="321" selection-end="349" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/svm_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="12" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="0" selection-start="484" selection-end="484" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/spheroidal_test.py">
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/core.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/radial.for">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="29" selection-start="1101" selection-end="1101" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_import.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="22" selection-end="37" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib.for">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3497" column="1" selection-start="95655" selection-end="95655" vertical-scroll-proportion="-25.419355">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/svm_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="8" selection-start="3236" selection-end="3236" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="0" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_ebcm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="0" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="92" column="20" selection-start="2320" selection-end="2320" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/ebcm_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="8" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="208" column="14" selection-start="7188" selection-end="7188" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="14" column="46" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/spheroidal_matrix_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="256" column="71" selection-start="11552" selection-end="11552" vertical-scroll-proportion="0.7542017">
+        <state line="130" column="73" selection-start="5521" selection-end="5556" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/lib.linux-i686-2.6/scikits/scattpy/spheroidal_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="4" selection-start="1313" selection-end="1313" vertical-scroll-proportion="0.33333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backup/radial.for">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="25" selection-start="1487" selection-end="1487" vertical-scroll-proportion="0.5404157">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="13" selection-start="497" selection-end="497" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/spheroidal_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="194" column="20" selection-start="7314" selection-end="7314" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/pmm_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="44" selection-start="578" selection-end="578" vertical-scroll-proportion="0.3448276">
+          <folding />
         </state>
       </provider>
     </entry>

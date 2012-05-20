@@ -26,8 +26,12 @@ class SpheroidalSVM:
                 n = k + m
                 cv_l = get_cv(m, l, c2, type)
                 cv_n = get_cv(m, n, c1, type)
-                func = lambda nu: spheroidal.get_a_function(m, l, c2, cv_l, rank, self.particle)(nu) * ang1_cv(m, n, c1, cv_n, type, nu)[0]
-                A[i][k] = spheroidal.quad(func, -1, 1)
+                if (self.particle.spheroid):
+                    func = lambda nu: ang1_cv(m, l, c2, cv_l, type, nu)[0] * ang1_cv(m, n, c1, cv_n, type, nu)[0]
+                    A[i][k] = spheroidal.quad(func, -1, 1) * rad_cv(m, l, c2, type, rank, self.particle.psi)
+                else:
+                    func = lambda nu: spheroidal.get_a_function(m, l, c2, rank, self.particle)(nu) * ang1_cv(m, n, c1, cv_n, type, nu)[0]
+                    A[i][k] = spheroidal.quad(func, -1, 1)
         return mat(A)
 
     #according to (84)
@@ -42,8 +46,8 @@ class SpheroidalSVM:
                 cv_l = get_cv(m, l, c2, type)
                 cv_n = get_cv(m, n, c1, type)
                 func = lambda nu: z_function(m, l, c2, cv_l, rank, self.particle)(nu) *\
-                                  ang1_cv(m, n, c1, cv_n, type, nu)[0] * spheroidal.metric_phi(nu, self.particle) * \
-                                  spheroidal.get_integral_metric(self.particle)(nu)
+                                  ang1_cv(m, n, c1, cv_n, type, nu)[0] * spheroidal.metric_phi(nu, self.particle)\
+                                  * spheroidal.get_integral_metric(self.particle)(nu)
                 Z[i][k] = spheroidal.quad(func, -1, 1)
         return mat(Z)
 

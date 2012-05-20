@@ -8,21 +8,25 @@ from spheroidal_svm import *
 
 class testSpheroidalMatrixA(unittest.TestCase):
 
+    def __init__(self,methodName):
+        unittest.TestCase.__init__(self,methodName)
+        self.m = 1; self.a_b =10; self.type = 1; self.xl = 4
+        self.particle = Spheroid(self.m,self.a_b,self.type)
+        self.particle.set_xl(self.xl)
+
     def test_getA11Simplest(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
         psi = particle.psi
         A = svm.get_A11()
         cv = get_cv(1,1,c,particle.type)
-        self.assertAlmostEqual(A[0,0],rad3_cv(1,1,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[0,0],rad3_cv(1,1,c,particle.type,psi)[0])
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],rad3_cv(1,2,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1,1],rad3_cv(1,2,c,particle.type,psi)[0])
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],rad3_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[2,2],rad3_cv(1,3,c,particle.type,psi)[0])
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -31,20 +35,18 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_getA12Simplest(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
         psi = particle.psi
         A = svm.get_A12()
         cv = get_cv(1,1,c,particle.type)
-        self.assertAlmostEqual(A[0,0],-rad1_cv(1,1,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[0,0],-rad1_cv(1,1,c,particle.type,psi)[0])
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],-rad1_cv(1,2,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1,1],-rad1_cv(1,2,c,particle.type,psi)[0])
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],-rad1_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[2,2],-rad1_cv(1,3,c,particle.type,psi)[0])
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -53,9 +55,7 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_getA21Simplest(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
@@ -64,11 +64,11 @@ class testSpheroidalMatrixA(unittest.TestCase):
         cv = get_cv(1,1,c,particle.type)
         coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
         coeff = quad(coeff,-1,1)
-        self.assertAlmostEqual(A[0,0],rad3_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[0,0],rad3_cv(1,1,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],rad3_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1,1],rad3_cv(1,2,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],rad3_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[2,2],rad3_cv(1,3,c,particle.type,psi)[1] * coeff)
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -77,9 +77,7 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_getA22Simplest(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
@@ -88,11 +86,11 @@ class testSpheroidalMatrixA(unittest.TestCase):
         cv = get_cv(1,1,c,particle.type)
         coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
         coeff = - quad(coeff,-1,1)
-        self.assertAlmostEqual(A[0,0],rad1_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[0,0],rad1_cv(1,1,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],rad1_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1,1],rad1_cv(1,2,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],rad1_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[2,2],rad1_cv(1,3,c,particle.type,psi)[1] * coeff)
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -101,20 +99,18 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_getA10Simplest(self):
-        m=2;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
         psi = particle.psi
         A = svm.get_A10()
         cv = get_cv(1,1,c,particle.type)
-        self.assertAlmostEqual(A[0,0],-rad1_cv(1,1,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[0,0],-rad1_cv(1,1,c,particle.type,psi)[0])
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],-rad1_cv(1,2,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[1,1],-rad1_cv(1,2,c,particle.type,psi)[0])
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],-rad1_cv(1,3,c,cv,particle.type,psi)[0])
+        self.assertAlmostEqual(A[2,2],-rad1_cv(1,3,c,particle.type,psi)[0])
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -123,9 +119,7 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_getA20Simplest(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 3
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
@@ -134,11 +128,11 @@ class testSpheroidalMatrixA(unittest.TestCase):
         cv = get_cv(1,1,c,particle.type)
         coeff = lambda nu: metric_phi(nu,particle) * metric_nu(nu,particle) / metric_psi(nu,particle) * ang1_cv(1, 1, c, cv, particle.type, nu)[0] * ang1_cv(1, 1, c, cv, particle.type, nu)[0]
         coeff = - quad(coeff,-1,1)
-        self.assertAlmostEqual(A[0,0],rad1_cv(1,1,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[0,0],rad1_cv(1,1,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,2,c,particle.type)
-        self.assertAlmostEqual(A[1,1],rad1_cv(1,2,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[1,1],rad1_cv(1,2,c,particle.type,psi)[1] * coeff)
         cv = get_cv(1,3,c,particle.type)
-        self.assertAlmostEqual(A[2,2],rad1_cv(1,3,c,cv,particle.type,psi)[1] * coeff)
+        self.assertAlmostEqual(A[2,2],rad1_cv(1,3,c,particle.type,psi)[1] * coeff)
         self.assertAlmostEqual(A[1,0], 0)
         self.assertAlmostEqual(A[0,1], 0)
         self.assertAlmostEqual(A[0,2], 0)
@@ -147,9 +141,7 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1,2], 0)
 
     def test_get_fullA1(self):
-        m=2;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 1
         svm = SpheroidalSVM(particle,nmax)
         A = svm.get_fullA()
@@ -159,9 +151,7 @@ class testSpheroidalMatrixA(unittest.TestCase):
         self.assertAlmostEqual(A[1, 1], svm.get_A22())
 
     def test_get_fullA2(self):
-        m=2;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 2
         svm = SpheroidalSVM(particle,nmax)
         c = particle.c1
@@ -191,10 +181,17 @@ class testSpheroidalMatrixA(unittest.TestCase):
 
 class testSpheroidalMatrixZ(unittest.TestCase):
 
+    def __init__(self,methodName):
+        unittest.TestCase.__init__(self,methodName)
+        self.m = 1
+        self.a_b =2
+        self.type = 1
+        self.xl = 1.5
+        self.particle = Spheroid(self.m,self.a_b,self.type)
+        self.particle.set_xl(self.xl)
+
     def test_getFullB1(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 1
         svm = SpheroidalSVM(particle,nmax)
         B = svm.get_fullB()
@@ -202,9 +199,7 @@ class testSpheroidalMatrixZ(unittest.TestCase):
         self.assertAlmostEqual(B[1], svm.get_A20())
 
     def test_getFullB2(self):
-        m=1;a_b=2;type=1
-        particle = Spheroid(m,a_b,type)
-        particle.set_xl(1.5)
+        particle = self.particle
         nmax = 2
         svm = SpheroidalSVM(particle,nmax)
         B = svm.get_fullB()

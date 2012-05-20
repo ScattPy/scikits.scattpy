@@ -8,10 +8,10 @@ from properties import *
 class testEBCM(unittest.TestCase):
 
     def test_IntegrationCase1(self):
-        alpha = pi / 3
-        m=1.3;a_b=1.2;type=1
+        alpha = pi / 4
+        m=1.5;a_b=1.1;type=-1
         particle = Spheroid(m,a_b,type)
-        particle.set_xl(1)
+        particle.set_xv(1)
         nmax = 6
         ebcm = SpheroidalEBCM(particle,nmax)
         b_sca = ebcm.getSolution(TMInputWave(alpha))[0]
@@ -80,8 +80,8 @@ class testEBCM(unittest.TestCase):
         self.assertTrue(C_sca>0.)
 
 if __name__ == '__main__':
-    #import cProfile
-    #cProfile.run('unittest.main()','profiler_results')
+    import cProfile
+    cProfile.run('unittest.main()','profiler_results')
     unittest.main()
 
 

@@ -9,8 +9,8 @@ from spheroidal_pmm import SpheroidalPMM
 class testPMM(unittest.TestCase):
 
     def test_IntegrationCase1(self):
-        alpha = pi / 3
-        m=1.3;a_b=1.2;type=1
+        alpha = pi / 4
+        m=1.5;a_b=1.2;type=1
         particle = Spheroid(m,a_b,type)
         particle.set_xl(1)
         nmax = 6
@@ -28,7 +28,7 @@ class testPMM(unittest.TestCase):
 
     def test_IntegrationCase2(self):
         alpha = pi / 3
-        m=1.3;a_b=1.2;type=-1
+        m=1.3;a_b=1.1;type=-1
         particle = Spheroid(m,a_b,type)
         particle.set_xl(1)
         nmax = 6

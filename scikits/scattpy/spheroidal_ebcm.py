@@ -29,8 +29,8 @@ class SpheroidalEBCM:
                 func = lambda nu: (spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) *\
                                   spheroidal.get_b_function(m, n, self.c1, cv_n, 3, self.particle)(nu) -\
                                   spheroidal.get_c_function(m, l, self.c2, cv_l, 1, self.particle)(nu) *\
-                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 3, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle) *\
-                                  spheroidal.get_integral_metric(self.particle)(nu)
+                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 3, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle) \
+                                  * spheroidal.get_integral_metric(self.particle)(nu)
 
                 Bs[i][k] = spheroidal.quad(func, -1, 1)
         return  1j * mat(Bs)
@@ -49,8 +49,8 @@ class SpheroidalEBCM:
                 func = lambda nu: (spheroidal.get_a_function(m, l, self.c2, cv_l, 1, self.particle)(nu) * \
                                   spheroidal.get_b_function(m, n, self.c1, cv_n, 1, self.particle)(nu) - \
                                   spheroidal.get_c_function(m, l, self.c2, cv_l, 1, self.particle)(nu) * \
-                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 1, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle) *\
-                                  spheroidal.get_integral_metric(self.particle)(nu)
+                                  spheroidal.get_a_function(m, n, self.c1, cv_n, 1, self.particle)(nu)) * spheroidal.metric_phi(nu, self.particle)\
+                                  * spheroidal.get_integral_metric(self.particle)(nu)
 
                 Br[i][k] = spheroidal.quad(func, -1, 1)
         return  -1j * mat(Br)

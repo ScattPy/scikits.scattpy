@@ -3,6 +3,7 @@ import scipy.special as special
 from numpy.lib.scimath import sqrt
 
 import f_spheroid
+import f_radial
 
 # ---- Calculation of norm for spheroidal angular functions ----
 
@@ -54,18 +55,24 @@ def get_obl_norm(m, n, c):
 
 # ---- Shortcut for different types of spheroids
 
-def rad1_cv(m, n, c, cv, type, x):
+def rad1_cv(m, n, c, type, x):
+    eps = 10e-8;
     if type == 1:
-        return special.pro_rad1_cv(m, n, c, cv, x)
+        result = f_radial.rad_fun(0, m, n, c, x, eps)
+        return result[0], result[1]
     elif type == -1:
-        return special.obl_rad1_cv(m, n, c, cv, x)
+        result =  f_radial.rad_fun(1, m, n, c, x, eps)
+        return result[0], result[1]
 
 
-def rad2_cv(m, n, c, cv, type, x):
+def rad2_cv(m, n, c, type, x):
+    eps = 10e-8;
     if type == 1:
-        return special.pro_rad2_cv(m, n, c, cv, x)
+        result = f_radial.rad_fun(0, m, n, c, x, eps)
+        return result[2], result[3]
     elif type == -1:
-        return special.obl_rad2_cv(m, n, c, cv, x)
+        result =  f_radial.rad_fun(1, m, n, c, x, eps)
+        return result[2], result[3]
 
 
 def ang1_cv(m, n, c, cv, type, x):
@@ -83,6 +90,12 @@ def get_cv(m, n, c, type):
         return special.obl_cv(m, n, c)
 
 #according to 1.41 Komarov, Slavyanov "Spheroidal funtions"
-def rad3_cv(m, n, c, cv, type, x):
-    return [rad1_cv(m, n, c, cv, type, x)[0] + 1j * rad2_cv(m, n, c, cv, type, x)[0],
-            rad1_cv(m, n, c, cv, type, x)[1] + 1j * rad2_cv(m, n, c, cv, type, x)[1]]
+def rad3_cv(m, n, c, type, x):
+    return [rad1_cv(m, n, c, type, x)[0] + 1j * rad2_cv(m, n, c, type, x)[0],
+            rad1_cv(m, n, c, type, x)[1] + 1j * rad2_cv(m, n, c, type, x)[1]]
+
+def rad_cv(m, n, c, type, rank, x):
+    if rank == 1:
+        return rad1_cv(m, n, c, type, x)[0]
+    elif rank == 3:
+        return rad3_cv(m, n, c, type, x)[0]

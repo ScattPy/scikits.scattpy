@@ -60,6 +60,12 @@ def configuration(parent_package='', top_path=None, package_name=DISTNAME):
                          sources=[os.path.join('src', 'sdmn.f')]
                          )
 
+    config.add_extension('f_radial',
+        sources=[os.path.join('src', 'radial.for')],
+        library_dirs=["lib"],
+        libraries=["radial"]
+    )
+
     return config
 
 if __name__ == "__main__":

@@ -111,35 +111,35 @@ class testAngularRelationsProlate(unittest.TestCase):
 
 class testRadialRelations(unittest.TestCase):
 
+    psi = 1.4
+
     def testR1R2Wronskian1(self):
-        m=1;n=3;c = 2; psi =3.0
-        [R1,dR1] = scipy.special.pro_rad1(m,n,c,psi)
-        [R2,dR2] = scipy.special.pro_rad2(m,n,c,psi)
+        m=1;n=1;c = 2; psi = self.psi
+        [R1,dR1] = rad1_cv(m,n,c,1,psi)
+        [R2,dR2] = rad2_cv(m,n,c,1,psi)
         W = scipy.mat([[R1, dR1],[R2, dR2]])
-        self.assertAlmostEqual(scipy.linalg.det(W),1/(c*(psi**2-1)))
+        self.assertAlmostEqual(scipy.linalg.det(W),1/(c*(psi * psi-1.0)))
 
     def testR1R2Wronskian2(self):
-        m=1;n=2;c = 3.0; psi = 2.5
-        [R1,dR1] = scipy.special.obl_rad1(m,n,c,psi)
-        [R2,dR2] = scipy.special.obl_rad2(m,n,c,psi)
+        m=1;n=2;c = 3.0; psi = self.psi
+        [R1,dR1] = rad1_cv(m,n,c,-1,psi)
+        [R2,dR2] = rad2_cv(m,n,c,-1,psi)
         W = scipy.mat([[R1, dR1],[R2, dR2]])
         self.assertAlmostEqual(scipy.linalg.det(W),1/(c*(psi**2+1)))
 
     def testR1R3Wronskian1(self):
-        m=1;n=3;c = 2; psi =3.0
+        m=1;n=3;c = 2; psi = self.psi
         type = 1
-        cv = get_cv(m, n, c, type)
-        [R1,dR1] = scipy.special.pro_rad1(m,n,c,psi)
-        [R3,dR3] = rad3_cv(m,n,c,cv,type,psi)
+        [R1,dR1] = rad1_cv(m,n,c,1,psi)
+        [R3,dR3] = rad3_cv(m,n,c,type,psi)
         W = scipy.mat([[R1, dR1],[R3, dR3]])
         self.assertAlmostEqual(scipy.linalg.det(W),1j/(c*(psi**2-1)))
 
     def testR1R3Wronskian2(self):
-        m=1;n=2;c = 3.0; psi = 2.5
+        m=1;n=2;c = 3.0; psi = self.psi
         type = -1
-        cv = get_cv(m, n, c, type)
-        [R1,dR1] = scipy.special.obl_rad1(m,n,c,psi)
-        [R3,dR3] = rad3_cv(m,n,c,cv,type,psi)
+        [R1,dR1] = rad1_cv(m,n,c,-1,psi)
+        [R3,dR3] = rad3_cv(m,n,c,type,psi)
         W = scipy.mat([[R1, dR1],[R3, dR3]])
         self.assertAlmostEqual(scipy.linalg.det(W),1j/(c*(psi**2+1)))
 
@@ -199,7 +199,7 @@ class testDeltaAngularFunctions(unittest.TestCase):
         cv1 = get_cv(m,n1,c1,type)
         cv2 = get_cv(m,n2,c2,type)
         func = lambda x: ang1_cv(m, n1, c1,cv1,type, x)[0]  * ang1_cv(m, n2, c2,cv2,type, x)[0]
-        self.assertAlmostEqual((quad(func, -1, 1,epsabs=1e-12,epsrel=1e-12)), 0, places = 10)
+        self.assertAlmostEqual((quad(func, -1, 1,epsabs=1e-12,epsrel=1e-12)), 0, places = 8)
 
     def testDelta_n_different(self):
         m=1; type = 1
