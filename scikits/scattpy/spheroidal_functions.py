@@ -96,6 +96,6 @@ def rad3_cv(m, n, c, type, x):
 
 def rad_cv(m, n, c, type, rank, x):
     if rank == 1:
-        return rad1_cv(m, n, c, type, x)[0]
+        return rad1_cv(m, n, c, type, x)
     elif rank == 3:
-        return rad3_cv(m, n, c, type, x)[0]
+        return rad3_cv(m, n, c, type, x)

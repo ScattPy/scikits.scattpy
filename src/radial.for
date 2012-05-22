@@ -25,9 +25,9 @@ c****************************************************************************
       SUBROUTINE rad_fun (kob, m, ne, C2, KSI0, EPS, R1f, R1d, R2f,R2d)
       parameter (nterms=330)
       IMPLICIT REAL*8 (A-H,O-Q,T-Z), COMPLEX*16 (R-S)
-      REAL*8 ksi0
+      REAL*8 C2, ksi0
       complex*16 R1f , R1d , R2f , R2d 
-      COMPLEX*16 C2, bdc2
+      COMPLEX*16 bdc2
       DIMENSION RLC2(nterms), rDC2(4*nterms), bDC2(4*nterms)
       COMMON /K1/ S, S1, AKSI, AK, K, NK, nal
       COMMON /EPS1/ EPS1
@@ -100,7 +100,7 @@ c  210 FORMAT(1X,'L=',I4,5X,'IER1,2,3,4,5=',5I5)
 c  212 FORMAT(1X,'I,L=',2I5,5X,'IER=',I5)
 
       W1=1D0/(C2*(ksi0**2-1D0+2*K))
-      ncc = dreal(c2)
+      ncc = real(c2)
       IF (NE-nterms)  40,40,41
 c   41   WRITE(7,202) NE
 c        WRITE(*,202) NE

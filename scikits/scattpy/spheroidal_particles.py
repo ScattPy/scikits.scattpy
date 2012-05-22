@@ -2,7 +2,7 @@ from scipy import *
 
 import spheroidal
 
-class Spheroid:
+class Spheroid(object):
 
     def __init__(self,m,a_b,type):
         if type == 1:

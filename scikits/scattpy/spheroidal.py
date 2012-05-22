@@ -11,36 +11,25 @@ def quad(func, a, b, **kwargs):
     def imag_func(x):
         return scipy.imag(func(x))
     eps = 1E-18
-    real_integral = scipy.integrate.quadrature(real_func, a, b)
-    imag_integral = scipy.integrate.quadrature(imag_func, a, b)
-    #real_integral = scipy.integrate.quad(real_func, a, b,epsabs=eps)
-    #imag_integral = scipy.integrate.quad(imag_func, a, b,epsabs=eps)
+    #real_integral = scipy.integrate.quadrature(real_func, a, b)
+    #imag_integral = scipy.integrate.quadrature(imag_func, a, b)
+    real_integral = scipy.integrate.quad(real_func, a, b,epsabs=eps)
+    imag_integral = scipy.integrate.quad(imag_func, a, b,epsabs=eps)
     return real_integral[0] + 1j*imag_integral[0]
 
 #according to (81)
 def get_a_function(m, n, c, cv, rank, particle):
     type = particle.type
-    if rank == 1:
-        return lambda nu: rad1_cv(m, n, c, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[0]
-    elif rank == 3:
-        return lambda nu: rad3_cv(m, n, c, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[0]
+    return lambda nu: rad_cv(m, n, c, type, rank,particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[0]
 
 #according to (81)
 def get_b_function(m, n, c, cv, rank, particle):
     type = particle.type
-    if rank == 1:
-        return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
-                           * rad1_cv(m, n, c, type, particle.function(nu))[1] * ang1_cv(m, n, c, cv, type, nu)[0]
+    return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
+                           * rad_cv(m, n, c, type,rank, particle.function(nu))[1] * ang1_cv(m, n, c, cv, type, nu)[0]
                            - particle.derivative(nu) * metric_psi(nu, particle) / metric_nu(nu, particle)
-                             * rad1_cv(m, n, c, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1]) \
+                             * rad_cv(m, n, c, type,rank, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1]) \
                             / get_integral_metric(particle)(nu)
-
-    elif rank == 3:
-        return lambda nu: (metric_nu(nu, particle) / metric_psi(nu, particle)
-                           * rad3_cv(m, n, c, type, particle.function(nu))[1] * ang1_cv(m, n, c, cv, type, nu)[0]
-                           - particle.derivative(nu) * metric_psi(nu, particle) / metric_nu(nu, particle)
-                             * rad3_cv(m, n, c, type, particle.function(nu))[0] * ang1_cv(m, n, c, cv, type, nu)[1])\
-                           / get_integral_metric(particle)(nu)
 
 #according to (82)
 def get_c_function(m, n, c, cv, rank, particle):

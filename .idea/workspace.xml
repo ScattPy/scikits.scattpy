@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7aae2a26-12ed-4fa4-af1a-12c99cc47c9e" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/a.out" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/start.f90" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/comp_delta1.5 1.0 1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/comp_delta4.0 1.0 1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/comp_time1.5 1.0 1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/comp_time4.0 1.0 1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_delta1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_delta4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_m_delta1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_m_delta4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_m_time1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_m_time4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_time1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ebcm_time4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/log.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/svm_delta1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/svm_delta4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/svm_time1.5 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/svm_time4.0 1.0 1.npy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/test_leak.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/lib.f90" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ScattPy.iml" afterPath="$PROJECT_DIR$/.idea/ScattPy.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/Makefile" afterPath="$PROJECT_DIR$/doc/source/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/source/_themes/github/layout.html.bak" afterPath="$PROJECT_DIR$/doc/source/_themes/github/layout.html.bak" />
@@ -107,6 +88,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/spheroidal_test.py" afterPath="$PROJECT_DIR$/test/spheroidal_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/svm_test.py" afterPath="$PROJECT_DIR$/test/svm_test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test.py" afterPath="$PROJECT_DIR$/test/test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/test_import.py" afterPath="$PROJECT_DIR$/test/test_import.py" />
     </list>
     <ignored path="ScattPy.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -148,6 +130,17 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="spheroidal_particles.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="14" column="28" selection-start="354" selection-end="354" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="spheroidal_pmm.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_pmm.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -162,7 +155,7 @@
       <file leaf-file-name="radial.for" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/radial.for">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="99" column="41" selection-start="2903" selection-end="2903" vertical-scroll-proportion="-5.935484">
+            <state line="26" column="53" selection-start="1125" selection-end="1125" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -177,10 +170,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spheroidal.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="spheroidal.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="95" column="9" selection-start="4042" selection-end="4042" vertical-scroll-proportion="1.7520891">
+            <state line="31" column="63" selection-start="1376" selection-end="1376" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -193,15 +186,6 @@
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spheroidal_test.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/spheroidal_test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="194" column="20" selection-start="7314" selection-end="7314" vertical-scroll-proportion="0.0">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -224,10 +208,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spheroidal_svm.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="spheroidal_svm.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="0" selection-start="1788" selection-end="1788" vertical-scroll-proportion="-4.354839">
+            <state line="30" column="108" selection-start="947" selection-end="947" vertical-scroll-proportion="0.24017467">
               <folding />
             </state>
           </provider>
@@ -246,7 +230,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py" />
         <option value="$PROJECT_DIR$/test/svm_test.py" />
         <option value="$PROJECT_DIR$/src/prolate.for" />
         <option value="$PROJECT_DIR$/src/radial.f" />
@@ -258,10 +241,11 @@
         <option value="$PROJECT_DIR$/test/spheroidal_matrix_test.py" />
         <option value="$PROJECT_DIR$/test/spheroidal_test.py" />
         <option value="$PROJECT_DIR$/test/pmm_test.py" />
+        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py" />
         <option value="$PROJECT_DIR$/src/radial.for" />
         <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py" />
-        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py" />
         <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal.py" />
+        <option value="$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py" />
       </list>
     </option>
   </component>
@@ -804,7 +788,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="24" width="1922" height="929" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814527" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -943,23 +927,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/radial.for">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="99" column="41" selection-start="2903" selection-end="2903" vertical-scroll-proportion="-5.935484">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_ebcm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="32" column="58" selection-start="1254" selection-end="1256" vertical-scroll-proportion="-12.096774">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="0" selection-start="1788" selection-end="1788" vertical-scroll-proportion="-4.354839">
           <folding />
         </state>
       </provider>
@@ -982,6 +952,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/radial.for">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="53" selection-start="1125" selection-end="1125" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="72" column="20" selection-start="1771" selection-end="1771" vertical-scroll-proportion="0.0">
@@ -989,9 +966,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_particles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="28" selection-start="354" selection-end="354" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="9" selection-start="4042" selection-end="4042" vertical-scroll-proportion="1.7520891">
+        <state line="31" column="63" selection-start="1376" selection-end="1376" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scikits/scattpy/spheroidal_svm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="108" selection-start="947" selection-end="947" vertical-scroll-proportion="0.24017467">
           <folding />
         </state>
       </provider>

@@ -28,7 +28,7 @@ class SpheroidalSVM:
                 cv_n = get_cv(m, n, c1, type)
                 if (self.particle.spheroid):
                     func = lambda nu: ang1_cv(m, l, c2, cv_l, type, nu)[0] * ang1_cv(m, n, c1, cv_n, type, nu)[0]
-                    A[i][k] = spheroidal.quad(func, -1, 1) * rad_cv(m, l, c2, type, rank, self.particle.psi)
+                    A[i][k] = spheroidal.quad(func, -1, 1) * rad_cv(m, l, c2, type, rank, self.particle.psi)[0]
                 else:
                     func = lambda nu: spheroidal.get_a_function(m, l, c2, rank, self.particle)(nu) * ang1_cv(m, n, c1, cv_n, type, nu)[0]
                     A[i][k] = spheroidal.quad(func, -1, 1)
